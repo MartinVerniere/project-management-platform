@@ -161,8 +161,11 @@ export const boardExtractor = async (
 		where: { id: requestBoardId },
 		include: {
 			columns: {
-				orderBy: {
-					order: "asc"
+				orderBy: { order: "asc" },
+				include: {
+					tasks: {
+						orderBy: { order: "asc" }
+					}
 				}
 			}
 		}
@@ -256,3 +259,45 @@ export const requireColumnAdmin = async (
 
 	next();
 };
+
+export const taskExtractor = async (
+	request: Request,
+	_response: Response,
+	next: NextFunction
+): Promise<void> => {
+	const requestTaskId = Number(request.params.id);
+	if (!Number.isInteger(requestTaskId)) throw new ApiError(400, "INVALID_TASK_ID", "Invalid task id.");
+
+	const task = await prisma.task.findUnique({ where: { id: requestTaskId } });
+	if (!task) throw new ApiError(404, "TASK_NOT_FOUND", "Task not found.");
+
+	request.task = task;
+
+	next();
+};
+
+export const requireTaskMember = async (
+	request: Request,
+	_response: Response,
+	next: NextFunction
+): Promise<void> => {
+	const userId = request.user.id;
+	const task = request.task!;
+
+	const column = await prisma.boardColumn.findUnique({ where: { id: task.columnId } });
+	if (!column) throw new ApiError(404, "COLUMN_NOT_FOUND", "Column not found.");
+	const board = await prisma.board.findUnique({ where: { id: column.boardId } });
+	if (!board) throw new ApiError(404, "BOARD_NOT_FOUND", "Board not found.");
+
+	const membership = await prisma.projectMember.findFirst({
+		where: {
+			projectId: board.projectId,
+			userId: userId,
+		},
+	});
+	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
+
+	request.projectMember = membership;
+
+	next();
+}

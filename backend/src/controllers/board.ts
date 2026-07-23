@@ -117,8 +117,11 @@ boardRouter.put("/:id/columns/order",
 			where: { id: board.id },
 			include: {
 				columns: {
-					orderBy: {
-						order: "asc"
+					orderBy: { order: "asc" },
+					include: {
+						tasks: {
+							orderBy: { order: "asc" }
+						}
 					}
 				}
 			}
