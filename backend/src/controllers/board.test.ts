@@ -298,7 +298,7 @@ describe('Board API', () => {
 							expect(response.body.error.message).toBe("Invalid board id.");
 						});
 
-						it('returns 400 if board not found', async () => {
+						it('returns 404 if board not found', async () => {
 							const response = await request(app)
 								.post(`/api/boards/9999/columns`)
 								.set('Authorization', `Bearer ${authToken}`)
@@ -308,7 +308,7 @@ describe('Board API', () => {
 							expect(response.body.error.message).toBe("Board not found.");
 						});
 
-						it('returns 400 if token is invalid', async () => {
+						it('returns 401 if token is invalid', async () => {
 							const response = await request(app)
 								.post(`/api/boards/${boardId}/columns`)
 								.set('Authorization', `Bearer INVALID_TOKEN`)
@@ -318,7 +318,7 @@ describe('Board API', () => {
 							expect(response.body.error.message).toBe("Authentication token is invalid.");
 						});
 
-						it('returns 400 if token is missing', async () => {
+						it('returns 401 if token is missing', async () => {
 							const response = await request(app)
 								.post(`/api/boards/${boardId}/columns`)
 
