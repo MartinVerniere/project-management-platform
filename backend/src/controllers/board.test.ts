@@ -440,7 +440,7 @@ describe('Board API', () => {
 								expect(response.body.error.message).toBe("Invalid column order.");
 							});
 
-							it('returns 400 if one of the columns in the order does not belog to it', async () => {
+							it('returns 400 if one of the columns in the order does not belong to the board', async () => {
 								const order = [
 									{ id: 9999, order: 2 },
 									{ id: columnBId, order: 1 }
