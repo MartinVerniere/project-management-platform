@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 
 import { app } from '../app.js';
-import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
+import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Board API', () => {
 	beforeEach(async () => {
@@ -100,7 +100,7 @@ describe('Board API', () => {
 
 							it('returns 400 if invalid column id', async () => {
 								const response = await request(app)
-									.get(`/api/columns/abc`)
+									.get(`/api/columns/${INVALID_ID}`)
 									.set('Authorization', `Bearer ${authToken}`);
 
 								expect(response.status).toBe(400);
@@ -187,7 +187,7 @@ describe('Board API', () => {
 
 							it('returns 400 if invalid column id', async () => {
 								const response = await request(app)
-									.put(`/api/columns/abc`)
+									.put(`/api/columns/${INVALID_ID}`)
 									.set('Authorization', `Bearer ${authToken}`)
 									.send({ name: "Updated Column A" });
 
@@ -235,7 +235,7 @@ describe('Board API', () => {
 
 							it('returns 400 if invalid column id', async () => {
 								const response = await request(app)
-									.delete(`/api/columns/abc`)
+									.delete(`/api/columns/${INVALID_ID}`)
 									.set('Authorization', `Bearer ${authToken}`);
 
 								expect(response.status).toBe(400);
@@ -312,7 +312,7 @@ describe('Board API', () => {
 
 							it('returns 400 if invalid column id', async () => {
 								const response = await request(app)
-									.post(`/api/columns/abc/tasks`)
+									.post(`/api/columns/${INVALID_ID}/tasks`)
 									.set('Authorization', `Bearer ${authToken}`)
 									.send({ title: 'Task A' });
 
@@ -444,7 +444,7 @@ describe('Board API', () => {
 
 								it('returns 400 if one of the tasks in the order has invalid id', async () => {
 									const badOrder = [
-										{ id: 'abc', order: 2 },
+										{ id: INVALID_ID, order: 2 },
 										{ id: taskBId, order: 1 }
 									];
 
@@ -489,7 +489,7 @@ describe('Board API', () => {
 
 								it('returns 400 if invalid column id', async () => {
 									const response = await request(app)
-										.put(`/api/columns/abc/tasks/order`)
+										.put(`/api/columns/${INVALID_ID}/tasks/order`)
 										.set('Authorization', `Bearer ${authToken}`)
 										.send({ taskOrder: order });
 

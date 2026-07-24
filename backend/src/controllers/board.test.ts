@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 
 import { app } from '../app.js';
-import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
+import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Board API', () => {
 	beforeEach(async () => {
@@ -88,7 +88,7 @@ describe('Board API', () => {
 
 						it('returns 400 if invalid board id', async () => {
 							const response = await request(app)
-								.get(`/api/boards/abc`)
+								.get(`/api/boards/${INVALID_ID}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(400);
@@ -135,7 +135,7 @@ describe('Board API', () => {
 
 						it('returns 400 if invalid board id', async () => {
 							const response = await request(app)
-								.put(`/api/boards/abc`)
+								.put(`/api/boards/${INVALID_ID}`)
 								.set('Authorization', `Bearer ${authToken}`)
 								.send({ name: "Updated Board A" });
 
@@ -213,7 +213,7 @@ describe('Board API', () => {
 
 						it('returns 400 if invalid board id', async () => {
 							const response = await request(app)
-								.delete(`/api/boards/abc`)
+								.delete(`/api/boards/${INVALID_ID}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(400);
@@ -290,7 +290,7 @@ describe('Board API', () => {
 
 						it('returns 400 if invalid board id', async () => {
 							const response = await request(app)
-								.post(`/api/boards/abc/columns`)
+								.post(`/api/boards/${INVALID_ID}/columns`)
 								.set('Authorization', `Bearer ${authToken}`)
 								.send({ name: "Updated Column A" });
 
@@ -412,7 +412,7 @@ describe('Board API', () => {
 
 							it('returns 400 if one of the columns in the order has invalid id', async () => {
 								const order = [
-									{ id: 'abc', order: 2 },
+									{ id: INVALID_ID, order: 2 },
 									{ id: columnBId, order: 1 }
 								];
 
@@ -462,7 +462,7 @@ describe('Board API', () => {
 								];
 
 								const response = await request(app)
-									.put(`/api/boards/abc/columns/order`)
+									.put(`/api/boards/${INVALID_ID}/columns/order`)
 									.set('Authorization', `Bearer ${authToken}`)
 									.send({ columnOrder: order });
 

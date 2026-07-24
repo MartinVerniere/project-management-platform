@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 
 import { app } from '../app.js';
-import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
+import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Board API', () => {
 	beforeEach(async () => {
@@ -124,7 +124,7 @@ describe('Board API', () => {
 
 									it('returns 400 if invalid task id', async () => {
 										const response = await request(app)
-											.get(`/api/tasks/abc`)
+											.get(`/api/tasks/${INVALID_ID}`)
 											.set('Authorization', `Bearer ${authToken}`);
 
 										expect(response.status).toBe(400);
@@ -201,7 +201,7 @@ describe('Board API', () => {
 
 									it('returns 400 if invalid task id', async () => {
 										const response = await request(app)
-											.put(`/api/tasks/abc`)
+											.put(`/api/tasks/${INVALID_ID}`)
 											.set('Authorization', `Bearer ${authToken}`)
 											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
@@ -249,7 +249,7 @@ describe('Board API', () => {
 									});
 									it('returns 400 if invalid task id', async () => {
 										const response = await request(app)
-											.delete(`/api/tasks/abc`)
+											.delete(`/api/tasks/${INVALID_ID}`)
 											.set('Authorization', `Bearer ${authToken}`);
 
 										expect(response.status).toBe(400);

@@ -4,7 +4,7 @@ import request from 'supertest';
 import { prisma } from '../prisma.js';
 import { app } from '../app.js';
 import { ProjectRole } from '../generated/prisma/client.js';
-import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
+import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Project API', () => {
 	beforeEach(async () => {
@@ -166,7 +166,7 @@ describe('Project API', () => {
 
 					it('returns 400 for an invalid id', async () => {
 						const response = await request(app)
-							.get(`/api/projects/abc`)
+							.get(`/api/projects/${INVALID_ID}`)
 							.set('Authorization', `Bearer ${authToken}`);
 
 						expect(response.status).toBe(400);
@@ -230,7 +230,7 @@ describe('Project API', () => {
 
 					it('returns 400 when invalid project id', async () => {
 						const response = await request(app)
-							.post(`/api/projects/abc/members`)
+							.post(`/api/projects/${INVALID_ID}/members`)
 							.set('Authorization', `Bearer ${authToken}`)
 							.send({ userId: aliceUserId })
 
@@ -252,7 +252,7 @@ describe('Project API', () => {
 						const response = await request(app)
 							.post(`/api/projects/${firstProjectId}/members`)
 							.set('Authorization', `Bearer ${authToken}`)
-							.send({ userId: 'abc' })
+							.send({ userId: INVALID_ID })
 
 						expect(response.status).toBe(400);
 						expect(response.body.error.message).toBe('Invalid user id.');
@@ -312,7 +312,7 @@ describe('Project API', () => {
 
 					it('returns 400 for invalid id', async () => {
 						const response = await request(app)
-							.put(`/api/projects/abc`)
+							.put(`/api/projects/${INVALID_ID}`)
 							.set('Authorization', `Bearer ${authToken}`)
 							.send({
 								name: 'Test 1',
@@ -369,7 +369,7 @@ describe('Project API', () => {
 
 					it('returns 400 for invalid id', async () => {
 						const response = await request(app)
-							.delete(`/api/projects/abc`)
+							.delete(`/api/projects/${INVALID_ID}`)
 							.set('Authorization', `Bearer ${authToken}`);
 
 						expect(response.status).toBe(400);
@@ -407,7 +407,7 @@ describe('Project API', () => {
 
 					it('returns 400 when invalid project id', async () => {
 						const response = await request(app)
-							.post(`/api/projects/abc/boards`)
+							.post(`/api/projects/${INVALID_ID}/boards`)
 							.set('Authorization', `Bearer ${authToken}`)
 							.send({ name: "Board A" });
 
@@ -496,7 +496,7 @@ describe('Project API', () => {
 
 						it('returns 400 when invalid project id', async () => {
 							const response = await request(app)
-								.get(`/api/projects/abc/members`)
+								.get(`/api/projects/${INVALID_ID}/members`)
 								.set('Authorization', `Bearer ${authToken}`)
 
 							expect(response.status).toBe(400);
@@ -623,7 +623,7 @@ describe('Project API', () => {
 
 						it('returns 400 for invalid project id', async () => {
 							const response = await request(app)
-								.delete(`/api/projects/abc/members/${aliceUserId}`)
+								.delete(`/api/projects/${INVALID_ID}/members/${aliceUserId}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(400);
@@ -641,7 +641,7 @@ describe('Project API', () => {
 
 						it('returns 400 for invalid member id', async () => {
 							const response = await request(app)
-								.delete(`/api/projects/${firstProjectId}/members/abc`)
+								.delete(`/api/projects/${firstProjectId}/members/${INVALID_ID}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(400);
@@ -773,7 +773,7 @@ describe('Project API', () => {
 
 						it('returns 400 when invalid project id', async () => {
 							const response = await request(app)
-								.get(`/api/projects/abc/boards`)
+								.get(`/api/projects/${INVALID_ID}/boards`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(400);

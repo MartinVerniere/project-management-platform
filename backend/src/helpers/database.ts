@@ -1,6 +1,7 @@
 import { prisma } from '../../src/prisma.js';
 
 export const NOT_FOUND_ID = 2147483647;
+export const INVALID_ID = 'abc';
 
 export const clearDatabase = async () => {
 	await prisma.task.deleteMany();
