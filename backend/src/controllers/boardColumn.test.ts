@@ -390,20 +390,20 @@ describe('Board API', () => {
 							});
 
 							describe('on edit task order', () => {
-								const order = [
-									{ id: taskAId, order: 2 },
-									{ id: taskBId, order: 1 }
-								];
-
 								it('orders tasks', async () => {
+									const order = [
+										{ id: taskAId, order: 1 },
+										{ id: taskBId, order: 0 }
+									];
+
 									const response = await request(app)
 										.put(`/api/columns/${columnId}/tasks/order`)
 										.set('Authorization', `Bearer ${authToken}`)
 										.send({ taskOrder: order });
 
 									expect(response.status).toBe(200);
-									expect(response.body.tasks[0].name).toBe("Task B");
-									expect(response.body.tasks[1].name).toBe("Task A");
+									expect(response.body.tasks[0].title).toBe("Task B");
+									expect(response.body.tasks[1].title).toBe("Task A");
 								});
 
 								it('returns 400 if task order is missing', async () => {
@@ -474,8 +474,8 @@ describe('Board API', () => {
 
 								it('returns 400 if one of the tasks in the order does not belong to the column', async () => {
 									const badOrder = [
-										{ id: taskAId, order: 2 },
-										{ id: NOT_FOUND_ID, order: 1 }
+										{ id: taskAId, order: 1 },
+										{ id: NOT_FOUND_ID, order: 0 }
 									];
 
 									const response = await request(app)
@@ -488,6 +488,11 @@ describe('Board API', () => {
 								});
 
 								it('returns 400 if invalid column id', async () => {
+									const order = [
+										{ id: taskAId, order: 1 },
+										{ id: taskBId, order: 0 }
+									];
+
 									const response = await request(app)
 										.put(`/api/columns/${INVALID_ID}/tasks/order`)
 										.set('Authorization', `Bearer ${authToken}`)
@@ -498,6 +503,11 @@ describe('Board API', () => {
 								});
 
 								it('returns 404 if column not found', async () => {
+									const order = [
+										{ id: taskAId, order: 1 },
+										{ id: taskBId, order: 0 }
+									];
+
 									const response = await request(app)
 										.put(`/api/columns/${NOT_FOUND_ID}/tasks/order`)
 										.set('Authorization', `Bearer ${authToken}`)
@@ -508,6 +518,11 @@ describe('Board API', () => {
 								});
 
 								it('returns 401 if token is invalid', async () => {
+									const order = [
+										{ id: taskAId, order: 1 },
+										{ id: taskBId, order: 0 }
+									];
+
 									const response = await request(app)
 										.put(`/api/columns/${columnId}/tasks/order`)
 										.set('Authorization', `Bearer INVALID_TOKEN`)
@@ -518,6 +533,11 @@ describe('Board API', () => {
 								});
 
 								it('returns 401 if token is missing', async () => {
+									const order = [
+										{ id: taskAId, order: 1 },
+										{ id: taskBId, order: 0 }
+									];
+									
 									const response = await request(app)
 										.put(`/api/columns/${columnId}/tasks/order`)
 										.send({ taskOrder: order });

@@ -21,6 +21,7 @@ boardColumnRouter.put('/:id',
 	userExtractor,
 	columnExtractor,
 	requireColumnMember,
+	requireColumnAdmin,
 	async (request: Request, response: Response) => {
 		const boardColumn = request.boardColumn!;
 		const { name } = request.body;
