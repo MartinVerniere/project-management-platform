@@ -65,7 +65,7 @@ boardColumnRouter.post('/:id/tasks',
 	}
 );
 
-boardColumnRouter.put('/id:/tasks/order',
+boardColumnRouter.put('/:id/tasks/order',
 	tokenExtractor,
 	userExtractor,
 	columnExtractor,
@@ -85,7 +85,7 @@ boardColumnRouter.put('/id:/tasks/order',
 		for (const task of taskOrder) {
 			if (!Number.isInteger(task.id)) throw new ApiError(400, "INVALID_TASK_ID", "Invalid task id.");
 			if (!Number.isInteger(task.order)) throw new ApiError(400, "INVALID_TASK_ORDER", "Invalid task order.");
-			if (!tasksIds.has(task.id)) throw new ApiError(400, "INVALID_TASK", "Task does not belong to this board.");
+			if (!tasksIds.has(task.id)) throw new ApiError(400, "INVALID_TASK", "Task does not belong to this column.");
 		};
 
 		await prisma.$transaction([
@@ -108,10 +108,10 @@ boardColumnRouter.put('/id:/tasks/order',
 			),
 		]);
 
-		const updatedBoardColumn = await prisma.board.findUnique({
+		const updatedBoardColumn = await prisma.boardColumn.findUnique({
 			where: { id: column.id },
 			include: {
-				columns: {
+				tasks: {
 					orderBy: {
 						order: "asc"
 					}
