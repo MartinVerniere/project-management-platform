@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 
 import { app } from '../app.js';
-import { clearDatabase } from '../helpers/database.js';
+import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Board API', () => {
 	beforeEach(async () => {
@@ -127,13 +127,13 @@ describe('Board API', () => {
 											.get(`/api/tasks/abc`)
 											.set('Authorization', `Bearer ${authToken}`);
 
-										expect(response.status).toBe(404);
+										expect(response.status).toBe(400);
 										expect(response.body.error.message).toBe("Invalid task id.");
 									});
 
 									it('returns 404 if task not found', async () => {
 										const response = await request(app)
-											.get(`/api/tasks/9999`)
+											.get(`/api/tasks/${NOT_FOUND_ID}`)
 											.set('Authorization', `Bearer ${authToken}`);
 
 										expect(response.status).toBe(404);
@@ -183,7 +183,7 @@ describe('Board API', () => {
 										const response = await request(app)
 											.put(`/api/tasks/${taskId}`)
 											.set('Authorization', `Bearer ${authToken}`)
-											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
+											.send({ title: 5, description: 'This is task A - UPDATED' });
 
 										expect(response.status).toBe(400);
 										expect(response.body.error.message).toBe("Task title must be a string.");
@@ -193,7 +193,7 @@ describe('Board API', () => {
 										const response = await request(app)
 											.put(`/api/tasks/${taskId}`)
 											.set('Authorization', `Bearer ${authToken}`)
-											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
+											.send({ title: '', description: 'This is task A - UPDATED' });
 
 										expect(response.status).toBe(400);
 										expect(response.body.error.message).toBe("Task title is required.");
@@ -211,7 +211,7 @@ describe('Board API', () => {
 
 									it('returns 404 if task not found', async () => {
 										const response = await request(app)
-											.put(`/api/tasks/9999`)
+											.put(`/api/tasks/${NOT_FOUND_ID}`)
 											.set('Authorization', `Bearer ${authToken}`)
 											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
@@ -257,7 +257,7 @@ describe('Board API', () => {
 									});
 									it('returns 404 if task not found', async () => {
 										const response = await request(app)
-											.delete(`/api/tasks/9999`)
+											.delete(`/api/tasks/${NOT_FOUND_ID}`)
 											.set('Authorization', `Bearer ${authToken}`);
 
 										expect(response.status).toBe(404);

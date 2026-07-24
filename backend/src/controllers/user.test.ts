@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 
 import { app } from '../app.js';
-import { clearDatabase } from '../helpers/database.js';
+import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('User API', () => {
 	let authToken: string;
@@ -96,7 +96,7 @@ describe('User API', () => {
 
 			it('returns 400 for invalid user id', async () => {
 				const response = await request(app)
-					.get('/api/users/not-a-number')
+					.get('/api/users/abc')
 					.set('Authorization', `Bearer ${authToken}`);
 
 				expect(response.status).toBe(400);
@@ -106,7 +106,7 @@ describe('User API', () => {
 
 			it('returns 404 when user does not exist', async () => {
 				const response = await request(app)
-					.get('/api/users/999999')
+					.get(`/api/users/${NOT_FOUND_ID}`)
 					.set('Authorization', `Bearer ${authToken}`);
 
 				expect(response.status).toBe(404);

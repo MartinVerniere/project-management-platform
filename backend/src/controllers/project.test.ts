@@ -4,7 +4,7 @@ import request from 'supertest';
 import { prisma } from '../prisma.js';
 import { app } from '../app.js';
 import { ProjectRole } from '../generated/prisma/client.js';
-import { clearDatabase } from '../helpers/database.js';
+import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Project API', () => {
 	beforeEach(async () => {
@@ -175,7 +175,7 @@ describe('Project API', () => {
 
 					it('returns 404 when the project does not exist', async () => {
 						const response = await request(app)
-							.get(`/api/projects/9999`)
+							.get(`/api/projects/${NOT_FOUND_ID}`)
 							.set('Authorization', `Bearer ${authToken}`);
 
 						expect(response.status).toBe(404);
@@ -240,7 +240,7 @@ describe('Project API', () => {
 
 					it('returns 400 when project not found', async () => {
 						const response = await request(app)
-							.post(`/api/projects/9999/members`)
+							.post(`/api/projects/${NOT_FOUND_ID}/members`)
 							.set('Authorization', `Bearer ${authToken}`)
 							.send({ userId: aliceUserId })
 
@@ -262,7 +262,7 @@ describe('Project API', () => {
 						const response = await request(app)
 							.post(`/api/projects/${firstProjectId}/members`)
 							.set('Authorization', `Bearer ${authToken}`)
-							.send({ userId: 9999 })
+							.send({ userId: NOT_FOUND_ID })
 
 						expect(response.status).toBe(404);
 						expect(response.body.error.message).toBe('No user found with the provided id.');
@@ -325,7 +325,7 @@ describe('Project API', () => {
 
 					it('returns 404 when project does not exist', async () => {
 						const response = await request(app)
-							.put(`/api/projects/9999`)
+							.put(`/api/projects/${NOT_FOUND_ID}`)
 							.set('Authorization', `Bearer ${authToken}`)
 							.send({
 								name: 'Test 1',
@@ -378,7 +378,7 @@ describe('Project API', () => {
 
 					it('returns 404 when project does not exist', async () => {
 						const response = await request(app)
-							.delete(`/api/projects/9999`)
+							.delete(`/api/projects/${NOT_FOUND_ID}`)
 							.set('Authorization', `Bearer ${authToken}`);
 
 						expect(response.status).toBe(404);
@@ -417,7 +417,7 @@ describe('Project API', () => {
 
 					it('returns 404 when project not found', async () => {
 						const response = await request(app)
-							.post(`/api/projects/9999/boards`)
+							.post(`/api/projects/${NOT_FOUND_ID}/boards`)
 							.set('Authorization', `Bearer ${authToken}`)
 							.send({ name: "Board A" });
 
@@ -505,7 +505,7 @@ describe('Project API', () => {
 
 						it('returns 400 when project not found', async () => {
 							const response = await request(app)
-								.get(`/api/projects/9999/members`)
+								.get(`/api/projects/${NOT_FOUND_ID}/members`)
 								.set('Authorization', `Bearer ${authToken}`)
 
 							expect(response.status).toBe(404);
@@ -632,7 +632,7 @@ describe('Project API', () => {
 
 						it('returns 404 when project does not exist', async () => {
 							const response = await request(app)
-								.delete(`/api/projects/9999/members/${aliceUserId}`)
+								.delete(`/api/projects/${NOT_FOUND_ID}/members/${aliceUserId}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(404);
@@ -782,7 +782,7 @@ describe('Project API', () => {
 
 						it('returns 404 when project not found', async () => {
 							const response = await request(app)
-								.get(`/api/projects/9999/boards`)
+								.get(`/api/projects/${NOT_FOUND_ID}/boards`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(404);

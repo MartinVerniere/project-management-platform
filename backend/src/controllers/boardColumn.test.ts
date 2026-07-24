@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 
 import { app } from '../app.js';
-import { clearDatabase } from '../helpers/database.js';
+import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Board API', () => {
 	beforeEach(async () => {
@@ -109,7 +109,7 @@ describe('Board API', () => {
 
 							it('returns 404 if column not found', async () => {
 								const response = await request(app)
-									.get(`/api/columns/9999`)
+									.get(`/api/columns/${NOT_FOUND_ID}`)
 									.set('Authorization', `Bearer ${authToken}`);
 
 								expect(response.status).toBe(404);
@@ -197,7 +197,7 @@ describe('Board API', () => {
 
 							it('returns 404 if column not found', async () => {
 								const response = await request(app)
-									.put(`/api/columns/9999`)
+									.put(`/api/columns/${NOT_FOUND_ID}`)
 									.set('Authorization', `Bearer ${authToken}`)
 									.send({ name: "Updated Board A" });
 
@@ -244,7 +244,7 @@ describe('Board API', () => {
 
 							it('returns 404 if column not found', async () => {
 								const response = await request(app)
-									.delete(`/api/columns/9999`)
+									.delete(`/api/columns/${NOT_FOUND_ID}`)
 									.set('Authorization', `Bearer ${authToken}`);
 
 								expect(response.status).toBe(404);
@@ -322,7 +322,7 @@ describe('Board API', () => {
 
 							it('returns 404 if column not found', async () => {
 								const response = await request(app)
-									.post(`/api/columns/9999/tasks`)
+									.post(`/api/columns/${NOT_FOUND_ID}/tasks`)
 									.set('Authorization', `Bearer ${authToken}`)
 									.send({ title: '' });
 
@@ -475,7 +475,7 @@ describe('Board API', () => {
 								it('returns 400 if one of the tasks in the order does not belong to the column', async () => {
 									const badOrder = [
 										{ id: taskAId, order: 2 },
-										{ id: 9999, order: 1 }
+										{ id: NOT_FOUND_ID, order: 1 }
 									];
 
 									const response = await request(app)
@@ -499,7 +499,7 @@ describe('Board API', () => {
 
 								it('returns 404 if column not found', async () => {
 									const response = await request(app)
-										.put(`/api/columns/9999/tasks/order`)
+										.put(`/api/columns/${NOT_FOUND_ID}/tasks/order`)
 										.set('Authorization', `Bearer ${authToken}`)
 										.send({ taskOrder: order });
 

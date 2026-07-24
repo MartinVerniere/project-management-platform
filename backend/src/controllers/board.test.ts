@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 
 import { app } from '../app.js';
-import { clearDatabase } from '../helpers/database.js';
+import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Board API', () => {
 	beforeEach(async () => {
@@ -97,7 +97,7 @@ describe('Board API', () => {
 
 						it('returns 404 if board not found', async () => {
 							const response = await request(app)
-								.get(`/api/boards/9999`)
+								.get(`/api/boards/${NOT_FOUND_ID}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(404);
@@ -145,7 +145,7 @@ describe('Board API', () => {
 
 						it('returns 404 if board not found', async () => {
 							const response = await request(app)
-								.put(`/api/boards/9999`)
+								.put(`/api/boards/${NOT_FOUND_ID}`)
 								.set('Authorization', `Bearer ${authToken}`)
 								.send({ name: "Updated Board A" });
 
@@ -222,7 +222,7 @@ describe('Board API', () => {
 
 						it('returns 404 if board not found', async () => {
 							const response = await request(app)
-								.delete(`/api/boards/9999`)
+								.delete(`/api/boards/${NOT_FOUND_ID}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(404);
@@ -300,7 +300,7 @@ describe('Board API', () => {
 
 						it('returns 404 if board not found', async () => {
 							const response = await request(app)
-								.post(`/api/boards/9999/columns`)
+								.post(`/api/boards/${NOT_FOUND_ID}/columns`)
 								.set('Authorization', `Bearer ${authToken}`)
 								.send({ name: "Updated Board A" });
 
@@ -442,7 +442,7 @@ describe('Board API', () => {
 
 							it('returns 400 if one of the columns in the order does not belong to the board', async () => {
 								const order = [
-									{ id: 9999, order: 2 },
+									{ id: NOT_FOUND_ID, order: 2 },
 									{ id: columnBId, order: 1 }
 								];
 
@@ -477,7 +477,7 @@ describe('Board API', () => {
 								];
 
 								const response = await request(app)
-									.put(`/api/boards/9999/columns/order`)
+									.put(`/api/boards/${NOT_FOUND_ID}/columns/order`)
 									.set('Authorization', `Bearer ${authToken}`)
 									.send({ columnOrder: order });
 
