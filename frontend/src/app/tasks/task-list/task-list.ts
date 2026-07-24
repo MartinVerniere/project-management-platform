@@ -1,7 +1,6 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { Task } from '../../services/columns/column-service';
 import { ActivatedRoute } from '@angular/router';
-import { TaskService } from '../../services/tasks/task-service';
+import { Task, TaskService } from '../../services/tasks/task-service';
 
 @Component({
 	selector: 'app-task-list',

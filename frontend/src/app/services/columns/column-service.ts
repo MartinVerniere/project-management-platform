@@ -2,12 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ColumnModel } from '../../columns/column-form/column-form';
+import { Task } from '../tasks/task-service';
+import { TaskModel } from '../../tasks/task-form/task-form';
 
 const API_URL = 'http://localhost:3000/api/columns';
 
 export interface Column {
 	id: number,
 	name: string,
+	tasks: Task[]
 }
 
 @Service()
@@ -24,5 +27,9 @@ export class ColumnService {
 
 	deleteColumn(columnId: number): Observable<void> {
 		return this.http.delete<void>(`${API_URL}/${columnId}`);
+	}
+
+	addTask(columnId: number, request: TaskModel): Observable<Column> {
+		return this.http.post<Column>(`${API_URL}/${columnId}/tasks`, request);
 	}
 }
