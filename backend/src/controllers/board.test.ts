@@ -485,7 +485,7 @@ describe('Board API', () => {
 								expect(response.body.error.message).toBe("Board not found.");
 							});
 
-							it('returns 400 if token is invalid', async () => {
+							it('returns 401 if token is invalid', async () => {
 								const order = [
 									{ id: columnAId, order: 2 },
 									{ id: columnBId, order: 1 }
@@ -500,7 +500,7 @@ describe('Board API', () => {
 								expect(response.body.error.message).toBe("Authentication token is invalid.");
 							});
 
-							it('returns 400 if token is missing', async () => {
+							it('returns 401 if token is missing', async () => {
 								const order = [
 									{ id: columnAId, order: 2 },
 									{ id: columnBId, order: 1 }
