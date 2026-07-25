@@ -71,8 +71,4 @@ export class ColumnList {
 			}
 		});
 	}
-
-	onRemoveColumn() {
-		this.columnDeleted.emit();
-	}
 }
