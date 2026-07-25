@@ -3,12 +3,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { TaskService } from '../../services/tasks/task-service';
 import { firstValueFrom } from 'rxjs';
 import { TaskModel } from '../task-form/task-form';
-import { form, required, submit } from '@angular/forms/signals';
+import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
 	selector: 'app-task-update-form',
-	imports: [],
+	imports: [FormField],
 	templateUrl: './task-update-form.html',
 	styleUrl: './task-update-form.css',
 })
@@ -38,7 +38,7 @@ export class TaskUpdateForm {
 
 			if (!task) return;
 
-			this.taskModel.set({ title: task.title });
+			this.taskModel.set({ title: task.title, description: task.description ?? '' });
 		});
 	}
 

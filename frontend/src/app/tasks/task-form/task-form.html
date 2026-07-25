@@ -17,14 +17,6 @@
 			<label class="form-label" for="description"> Description </label>
 			<input id="description" class="form-input" type="text" placeholder="Description"
 				[formField]="taskForm.description" />
-
-			@if(taskForm.description().invalid() && taskForm.description().touched()){
-			<div class="error">
-				@for (error of taskForm.description().errors(); track error.kind){
-				<span> {{error.message}}</span>
-				}
-			</div>
-			}
 		</div>
 
 		<div class="form-error">

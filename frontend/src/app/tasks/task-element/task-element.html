@@ -1,6 +1,6 @@
 <div class="task-element">
 	@if (task(); as task) {
-	<div class="task-name">{{task.name}}</div>
+	<div class="task-title">{{task.title}}</div>
 	@if (task.description) {
 	<div class="task-description">{{task.description}}</div>
 	}
@@ -10,8 +10,8 @@
 	</div>
 	<div class="column-buttons">
 		<button
-			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'tasks', task.id, 'edit']">Edit</button>
-		<button type="button" (click)="ontaskDeleted(task.id)">Delete</button>
+			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">Edit</button>
+		<button type="button" (click)="onTaskDeleted(task.id)">Delete</button>
 	</div>
 	<div class="error"> {{ error() }}</div>
 	}

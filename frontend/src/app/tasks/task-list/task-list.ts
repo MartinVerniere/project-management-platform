@@ -17,7 +17,7 @@ export class TaskList {
 	boardId = Number(this.route.snapshot.paramMap.get('boardId'));
 	columnId = Number(this.route.snapshot.paramMap.get('columnId'));
 
-	taskList = input.required<Task[]>;
+	taskList = input.required<Task[]>();
 
 	taskMoved = output<void>();
 	taskDeleted = output<void>();

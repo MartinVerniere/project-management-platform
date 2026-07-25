@@ -1,10 +1,11 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { Task, TaskService } from '../../services/tasks/task-service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'app-task-element',
-	imports: [],
+	imports: [RouterLink],
 	templateUrl: './task-element.html',
 	styleUrl: './task-element.css',
 })
@@ -14,6 +15,9 @@ export class TaskElement {
 	task = input.required<Task>();
 	isFirst = input<boolean>();
 	isLast = input<boolean>();
+	projectId = input.required<number>();
+	boardId = input.required<number>();
+	columnId = input.required<number>();
 
 	taskDeleted = output<void>();
 	moveUp = output<number>();

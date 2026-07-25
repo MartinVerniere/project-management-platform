@@ -1,17 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ColumnService } from '../../services/columns/column-service';
-import { form, required, submit } from '@angular/forms/signals';
+import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export interface TaskModel {
 	title: string;
-	description?: string;
+	description: string;
 }
 
 @Component({
 	selector: 'app-task-form',
-	imports: [],
+	imports: [FormField],
 	templateUrl: './task-form.html',
 	styleUrl: './task-form.css',
 })
