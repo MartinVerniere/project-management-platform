@@ -3,16 +3,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColumnUpdateForm } from './column-update-form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { ColumnService } from '../../services/columns/column-service';
+import { Column, ColumnService } from '../../services/columns/column-service';
 
 describe('ColumnUpdateForm', () => {
 	let fixture: ComponentFixture<ColumnUpdateForm>;
 	let component: ColumnUpdateForm;
 	let html: HTMLElement;
 
-	const currentColumn = {
+	const currentColumn: Column = {
 		id: 1,
-		name: "Column A"
+		name: "Column A",
+		tasks: []
 	}
 
 	let columnServiceMock = {
@@ -94,7 +95,7 @@ describe('ColumnUpdateForm', () => {
 	it('should not update board when invalid form data', async () => {
 		await createComponent();
 
-		component.resetForm(); //Clear name loaded from fetch
+		component.resetForm(); //Clear information loaded from fetch
 
 		await component.onSubmit(new Event('submit'));
 
