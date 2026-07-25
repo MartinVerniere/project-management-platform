@@ -1,18 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectElement } from './project-element';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { Project, ProjectService } from '../../services/projects/project-service';
+import { of } from 'rxjs';
 
 describe('ProjectElement', () => {
 	let fixture: ComponentFixture<ProjectElement>;
 	let component: ProjectElement;
 	let html: HTMLElement;
 
-	const project = {
+	const projectServiceMock = { deleteProject: vi.fn() };
+
+	const activatedRouteMock = {
+		snapshot: {
+			paramMap: {
+				get: (key: string) => {
+					return null;
+				}
+			}
+		}
+	};
+
+	const project: Project = {
 		id: 1,
 		name: 'Project A',
-		key: 'PRA',
-		description: 'My project'
+		key: 'PROA',
+		description: 'My project',
+		members: []
 	};
 
 	async function createComponent(shouldAwait: boolean = true) {
@@ -36,7 +51,8 @@ describe('ProjectElement', () => {
 		await TestBed.configureTestingModule({
 			imports: [ProjectElement],
 			providers: [
-				provideRouter([])
+				{ provide: ProjectService, useValue: projectServiceMock },
+				{ provide: ActivatedRoute, useValue: activatedRouteMock }
 			]
 		}).compileComponents();
 	});
@@ -51,7 +67,28 @@ describe('ProjectElement', () => {
 		await createComponent();
 
 		expect(html.textContent).toContain('Project A');
-		expect(html.textContent).toContain('PRA');
+		expect(html.textContent).toContain('PROA');
 		expect(html.textContent).toContain('My project');
+	});
+
+	it('should delete project and emit projectDeleted on clicking "Delete" button', async () => {
+		projectServiceMock.deleteProject.mockReturnValue(of({}));
+
+		await createComponent();
+
+		const emitSpy = vi.spyOn(component.projectDeleted, 'emit');
+
+		const deleteButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Delete'));
+
+		expect(deleteButton).toBeTruthy();
+
+		deleteButton!.click();
+
+		await fixture.whenStable();
+
+		expect(projectServiceMock.deleteProject).toHaveBeenCalledWith(1);
+		expect(emitSpy).toHaveBeenCalled();
 	});
 });
