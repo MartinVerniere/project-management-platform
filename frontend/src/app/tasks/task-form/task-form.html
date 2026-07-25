@@ -2,7 +2,7 @@
 	<div class="form-grid">
 		<div class="form-group">
 			<label class="form-label" for="title"> Title </label>
-			<input id="title" class="form-input" type="text" placeholder="Project A" [formField]="taskForm.title" />
+			<input id="title" class="form-input" type="text" placeholder="Task A" [formField]="taskForm.title" />
 
 			@if(taskForm.title().invalid() && taskForm.title().touched()){
 			<div class="error">

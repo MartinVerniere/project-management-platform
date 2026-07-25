@@ -41,7 +41,7 @@ export class TaskForm {
 		submit(this.taskForm, async () => {
 			if (this.taskModel().title === '') return;
 
-			this.columnService.addTask(this.projectId, this.taskModel()).subscribe({
+			this.columnService.addTask(this.columnId, this.taskModel()).subscribe({
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
@@ -57,7 +57,7 @@ export class TaskForm {
 	}
 
 	onCancel() {
-		this.router.navigate(['/projects', this.projectId]);
+		this.router.navigate(['/projects', this.projectId, 'boards', this.boardId]);
 	}
 
 	resetForm() {

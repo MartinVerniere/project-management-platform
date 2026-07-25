@@ -1,18 +1,18 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, input, output, signal } from "@angular/core";
-import { RouterLink, Router, ActivatedRoute } from "@angular/router";
+import { RouterLink, Router } from "@angular/router";
 import { ColumnService, Column } from "../../services/columns/column-service";
+import { TaskList } from "../../tasks/task-list/task-list";
 
 @Component({
 	selector: 'app-column-element',
-	imports: [RouterLink],
+	imports: [RouterLink, TaskList],
 	templateUrl: './column-element.html',
 	styleUrl: './column-element.css',
 })
 export class ColumnElement {
 	router = inject(Router);
 	columnService = inject(ColumnService);
-	route = inject(ActivatedRoute);
 
 	column = input.required<Column>();
 	projectId = input.required<number>();
@@ -24,6 +24,8 @@ export class ColumnElement {
 	columnDeleted = output<void>();
 	moveLeft = output<number>();
 	moveRight = output<number>();
+	taskDeleted = output<void>();
+	taskMoved = output<void>();
 
 	error = signal<string | null>(null);
 

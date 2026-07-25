@@ -13,6 +13,15 @@ export interface Column {
 	tasks: Task[]
 }
 
+interface TaskOrder {
+	id: number,
+	order: number
+}
+
+export interface TaskOrderRequest {
+	taskOrder: TaskOrder[]
+}
+
 @Service()
 export class ColumnService {
 	private http = inject(HttpClient);
@@ -31,5 +40,9 @@ export class ColumnService {
 
 	addTask(columnId: number, request: TaskModel): Observable<Column> {
 		return this.http.post<Column>(`${API_URL}/${columnId}/tasks`, request);
+	}
+
+	changeTaskOrder(boardId: number, request: TaskOrderRequest): Observable<Column> {
+		return this.http.put<Column>(`${API_URL}/${boardId}/tasks/order`, request);
 	}
 }
