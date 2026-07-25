@@ -17,7 +17,7 @@ export class BoardList {
 
 	boardList = resource({ loader: () => firstValueFrom(this.projectService.getBoards(this.projectId())) });
 
-	async onDeleteBoard() {
+	onDeleteBoard() {
 		this.boardList.reload();
 	}
 }

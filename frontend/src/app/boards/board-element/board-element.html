@@ -3,7 +3,7 @@
 	<div class="board-name">{{board.name}}</div>
 	<button [routerLink]="['/projects', projectId(), 'boards', board.id]">Details</button>
 	<button [routerLink]="['/projects', projectId(), 'boards', board.id, 'edit']">Edit</button>
-	<button type="button" (click)="onBoardDeleted(board.id)">Delete</button>
+	<button type="button" (click)="onDeleteBoard(board.id)">Delete</button>
 	<div class="error"> {{ error() }}</div>
 	}
 </div>
