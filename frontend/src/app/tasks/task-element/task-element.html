@@ -1,0 +1,14 @@
+<div class="task-element">
+	@if (task(); as task) {
+	<div class="task-name">{{task.name}}</div>
+	@if (task.description) {
+		<div class="task-description">{{task.description}}</div>
+	}
+	<div class="task-move-buttons">
+		<button type="button" [disabled]="isFirst()" (click)="moveUp.emit(task.id)">Move up</button>
+		<button type="button" [disabled]="isLast()" (click)="moveDown.emit(task.id)">Move down</button>
+	</div>
+	<button type="button" (click)="ontaskDeleted(task.id)">Delete</button>
+	<div class="error"> {{ error() }}</div>
+	}
+</div>
