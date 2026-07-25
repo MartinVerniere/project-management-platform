@@ -1,7 +1,11 @@
-<a class="project-element" [routerLink]="['/projects', project().id]">
-	<h3 class="project-name">{{project().name}}</h3>
-	<div class="project-key">Key: {{project().key}}</div>
-	@if (project().description) {
-		<div class="project-description">Description: {{project().description}}</div>
+<div class="project-element">
+	@if (project(); as project){
+	<div class="project-name">{{project.name}}</div>
+	<div class="project-key">Key: {{project.key}}</div>
+	@if (project.description) { <div class="project-description">Description: {{project.description}}</div> }
+	<button [routerLink]="['/projects', project.id]">Details</button>
+	<button [routerLink]="['/projects', project.id, 'edit']">Edit</button>
+	<button type="button" (click)="onDeleteProject(project.id)">Delete</button>
+	<div class="error"> {{ error() }}</div>
 	}
-</a>
+</div>
