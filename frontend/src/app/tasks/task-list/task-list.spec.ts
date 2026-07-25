@@ -2,9 +2,30 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskList } from './task-list';
 import { Task } from '../../services/tasks/task-service';
-import { ColumnService } from '../../services/columns/column-service';
+import { Column, ColumnService } from '../../services/columns/column-service';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { Component, input, output } from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { TaskElement } from '../task-element/task-element';
+
+@Component({
+	selector: 'app-task-element',
+	standalone: true,
+	template: '',
+})
+class TaskElementStub {
+	task = input.required<Task>();
+	isFirst = input<boolean>();
+	isLast = input<boolean>();
+	projectId = input.required<number>();
+	boardId = input.required<number>();
+	columnId = input.required<number>();
+
+	taskDeleted = output<void>();
+	moveUp = output<number>();
+	moveDown = output<number>();
+}
 
 describe('TaskList', () => {
 	let fixture: ComponentFixture<TaskList>;
@@ -61,6 +82,13 @@ describe('TaskList', () => {
 				{ provide: ColumnService, useValue: columnServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock },
 			]
+		}).overrideComponent(TaskList, {
+			remove: {
+				imports: [TaskElement],
+			},
+			add: {
+				imports: [TaskElementStub],
+			}
 		}).compileComponents();
 	});
 
@@ -73,8 +101,9 @@ describe('TaskList', () => {
 	it('should render tasks', async () => {
 		await createComponent(true, taskList);
 
-		expect(html.textContent).toContain('Task A');
-		expect(html.textContent).toContain('Task B');
+		const children = fixture.debugElement.queryAll(By.directive(TaskElementStub));
+
+		expect(children).toHaveLength(2);
 	});
 
 	it('should render empty message when no task exists', async () => {
@@ -83,7 +112,7 @@ describe('TaskList', () => {
 		expect(html.textContent).toContain('No tasks in this project');
 	});
 
-	it('should change task order when task is moved up and emit columnMoved', async () => {
+	it('should change task order when task is moved up and emit taskMoved', async () => {
 		const expectedOrder = [
 			{ id: 2, order: 0 },
 			{ id: 1, order: 1 },
@@ -102,7 +131,7 @@ describe('TaskList', () => {
 		expect(component.error()).toBeNull();
 	});
 
-	it('should change task order when column is moved down and emit columnMoved', async () => {
+	it('should change task order when task is moved down and emit taskMoved', async () => {
 		const expectedOrder = [
 			{ id: 2, order: 0 },
 			{ id: 1, order: 1 },
@@ -121,12 +150,16 @@ describe('TaskList', () => {
 		expect(component.error()).toBeNull();
 	});
 
-	it('should emit columnDeleted when column is deleted', async () => {
+	it('should delete task when task is deleted', async () => {
 		await createComponent(true, taskList);
+
+		const child = fixture.debugElement
+			.query(By.directive(TaskElementStub))
+			.componentInstance as TaskElementStub;
 
 		const emitSpy = vi.spyOn(component.taskDeleted, 'emit');
 
-		component.onRemoveTask();
+		child.taskDeleted.emit();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});

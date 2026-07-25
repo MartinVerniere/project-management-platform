@@ -3,7 +3,7 @@
 	@for (task of taskList(); track task.id; let i = $index) {
 	<app-task-element [task]="task" [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()"
 		[isFirst]="i === 0" [isLast]="i === taskList().length - 1" (moveUp)="onMoveUp($event)"
-		(moveDown)="onMoveDown($event)" (taskDeleted)="onRemoveTask()">
+		(moveDown)="onMoveDown($event)" (taskDeleted)="taskDeleted.emit()">
 	</app-task-element>
 	} @empty {
 	<div class="task-list-empty">No tasks in this project</div>

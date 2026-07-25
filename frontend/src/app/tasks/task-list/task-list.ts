@@ -69,8 +69,4 @@ export class TaskList {
 			}
 		});
 	}
-
-	onRemoveTask() {
-		this.taskDeleted.emit();
-	}
 }
