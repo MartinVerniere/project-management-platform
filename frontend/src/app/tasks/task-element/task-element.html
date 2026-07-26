@@ -9,7 +9,7 @@
 		<button type="button" [disabled]="isLast()" (click)="moveDown.emit(task.id)">Move down</button>
 	</div>
 	<div class="column-buttons">
-		<button [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
+		<button type="button" [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
 			Edit
 		</button>
 		<button type="button" (click)="onTaskDeleted(task.id)">Delete</button>

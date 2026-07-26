@@ -3,8 +3,8 @@
 	<div class="project-name">{{project.name}}</div>
 	<div class="project-key">Key: {{project.key}}</div>
 	@if (project.description) { <div class="project-description">Description: {{project.description}}</div> }
-	<button [routerLink]="['/projects', project.id]">Details</button>
-	<button [routerLink]="['/projects', project.id, 'edit']">Edit</button>
+	<button type="button" [routerLink]="['/projects', project.id]">Details</button>
+	<button type="button" [routerLink]="['/projects', project.id, 'edit']">Edit</button>
 	<button type="button" (click)="onDeleteProject(project.id)">Delete</button>
 	<div class="error"> {{ error() }}</div>
 	}

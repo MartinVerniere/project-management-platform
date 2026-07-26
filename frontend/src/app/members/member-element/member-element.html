@@ -3,7 +3,7 @@
 	<div class="member-id">Id: {{member.user.id}}</div>
 	<div class="member-role">Role: {{member.role}}</div>
 	<div class="member-name">Name: {{member.user.username}}</div>
-	<button (click)="onRemoveMember(member.user.id)">Remove from project</button>
+	<button type="button" (click)="onRemoveMember(member.user.id)">Remove from project</button>
 	<div class="error"> {{ error() }}</div>
 	}
 </div>

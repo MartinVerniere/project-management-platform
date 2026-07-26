@@ -8,7 +8,7 @@
 	} @empty {
 	<div class="column-list-empty">No columns in this project</div>
 	}
-	<button [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', 'create']">
+	<button type="button" [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', 'create']">
 		Create new column
 	</button>
 </div>
