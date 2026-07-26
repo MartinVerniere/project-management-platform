@@ -1,5 +1,5 @@
-import { Component, input, inject, computed, output, signal } from "@angular/core";
-import { Project, ProjectService } from "../../services/projects/project-service";
+import { Component, input, inject, output, signal } from "@angular/core";
+import { Project, ProjectMember, ProjectService } from "../../services/projects/project-service";
 import { MemberForm } from "../member-form/member-form";
 import { MemberElement } from "../member-element/member-element";
 
@@ -12,8 +12,8 @@ import { MemberElement } from "../member-element/member-element";
 export class MemberList {
 	projectService = inject(ProjectService);
 
-	project = input.required<Project>();
-	members = computed(() => this.project().members);
+	projectId = input.required<number>();
+	memberList = input.required<ProjectMember[]>();
 
 	memberAdded = output<void>();
 	memberRemoved = output<void>();
@@ -29,7 +29,7 @@ export class MemberList {
 		this.memberAdded.emit();
 	}
 
-	async onMemberRemoved() {
+	onMemberRemoved() {
 		this.memberRemoved.emit();
 	}
 }
