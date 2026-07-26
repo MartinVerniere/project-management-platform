@@ -5,6 +5,28 @@ import { BoardService } from '../../services/boards/board-service';
 import { ActivatedRoute } from '@angular/router';
 import { Column } from '../../services/columns/column-service';
 import { of } from 'rxjs';
+import { Component, input, output } from '@angular/core';
+import { ColumnElement } from '../column-element/column-element';
+import { By } from '@angular/platform-browser';
+
+@Component({
+	selector: 'app-column-element',
+	standalone: true,
+	template: '',
+})
+class ColumnElementStub {
+	column = input.required<Column>();
+	projectId = input.required<number>();
+	boardId = input.required<number>();
+	isFirst = input.required<boolean>();
+	isLast = input.required<boolean>();
+
+	moveLeft = output<number>();
+	moveRight = output<number>();
+	columnDeleted = output<void>();
+	taskMoved = output<void>();
+	taskDeleted = output<void>();
+}
 
 describe('ColumnList', () => {
 	let fixture: ComponentFixture<ColumnList>;
@@ -25,10 +47,13 @@ describe('ColumnList', () => {
 		}
 	};
 
-	const columnList = [
-		{ id: 1, name: "Column A" },
-		{ id: 2, name: "Column B" }
+	const columnList: Column[] = [
+		{ id: 1, name: "Column A", tasks: [] },
+		{ id: 2, name: "Column B", tasks: [] }
 	];
+
+	const projectId = 1;
+	const boardId = 1;
 
 	async function createComponent(shouldAwait: boolean = true, columnList: Column[] = []) {
 		fixture = TestBed.createComponent(ColumnList);
@@ -36,6 +61,8 @@ describe('ColumnList', () => {
 		html = fixture.nativeElement;
 
 		fixture.componentRef.setInput('columnList', columnList);
+		fixture.componentRef.setInput('projectId', projectId);
+		fixture.componentRef.setInput('boardId', boardId);
 
 		fixture.detectChanges();
 
@@ -54,6 +81,13 @@ describe('ColumnList', () => {
 				{ provide: BoardService, useValue: boardServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock },
 			]
+		}).overrideComponent(ColumnList, {
+			remove: {
+				imports: [ColumnElement],
+			},
+			add: {
+				imports: [ColumnElementStub],
+			}
 		}).compileComponents();
 	});
 
@@ -63,11 +97,12 @@ describe('ColumnList', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('should render boards', async () => {
+	it('should render columns', async () => {
 		await createComponent(true, columnList);
 
-		expect(html.textContent).toContain('Column A');
-		expect(html.textContent).toContain('Column B');
+		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
+
+		expect(children).toHaveLength(2);
 	});
 
 	it('should render empty message when no column exists', async () => {
@@ -117,9 +152,41 @@ describe('ColumnList', () => {
 	it('should emit columnDeleted when column is deleted', async () => {
 		await createComponent(true, columnList);
 
+		const child = fixture.debugElement
+			.query(By.directive(ColumnElementStub))
+			.componentInstance as ColumnElementStub;
+
 		const emitSpy = vi.spyOn(component.columnDeleted, 'emit');
 
-		component.onRemoveColumn();
+		child.columnDeleted.emit();
+
+		expect(emitSpy).toHaveBeenCalled();
+	});
+
+	it('should emit taskMoved when task is moved up/down', async () => {
+		await createComponent(true, columnList);
+
+		const child = fixture.debugElement
+			.query(By.directive(ColumnElementStub))
+			.componentInstance as ColumnElementStub;
+
+		const emitSpy = vi.spyOn(component.taskMoved, 'emit');
+
+		child.taskMoved.emit();
+
+		expect(emitSpy).toHaveBeenCalled();
+	});
+
+	it('should emit taskDeleted when task is deleted', async () => {
+		await createComponent(true, columnList);
+
+		const child = fixture.debugElement
+			.query(By.directive(ColumnElementStub))
+			.componentInstance as ColumnElementStub;
+
+		const emitSpy = vi.spyOn(component.taskDeleted, 'emit');
+
+		child.taskDeleted.emit();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});

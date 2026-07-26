@@ -18,7 +18,7 @@ export class BoardElement {
 
 	error = signal<string | null>(null);
 
-	onBoardDeleted(boardId: number) {
+	onDeleteBoard(boardId: number) {
 		this.boardService.deleteBoard(boardId).subscribe({
 			next: () => {
 				this.boardDeleted.emit();

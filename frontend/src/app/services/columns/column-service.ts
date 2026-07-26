@@ -2,12 +2,24 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ColumnModel } from '../../columns/column-form/column-form';
+import { Task } from '../tasks/task-service';
+import { TaskModel } from '../../tasks/task-form/task-form';
 
 const API_URL = 'http://localhost:3000/api/columns';
 
 export interface Column {
 	id: number,
 	name: string,
+	tasks: Task[]
+}
+
+interface TaskOrder {
+	id: number,
+	order: number
+}
+
+export interface TaskOrderRequest {
+	taskOrder: TaskOrder[]
 }
 
 @Service()
@@ -24,5 +36,13 @@ export class ColumnService {
 
 	deleteColumn(columnId: number): Observable<void> {
 		return this.http.delete<void>(`${API_URL}/${columnId}`);
+	}
+
+	addTask(columnId: number, request: TaskModel): Observable<Column> {
+		return this.http.post<Column>(`${API_URL}/${columnId}/tasks`, request);
+	}
+
+	changeTaskOrder(boardId: number, request: TaskOrderRequest): Observable<Column> {
+		return this.http.put<Column>(`${API_URL}/${boardId}/tasks/order`, request);
 	}
 }

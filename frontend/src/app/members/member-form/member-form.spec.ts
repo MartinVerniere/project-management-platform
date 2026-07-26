@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MemberForm } from './member-form';
 import { of, throwError } from 'rxjs';
-import { Project, ProjectService } from '../../services/projects/project-service';
+import { Project, ProjectMember, ProjectService } from '../../services/projects/project-service';
 import { UserService } from '../../services/users/user-service';
 
 describe('MemberForm', () => {
@@ -12,23 +12,17 @@ describe('MemberForm', () => {
 	const projectServiceMock = { addMember: vi.fn() };
 	const userServiceMock = { getUsers: vi.fn() };
 
-	const project: Project = {
-		id: 1,
-		name: 'Project A',
-		key: 'PRA',
-		description: '',
-		members: [
-			{
-				id: 1,
-				role: 'ADMIN',
-				user: {
-					id: 10,
-					username: 'john',
-					email: 'john@email.com'
-				}
+	const memberList: ProjectMember[] = [
+		{
+			id: 1,
+			role: 'ADMIN',
+			user: {
+				id: 10,
+				username: 'john',
+				email: 'john@email.com'
 			}
-		]
-	};
+		}
+	]
 
 	const users = [
 		{
@@ -41,11 +35,14 @@ describe('MemberForm', () => {
 		}
 	];
 
+	const projectId = 1;
+
 	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(MemberForm);
 		component = fixture.componentInstance;
 
-		fixture.componentRef.setInput('project', project);
+		fixture.componentRef.setInput('projectId', projectId);
+		fixture.componentRef.setInput('memberList', memberList);
 
 		fixture.detectChanges();
 
@@ -113,7 +110,7 @@ describe('MemberForm', () => {
 
 		await component.onSubmit(new Event('submit'));
 
-		expect(component.error()).not.toBe('');
+		expect(component.error()).toBe('Error message');
 	});
 
 	it('should not add member when no user is selected', async () => {

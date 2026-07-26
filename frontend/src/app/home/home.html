@@ -1,10 +1,10 @@
 <p>home works!</p>
-<button (click)="onClick()">Check Health Status</button>
-<button routerLink="/projects">View projects</button>
+<button type="button" (click)="onClick()">Check Health Status</button>
+<button type="button" routerLink="/projects">View projects</button>
 @if (authService.isLoggedIn()) {
 <p>Welcome, {{ authService.user()?.username }}!</p>
-<button (click)="authService.logout()">Logout</button>
+<button type="button" (click)="authService.logout()">Logout</button>
 } @else {
-<button routerLink="/login">Go to Login</button>
-<button routerLink="/register">Go to Register</button>
+<button type="button" routerLink="/login">Go to Login</button>
+<button type="button" routerLink="/register">Go to Register</button>
 }

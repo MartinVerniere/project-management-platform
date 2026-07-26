@@ -82,6 +82,6 @@ describe('MemberElement', () => {
 		await fixture.whenStable();
 
 		expect(projectServiceMock.removeMember).toHaveBeenCalledWith(1, 1);
-		expect(emitSpy).toHaveBeenCalledWith(1);
+		expect(emitSpy).toHaveBeenCalled();
 	});
 });

@@ -3,10 +3,10 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { ProjectMember, ProjectService } from '../../services/projects/project-service';
 
 @Component({
-  selector: 'app-member-element',
-  imports: [],
-  templateUrl: './member-element.html',
-  styleUrl: './member-element.css',
+	selector: 'app-member-element',
+	imports: [],
+	templateUrl: './member-element.html',
+	styleUrl: './member-element.css',
 })
 export class MemberElement {
 	projectService = inject(ProjectService);
@@ -14,15 +14,15 @@ export class MemberElement {
 	projectId = input.required<number>();
 	member = input.required<ProjectMember>();
 
-	memberRemoved = output<number>();
+	memberRemoved = output<void>();
 
 	error = signal<string | null>(null);
 
-	async onRemoveMember(userId: number) {
+	onRemoveMember(userId: number) {
 		this.projectService.removeMember(this.projectId(), userId).subscribe({
 			next: () => {
-				this.memberRemoved.emit(userId);
 				this.error.set(null);
+				this.memberRemoved.emit();
 			},
 			error: (response: HttpErrorResponse) => {
 				const errorObject = response.error.error;
@@ -30,6 +30,5 @@ export class MemberElement {
 				this.error.set(errorObject.message);
 			}
 		});
-		this.memberRemoved.emit(userId);
 	}
 }

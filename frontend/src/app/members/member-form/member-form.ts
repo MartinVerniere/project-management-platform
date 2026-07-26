@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, input, output, resource, computed, signal } from "@angular/core";
 import { FormField, form, required, submit } from "@angular/forms/signals";
 import { firstValueFrom } from "rxjs";
-import { ProjectService, Project } from "../../services/projects/project-service";
+import { ProjectService, Project, ProjectMember } from "../../services/projects/project-service";
 import { UserService } from "../../services/users/user-service";
 
 export interface MemberModel {
@@ -20,7 +20,9 @@ export class MemberForm {
 	projectService = inject(ProjectService);
 	userService = inject(UserService);
 
-	project = input.required<Project>();
+	projectId = input.required<number>();
+	memberList = input.required<ProjectMember[]>();
+
 	memberAdded = output<void>();
 	canceledMemberAdd = output<void>();
 
@@ -29,7 +31,7 @@ export class MemberForm {
 	possibleUsers = computed(() => {
 		const users = this.users.value();
 		return users
-			? users.filter(user => !(this.project().members.map(member => member.user.id).includes(user.id)))
+			? users.filter(user => !(this.memberList().map(member => member.user.id).includes(user.id)))
 			: [];
 	});
 
@@ -49,7 +51,7 @@ export class MemberForm {
 			if (this.memberModel().userId === '') return;
 
 			const userId = Number(this.memberModel().userId);
-			this.projectService.addMember(this.project().id, userId).subscribe({
+			this.projectService.addMember(this.projectId(), userId).subscribe({
 				next: () => {
 					this.resetForm();
 					this.error.set(null);

@@ -1,14 +1,14 @@
 <div class="member-list">
 	<h2 class="member-list-title">Members</h2>
-	@for (member of members(); track member.id) {
-	<app-member-element [projectId]="project().id" [member]="member" (memberRemoved)="onMemberRemoved()"></app-member-element>
+	@for (member of memberList(); track member.id) {
+	<app-member-element [projectId]="projectId()" [member]="member" (memberRemoved)="onMemberRemoved()"></app-member-element>
 	} @empty {
 	<div class="member-list-empty">No members in this project (Possible error)</div>
 	}
 	@if (addMemberFormEnabled()) {
-	<app-member-form [project]="project()" (memberAdded)="onMemberAdded()"
+	<app-member-form [projectId]="projectId()" [memberList]="memberList()" (memberAdded)="onMemberAdded()"
 		(canceledMemberAdd)="onCancelAddMember()"></app-member-form>
 	} @else {
-	<button (click)="onEnableAddMember()">Add member</button>
+	<button type="button" (click)="onEnableAddMember()">Add member</button>
 	}
 </div>

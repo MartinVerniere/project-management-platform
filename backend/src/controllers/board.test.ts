@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 
 import { app } from '../app.js';
-import { clearDatabase } from '../helpers/database.js';
+import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Board API', () => {
 	beforeEach(async () => {
@@ -88,7 +88,7 @@ describe('Board API', () => {
 
 						it('returns 400 if invalid board id', async () => {
 							const response = await request(app)
-								.get(`/api/boards/abc`)
+								.get(`/api/boards/${INVALID_ID}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(400);
@@ -97,7 +97,7 @@ describe('Board API', () => {
 
 						it('returns 404 if board not found', async () => {
 							const response = await request(app)
-								.get(`/api/boards/9999`)
+								.get(`/api/boards/${NOT_FOUND_ID}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(404);
@@ -135,7 +135,7 @@ describe('Board API', () => {
 
 						it('returns 400 if invalid board id', async () => {
 							const response = await request(app)
-								.put(`/api/boards/abc`)
+								.put(`/api/boards/${INVALID_ID}`)
 								.set('Authorization', `Bearer ${authToken}`)
 								.send({ name: "Updated Board A" });
 
@@ -145,7 +145,7 @@ describe('Board API', () => {
 
 						it('returns 404 if board not found', async () => {
 							const response = await request(app)
-								.put(`/api/boards/9999`)
+								.put(`/api/boards/${NOT_FOUND_ID}`)
 								.set('Authorization', `Bearer ${authToken}`)
 								.send({ name: "Updated Board A" });
 
@@ -213,7 +213,7 @@ describe('Board API', () => {
 
 						it('returns 400 if invalid board id', async () => {
 							const response = await request(app)
-								.delete(`/api/boards/abc`)
+								.delete(`/api/boards/${INVALID_ID}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(400);
@@ -222,7 +222,7 @@ describe('Board API', () => {
 
 						it('returns 404 if board not found', async () => {
 							const response = await request(app)
-								.delete(`/api/boards/9999`)
+								.delete(`/api/boards/${NOT_FOUND_ID}`)
 								.set('Authorization', `Bearer ${authToken}`);
 
 							expect(response.status).toBe(404);
@@ -290,7 +290,7 @@ describe('Board API', () => {
 
 						it('returns 400 if invalid board id', async () => {
 							const response = await request(app)
-								.post(`/api/boards/abc/columns`)
+								.post(`/api/boards/${INVALID_ID}/columns`)
 								.set('Authorization', `Bearer ${authToken}`)
 								.send({ name: "Updated Column A" });
 
@@ -298,9 +298,9 @@ describe('Board API', () => {
 							expect(response.body.error.message).toBe("Invalid board id.");
 						});
 
-						it('returns 400 if board not found', async () => {
+						it('returns 404 if board not found', async () => {
 							const response = await request(app)
-								.post(`/api/boards/9999/columns`)
+								.post(`/api/boards/${NOT_FOUND_ID}/columns`)
 								.set('Authorization', `Bearer ${authToken}`)
 								.send({ name: "Updated Board A" });
 
@@ -308,7 +308,7 @@ describe('Board API', () => {
 							expect(response.body.error.message).toBe("Board not found.");
 						});
 
-						it('returns 400 if token is invalid', async () => {
+						it('returns 401 if token is invalid', async () => {
 							const response = await request(app)
 								.post(`/api/boards/${boardId}/columns`)
 								.set('Authorization', `Bearer INVALID_TOKEN`)
@@ -318,7 +318,7 @@ describe('Board API', () => {
 							expect(response.body.error.message).toBe("Authentication token is invalid.");
 						});
 
-						it('returns 400 if token is missing', async () => {
+						it('returns 401 if token is missing', async () => {
 							const response = await request(app)
 								.post(`/api/boards/${boardId}/columns`)
 
@@ -412,7 +412,7 @@ describe('Board API', () => {
 
 							it('returns 400 if one of the columns in the order has invalid id', async () => {
 								const order = [
-									{ id: 'abc', order: 2 },
+									{ id: INVALID_ID, order: 2 },
 									{ id: columnBId, order: 1 }
 								];
 
@@ -440,9 +440,9 @@ describe('Board API', () => {
 								expect(response.body.error.message).toBe("Invalid column order.");
 							});
 
-							it('returns 400 if one of the columns in the order does not belog to it', async () => {
+							it('returns 400 if one of the columns in the order does not belong to the board', async () => {
 								const order = [
-									{ id: 9999, order: 2 },
+									{ id: NOT_FOUND_ID, order: 2 },
 									{ id: columnBId, order: 1 }
 								];
 
@@ -462,7 +462,7 @@ describe('Board API', () => {
 								];
 
 								const response = await request(app)
-									.put(`/api/boards/abc/columns/order`)
+									.put(`/api/boards/${INVALID_ID}/columns/order`)
 									.set('Authorization', `Bearer ${authToken}`)
 									.send({ columnOrder: order });
 
@@ -477,7 +477,7 @@ describe('Board API', () => {
 								];
 
 								const response = await request(app)
-									.put(`/api/boards/9999/columns/order`)
+									.put(`/api/boards/${NOT_FOUND_ID}/columns/order`)
 									.set('Authorization', `Bearer ${authToken}`)
 									.send({ columnOrder: order });
 
@@ -485,7 +485,7 @@ describe('Board API', () => {
 								expect(response.body.error.message).toBe("Board not found.");
 							});
 
-							it('returns 400 if token is invalid', async () => {
+							it('returns 401 if token is invalid', async () => {
 								const order = [
 									{ id: columnAId, order: 2 },
 									{ id: columnBId, order: 1 }
@@ -500,7 +500,7 @@ describe('Board API', () => {
 								expect(response.body.error.message).toBe("Authentication token is invalid.");
 							});
 
-							it('returns 400 if token is missing', async () => {
+							it('returns 401 if token is missing', async () => {
 								const order = [
 									{ id: columnAId, order: 2 },
 									{ id: columnBId, order: 1 }

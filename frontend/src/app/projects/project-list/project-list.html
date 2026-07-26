@@ -1,24 +1,17 @@
 <div class="project-list">
 	<h2 class="project-list-title">Projects</h2>
-
 	@if (projectList.isLoading()) {
-		<div class="loading">Loading...</div>
-	  } @else if (projectList.error()) {
-		<div class="error">Error loading projects</div>
-	  } @else {
-		<div class="project-list-items">
-			@for (project of projectList.value(); track project.id) {
-				<div class="project-list">
-					<app-project-element [project]="project">
-					</app-project-element>
-					<button (click)="onDeleteProject($event, project.id)">Delete project</button>
-				</div>
-			} @empty {
-			<div class="project-list-empty">
-				No projects yet.
-			</div>
-			}
-		</div>
-		<button routerLink="/projects/create">Create new project</button>
-	  }
+	<div class="loading">Loading...</div>
+	} @else if (projectList.error()) {
+	<div class="error">Error loading projects</div>
+	} @else {
+	@for (project of projectList.value(); track project.id) {
+	<app-project-element [project]="project" (projectDeleted)="onDeleteProject()"></app-project-element>
+	} @empty {
+	<div class="project-list-empty">
+		No projects yet.
+	</div>
+	}
+	<button type="button" routerLink="/projects/create">Create new project</button>
+	}
 </div>

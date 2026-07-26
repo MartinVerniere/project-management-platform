@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BoardElement } from './board-element';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Board, BoardService } from '../../services/boards/board-service';
 import { of } from 'rxjs';
 

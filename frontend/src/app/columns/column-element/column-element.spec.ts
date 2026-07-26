@@ -2,8 +2,27 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ColumnElement } from './column-element';
 import { ActivatedRoute } from '@angular/router';
-import { ColumnService } from '../../services/columns/column-service';
+import { Column, ColumnService } from '../../services/columns/column-service';
 import { of } from 'rxjs';
+import { Component, output, input } from '@angular/core';
+import { Task } from '../../services/tasks/task-service';
+import { TaskList } from '../../tasks/task-list/task-list';
+import { By } from '@angular/platform-browser';
+
+@Component({
+	selector: 'app-task-list',
+	standalone: true,
+	template: '',
+})
+class TaskListStub {
+	taskList = input.required<Task[]>();
+	projectId = input.required<number>();
+	boardId = input.required<number>();
+	columnId = input.required<number>();
+
+	taskMoved = output<void>();
+	taskDeleted = output<void>();
+}
 
 describe('ColumnElement', () => {
 	let fixture: ComponentFixture<ColumnElement>;
@@ -25,9 +44,10 @@ describe('ColumnElement', () => {
 
 	let columnServiceMock = { deleteColumn: vi.fn() };
 
-	const column = {
+	const column: Column = {
 		id: 1,
-		name: 'Todo'
+		name: 'Todo',
+		tasks: []
 	};
 
 	const projectId = 1;
@@ -61,7 +81,15 @@ describe('ColumnElement', () => {
 				{ provide: ColumnService, useValue: columnServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock }
 			]
-		}).compileComponents();
+		}).overrideComponent(ColumnElement, {
+			remove: {
+				imports: [TaskList],
+			},
+			add: {
+				imports: [TaskListStub],
+			},
+		})
+			.compileComponents();
 	});
 
 	it('should create', async () => {
@@ -135,7 +163,7 @@ describe('ColumnElement', () => {
 	});
 
 
-	it('should remove column and emit columnRemoved when "Delete" button is clicked', async () => {
+	it('should remove column and emit columnDeleted when "Delete" button is clicked', async () => {
 		columnServiceMock.deleteColumn.mockReturnValue(of({}));
 
 		await createComponent();
@@ -154,5 +182,33 @@ describe('ColumnElement', () => {
 
 		expect(columnServiceMock.deleteColumn).toHaveBeenCalledWith(1);
 		expect(emitSpy).toHaveBeenCalled();
+	});
+
+	it('should emit taskMoved when TaskList emits taskMoved', async () => {
+		await createComponent();
+
+		const taskList = fixture.debugElement
+			.query(By.directive(TaskListStub))
+			.componentInstance as TaskListStub;
+
+		const emitSpy = vi.spyOn(component.taskMoved, 'emit');
+
+		taskList.taskMoved.emit();
+
+		expect(emitSpy).toHaveBeenCalledOnce();
+	});
+
+	it('should emit taskDeleted when TaskList emits taskDeleted', async () => {
+		await createComponent();
+
+		const taskList = fixture.debugElement
+			.query(By.directive(TaskListStub))
+			.componentInstance as TaskListStub;
+
+		const emitSpy = vi.spyOn(component.taskDeleted, 'emit');
+
+		taskList.taskDeleted.emit();
+
+		expect(emitSpy).toHaveBeenCalledOnce();
 	});
 });

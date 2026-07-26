@@ -11,7 +11,8 @@ import { Home } from "./home/home";
 import { ProjectDetails } from "./projects/project-details/project-details";
 import { ProjectForm } from "./projects/project-form/project-form";
 import { ProjectList } from "./projects/project-list/project-list";
-import { ColumnDetails } from "./columns/column-details/column-details";
+import { TaskUpdateForm } from "./tasks/task-update-form/task-update-form";
+import { TaskForm } from "./tasks/task-form/task-form";
 
 export const routes: Routes = [
 	{
@@ -45,7 +46,7 @@ export const routes: Routes = [
 	},
 	{
 		path: 'projects/:projectId/boards/:boardId',
-		component: BoardDetails	
+		component: BoardDetails
 	},
 	{
 		path: 'projects/:projectId/boards/:boardId/edit',
@@ -56,11 +57,15 @@ export const routes: Routes = [
 		component: ColumnForm
 	},
 	{
-		path: 'projects/:projectId/boards/:boardId/columns/:columnId',
-		component: ColumnDetails
-	},
-	{
 		path: 'projects/:projectId/boards/:boardId/columns/:columnId/edit',
 		component: ColumnUpdateForm
+	},
+	{
+		path: 'projects/:projectId/boards/:boardId/columns/:columnId/tasks/create',
+		component: TaskForm
+	},
+	{
+		path: 'projects/:projectId/boards/:boardId/columns/:columnId/tasks/:taskId/edit',
+		component: TaskUpdateForm
 	}
 ];

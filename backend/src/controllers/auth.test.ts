@@ -5,7 +5,7 @@ import request from 'supertest';
 import { prisma } from '../prisma.js';
 import { SECRET } from '../utils/config.js';
 import { app } from '../app.js';
-import { clearDatabase } from '../helpers/database.js';
+import { clearDatabase, NOT_FOUND_ID } from '../helpers/database.js';
 
 describe('Auth API', () => {
 	beforeEach(async () => {
@@ -199,7 +199,7 @@ describe('Auth API', () => {
 
 			it('fails when token decoding fails', async () => {
 				const token = jwt.sign(
-					{ id: 99999, username: 'john' },
+					{ id: NOT_FOUND_ID, username: 'john' },
 					'wrongSecret',
 					{ expiresIn: '1h' }
 				);

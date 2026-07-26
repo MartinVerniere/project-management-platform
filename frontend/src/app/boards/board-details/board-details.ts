@@ -26,4 +26,12 @@ export class BoardDetails {
 	async onMovedColumn() {
 		this.board.reload();
 	}
+
+	async onDeleteTask() {
+		this.board.reload();
+	}
+
+	async onMovedTask() {
+		this.board.reload();
+	}
 }

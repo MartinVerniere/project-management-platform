@@ -77,9 +77,27 @@ model BoardColumn {
 	boardId  Int
 	board    Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
 
+	tasks    Task[]
+
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
 
 	@@unique([boardId, name])
 	@@unique([boardId, order])
+}
+
+model Task {
+	id		 	Int 	   @id @default(autoincrement())
+	title     	String
+	description String?
+	order    	Int
+
+	columnId 	Int
+	column  	BoardColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
+
+	createdAt 	DateTime @default(now())
+	updatedAt 	DateTime @updatedAt
+
+	@@unique([columnId, title])
+	@@unique([columnId, order])
 }

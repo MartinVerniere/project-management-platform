@@ -4,6 +4,21 @@ import { BoardList } from './board-list';
 import { NEVER, of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
+import { Board } from '../../services/boards/board-service';
+import { Component, input, output } from '@angular/core';
+import { BoardElement } from '../board-element/board-element';
+import { By } from '@angular/platform-browser';
+
+@Component({
+	selector: 'app-board-element',
+	standalone: true,
+	template: '',
+})
+class BoardElementStub {
+	board = input.required<Board>();
+	projectId = input.required<number>();
+	boardDeleted = output<void>();
+}
 
 describe('BoardList', () => {
 	let fixture: ComponentFixture<BoardList>;
@@ -25,14 +40,16 @@ describe('BoardList', () => {
 
 	const projectId = 1;
 
-	const boards = [
+	const boards: Board[] = [
 		{
 			id: 1,
-			name: 'Board One'
+			name: 'Board A',
+			columns: []
 		},
 		{
 			id: 2,
-			name: 'Board Two'
+			name: 'Board B',
+			columns: []
 		}
 	];
 
@@ -60,6 +77,13 @@ describe('BoardList', () => {
 				{ provide: ProjectService, useValue: projectServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock },
 			]
+		}).overrideComponent(BoardList, {
+			remove: {
+				imports: [BoardElement],
+			},
+			add: {
+				imports: [BoardElementStub],
+			}
 		}).compileComponents();
 	});
 
@@ -82,8 +106,9 @@ describe('BoardList', () => {
 
 		await createComponent();
 
-		expect(html.textContent).toContain('Board One');
-		expect(html.textContent).toContain('Board Two');
+		const children = fixture.debugElement.queryAll(By.directive(BoardElementStub));
+
+		expect(children).toHaveLength(2);
 	});
 
 	it('should show empty state', async () => {
@@ -102,14 +127,18 @@ describe('BoardList', () => {
 		expect(html.textContent).toContain('Error loading boards');
 	});
 
-	it('should reload list on board deleted', async () => {
+	it('should reload board list when board is deleted', async () => {
 		projectServiceMock.getBoards.mockReturnValue(of(boards));
 
 		await createComponent();
 
+		const child = fixture.debugElement
+			.query(By.directive(BoardElementStub))
+			.componentInstance as BoardElementStub;
+
 		const reloadSpy = vi.spyOn(component.boardList, 'reload');
 
-		component.onDeleteBoard();
+		child.boardDeleted.emit();
 
 		expect(reloadSpy).toHaveBeenCalled();
 	});

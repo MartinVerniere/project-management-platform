@@ -1,18 +1,25 @@
 import { TestBed } from '@angular/core/testing';
-import { ColumnService } from './column-service';
+import { Column, ColumnService, TaskOrderRequest } from './column-service';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TaskModel } from '../../tasks/task-form/task-form';
+import { Task } from '../tasks/task-service';
 
-const columnA = {
+const columnA: Column = {
 	id: 1,
 	name: "ToDo",
-	order: 1,
+	tasks: []
 }
 
-const columnB = {
+const columnB: Column = {
 	id: 2,
 	name: "Finished",
-	order: 2,
+	tasks: []
+}
+
+const taskA: Task = {
+	id: 1,
+	title: 'Title A'
 }
 
 describe('ColumnService', () => {
@@ -51,7 +58,7 @@ describe('ColumnService', () => {
 	});
 
 	it('should update column', () => {
-		const updatedColumn  = { name: "Updated B" };
+		const updatedColumn = { name: "Updated B" };
 
 		service.updateColumn(columnB.id, updatedColumn).subscribe();
 
@@ -68,6 +75,36 @@ describe('ColumnService', () => {
 		const request = httpMock.expectOne(`http://localhost:3000/api/columns/${columnA.id}`);
 
 		expect(request.request.method).toBe('DELETE');
+
+		request.flush({});
+	});
+
+	it('should add task', () => {
+		const newTask: TaskModel = { title: 'Task A', description: 'Desc' };
+		const expectedResponse = taskA;
+
+		service.addTask(columnA.id, newTask).subscribe();
+
+		const request = httpMock.expectOne(`http://localhost:3000/api/columns/${columnA.id}/tasks`);
+
+		expect(request.request.method).toBe('POST');
+
+		request.flush({ expectedResponse });
+	});
+
+	it('should edit task order', () => {
+		const taskOrder: TaskOrderRequest = {
+			taskOrder: [
+				{ id: 1, order: 2 },
+				{ id: 2, order: 1 }
+			]
+		};
+
+		service.changeTaskOrder(columnA.id, taskOrder).subscribe();
+
+		const request = httpMock.expectOne(`http://localhost:3000/api/columns/${columnA.id}/tasks/order`);
+
+		expect(request.request.method).toBe('PUT');
 
 		request.flush({});
 	});

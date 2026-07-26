@@ -1,40 +1,69 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MemberList } from './member-list';
-import { of } from 'rxjs';
-import { Project, ProjectService } from '../../services/projects/project-service';
+import { ProjectMember } from '../../services/projects/project-service';
+import { Component, input, output } from '@angular/core';
+import { MemberElement } from '../member-element/member-element';
+import { By } from '@angular/platform-browser';
+import { MemberForm } from '../member-form/member-form';
+
+@Component({
+	selector: 'app-member-element',
+	standalone: true,
+	template: '',
+})
+class MemberElementStub {
+	projectId = input.required<number>();
+	member = input.required<ProjectMember>();
+
+	memberRemoved = output<void>();
+}
+
+@Component({
+	selector: 'app-member-form',
+	standalone: true,
+	template: '',
+})
+class MemberFormStub {
+	projectId = input.required<number>();
+	memberList = input.required<ProjectMember[]>();
+
+	memberAdded = output<void>();
+	canceledMemberAdd = output<void>();
+}
 
 describe('MemberList', () => {
 	let fixture: ComponentFixture<MemberList>;
 	let component: MemberList;
 
-	const projectServiceMock = {
-		getProject: vi.fn(),
-		removeMember: vi.fn()
-	};
-
-	const project: Project = {
-		id: 1,
-		name: 'Project A',
-		key: 'PRA',
-		description: '',
-		members: [
-			{
-				id: 1,
-				role: 'ADMIN',
-				user: {
-					id: 10,
-					username: 'john',
-					email: 'john@email.com'
-				}
+	const memberList: ProjectMember[] = [
+		{
+			id: 1,
+			role: 'ADMIN',
+			user: {
+				id: 10,
+				username: 'john',
+				email: 'john@email.com'
 			}
-		]
-	};
+		},
+		{
+			id: 2,
+			role: 'MEMBER',
+			user: {
+				id: 12,
+				username: 'alice',
+				email: 'alice@email.com'
+			}
+		}
+	];
+
+	const projectId = 1;
 
 	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(MemberList);
 		component = fixture.componentInstance;
 
-		fixture.componentRef.setInput('project', project);
+		fixture.componentRef.setInput('projectId', projectId);
+		fixture.componentRef.setInput('memberList', memberList);
 
 		fixture.detectChanges();
 
@@ -49,9 +78,14 @@ describe('MemberList', () => {
 
 		await TestBed.configureTestingModule({
 			imports: [MemberList],
-			providers: [
-				{ provide: ProjectService, useValue: projectServiceMock },
-			]
+			providers: []
+		}).overrideComponent(MemberList, {
+			remove: {
+				imports: [MemberElement, MemberForm],
+			},
+			add: {
+				imports: [MemberElementStub, MemberFormStub],
+			}
 		}).compileComponents();
 	});
 
@@ -61,7 +95,15 @@ describe('MemberList', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('should enable add member form', async () => {
+	it('should render members', async () => {
+		await createComponent();
+
+		const children = fixture.debugElement.queryAll(By.directive(MemberElementStub));
+
+		expect(children).toHaveLength(2);
+	});
+
+	it('should enable add member form on ', async () => {
 		await createComponent();
 
 		component.onEnableAddMember();
@@ -78,27 +120,35 @@ describe('MemberList', () => {
 		expect(component.addMemberFormEnabled()).toBe(false);
 	});
 
-	it('should emit memberAdded when member is added', async () => {
+	it('should emit memberAdded when member is added, and close form', async () => {
 		await createComponent();
 
 		component.onEnableAddMember();
 
+		fixture.detectChanges();
+
+		const child = fixture.debugElement
+			.query(By.directive(MemberFormStub))
+			.componentInstance as MemberFormStub;
+
 		const emitSpy = vi.spyOn(component.memberAdded, 'emit');
 
-		component.onMemberAdded();
+		child.memberAdded.emit();
 
 		expect(component.addMemberFormEnabled()).toBe(false);
 		expect(emitSpy).toHaveBeenCalled();
 	});
 
 	it('should emit removeMember when member is removed', async () => {
-		projectServiceMock.removeMember.mockReturnValue(of({}));
-		
 		await createComponent();
+
+		const child = fixture.debugElement
+			.query(By.directive(MemberElementStub))
+			.componentInstance as MemberElementStub;
 
 		const emitSpy = vi.spyOn(component.memberRemoved, 'emit');
 
-		component.onMemberRemoved();
+		child.memberRemoved.emit();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});

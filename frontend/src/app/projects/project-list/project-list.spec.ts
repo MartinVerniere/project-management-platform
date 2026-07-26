@@ -2,18 +2,29 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NEVER, of, throwError } from 'rxjs';
 
 import { ProjectList } from './project-list';
-import { ProjectService } from '../../services/projects/project-service';
+import { Project, ProjectService } from '../../services/projects/project-service';
 import { ActivatedRoute } from '@angular/router';
+import { Component, input, output } from '@angular/core';
+import { ProjectElement } from '../project-element/project-element';
+import { By } from '@angular/platform-browser';
+
+@Component({
+	selector: 'app-project-element',
+	standalone: true,
+	template: '',
+})
+class ProjectElementStub {
+	project = input.required<Project>();
+
+	projectDeleted = output<void>();
+}
 
 describe('ProjectList', () => {
 	let fixture: ComponentFixture<ProjectList>;
 	let component: ProjectList;
 	let html: HTMLElement;
 
-	const projectServiceMock = {
-		getProjects: vi.fn(),
-		deleteProject: vi.fn()
-	};
+	const projectServiceMock = { getProjects: vi.fn() };
 
 	const activatedRouteMock = {
 		snapshot: {
@@ -25,9 +36,21 @@ describe('ProjectList', () => {
 		}
 	}
 
-	const projects = [
-		{ id: 1, name: 'Project One' },
-		{ id: 2, name: 'Project Two' }
+	const projects: Project[] = [
+		{
+			id: 1,
+			name: 'Project A',
+			key: 'PROA',
+			description: null,
+			members: []
+		},
+		{
+			id: 2,
+			name: 'Project B',
+			key: 'PROB',
+			description: null,
+			members: []
+		}
 	];
 
 	async function createComponent(shouldAwait: boolean = true) {
@@ -52,6 +75,13 @@ describe('ProjectList', () => {
 				{ provide: ProjectService, useValue: projectServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock } // Need to inject this apparently because of RouterLink
 			]
+		}).overrideComponent(ProjectList, {
+			remove: {
+				imports: [ProjectElement],
+			},
+			add: {
+				imports: [ProjectElementStub],
+			}
 		}).compileComponents();
 	});
 
@@ -76,8 +106,9 @@ describe('ProjectList', () => {
 
 		await createComponent();
 
-		expect(html.textContent).toContain('Project One');
-		expect(html.textContent).toContain('Project Two');
+		const children = fixture.debugElement.queryAll(By.directive(ProjectElementStub));
+
+		expect(children).toHaveLength(2);
 	});
 
 	it('should show empty state', async () => {
@@ -96,25 +127,19 @@ describe('ProjectList', () => {
 		expect(html.textContent).toContain('Error loading projects');
 	});
 
-	it('should delete project and reload list', async () => {
+	it('should reload project list when project is deleted', async () => {
 		projectServiceMock.getProjects.mockReturnValue(of(projects));
-		projectServiceMock.deleteProject.mockReturnValue(of({}));
 
 		await createComponent();
 
+		const child = fixture.debugElement
+			.query(By.directive(ProjectElementStub))
+			.componentInstance as ProjectElementStub;
+
 		const reloadSpy = vi.spyOn(component.projectList, 'reload');
 
-		const deleteButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Delete project'));
+		child.projectDeleted.emit();
 
-		expect(deleteButton).toBeTruthy();
-
-		deleteButton!.click();
-
-		await fixture.whenStable();
-
-		expect(projectServiceMock.deleteProject).toHaveBeenCalledWith(1);
 		expect(reloadSpy).toHaveBeenCalled();
 	});
 });

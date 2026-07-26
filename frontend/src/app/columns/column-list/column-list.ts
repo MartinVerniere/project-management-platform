@@ -16,12 +16,13 @@ export class ColumnList {
 	boardService = inject(BoardService);
 
 	columnList = input.required<Column[]>();
-
-	projectId = Number(this.route.snapshot.paramMap.get('projectId'));
-	boardId = Number(this.route.snapshot.paramMap.get('boardId'));
+	projectId = input.required<number>();
+	boardId = input.required<number>();
 
 	columnMoved = output<void>();
 	columnDeleted = output<void>();
+	taskMoved = output<void>();
+	taskDeleted = output<void>();
 
 	error = signal<string | null>(null);
 
@@ -35,7 +36,7 @@ export class ColumnList {
 
 		const reorderedColumns = columns.map((column, index) => ({ id: column.id, order: index }));
 
-		this.boardService.changeColumnOrder(this.boardId, { columnOrder: reorderedColumns }).subscribe({
+		this.boardService.changeColumnOrder(this.boardId(), { columnOrder: reorderedColumns }).subscribe({
 			next: () => {
 				this.columnMoved.emit();
 				this.error.set(null);
@@ -58,7 +59,7 @@ export class ColumnList {
 
 		const reorderedColumns = columns.map((column, index) => ({ id: column.id, order: index }));
 
-		this.boardService.changeColumnOrder(this.boardId, { columnOrder: reorderedColumns }).subscribe({
+		this.boardService.changeColumnOrder(this.boardId(), { columnOrder: reorderedColumns }).subscribe({
 			next: () => {
 				this.columnMoved.emit();
 				this.error.set(null);
@@ -69,9 +70,5 @@ export class ColumnList {
 				this.error.set(errorObject.message);
 			}
 		});
-	}
-
-	onRemoveColumn() {
-		this.columnDeleted.emit();
 	}
 }
