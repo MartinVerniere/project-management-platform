@@ -1,17 +1,15 @@
-import { Component, input, inject, output, signal } from "@angular/core";
-import { Project, ProjectMember, ProjectService } from "../../services/projects/project-service";
+import { Component, input, output, signal } from "@angular/core";
+import { ProjectMember } from "../../services/projects/project-service";
 import { MemberForm } from "../member-form/member-form";
 import { MemberElement } from "../member-element/member-element";
 
 @Component({
 	selector: 'app-member-list',
-	imports: [MemberElement,MemberForm],
+	imports: [MemberElement, MemberForm],
 	templateUrl: './member-list.html',
 	styleUrl: './member-list.css',
 })
 export class MemberList {
-	projectService = inject(ProjectService);
-
 	projectId = input.required<number>();
 	memberList = input.required<ProjectMember[]>();
 
