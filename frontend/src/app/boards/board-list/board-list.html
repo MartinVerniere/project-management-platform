@@ -1,23 +1,17 @@
 <div class="board-list">
 	<h2 class="board-list-title">Boards</h2>
-
 	@if (boardList.isLoading()) {
 	<div class="loading">Loading...</div>
 	} @else if (boardList.error()) {
 	<div class="error">Error loading boards</div>
 	} @else {
-	<div class="board-list-items">
-		@for (board of boardList.value(); track board.id) {
-		<div class="board-list">
-			<app-board-element [projectId]="projectId()" [board]="board" (boardDeleted)="onDeleteBoard()">
-			</app-board-element>
-		</div>
-		} @empty {
-		<div class="board-list-empty">
-			No boards yet.
-		</div>
-		}
+	@for (board of boardList.value(); track board.id) {
+	<app-board-element [projectId]="projectId()" [board]="board" (boardDeleted)="onDeleteBoard()"> </app-board-element>
+	} @empty {
+	<div class="board-list-empty">
+		No boards yet.
 	</div>
+	}
 	}
 	<button [routerLink]="['/projects', projectId(), 'boards', 'create']">
 		Create new board

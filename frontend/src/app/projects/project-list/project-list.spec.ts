@@ -127,7 +127,7 @@ describe('ProjectList', () => {
 		expect(html.textContent).toContain('Error loading projects');
 	});
 
-	it('should reload project when project is deleted', async () => {
+	it('should reload project list when project is deleted', async () => {
 		projectServiceMock.getProjects.mockReturnValue(of(projects));
 
 		await createComponent();
