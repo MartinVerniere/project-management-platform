@@ -4,6 +4,7 @@ export const NOT_FOUND_ID = 2147483647;
 export const INVALID_ID = 'abc';
 
 export const clearDatabase = async () => {
+	await prisma.comment.deleteMany();
 	await prisma.task.deleteMany();
 	await prisma.boardColumn.deleteMany();
 	await prisma.board.deleteMany();
