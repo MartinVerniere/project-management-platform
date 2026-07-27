@@ -3,6 +3,7 @@ import request from 'supertest';
 
 import { app } from '../app.js';
 import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
+import { addMember, createBoard, createColumn, createComment, createProject, createTask, loginUser, registerUser } from '../helpers/test.js';
 
 describe('Comment API', () => {
 	beforeEach(async () => {
@@ -10,129 +11,47 @@ describe('Comment API', () => {
 	});
 
 	describe('when a comment exists in database', () => {
-		let johnUserId: number;
-		let aliceUserId: number;
-		let martinUserId: number;
 		let authToken: string;
-		let projectId: number;
-		let boardId: number;
-		let columnId: number;
-		let taskId: number;
 		let commentId: number;
 
 		beforeEach(async () => {
 			//Create users
-			let response = await request(app)
-				.post('/api/auth/register')
-				.send({
-					username: 'john',
-					email: 'john@test.com',
-					password: 'password123',
-				});
-
-			johnUserId = response.body.id;
-
-			response = await request(app)
-				.post('/api/auth/register')
-				.send({
-					username: 'alice',
-					email: 'alice@test.com',
-					password: 'password123',
-				});
-
-			aliceUserId = response.body.id;
-
-			response = await request(app)
-				.post('/api/auth/register')
-				.send({
-					username: 'martin',
-					email: 'martin@test.com',
-					password: 'password123',
-				});
-
-			martinUserId = response.body.id;
+			const john = await registerUser('john', 'john@test.com', 'password123');
+			const alice = await registerUser('alice', 'alice@test.com', 'password123');
+			const martin = await registerUser('martin', 'martin@test.com', 'password123');
 
 			//Login
-			response = await request(app)
-				.post('/api/auth/login')
-				.send({
-					username: 'john',
-					password: 'password123',
-				});
-
-			authToken = response.body.token;
+			const login = await loginUser('john', 'password123');
+			authToken = login.token;
 
 			//Create project
-			response = await request(app)
-				.post('/api/projects')
-				.set('Authorization', `Bearer ${authToken}`)
-				.send({
-					name: 'Test 1',
-					key: 'TEST1',
-					description: 'test desc'
-				});
-
-			projectId = response.body.id;
+			const project = await createProject(authToken, 'Test 1', 'TEST1', 'test desc');
 
 			//Add member to project
-			await request(app)
-				.post(`/api/projects/${projectId}/members`)
-				.set('Authorization', `Bearer ${authToken}`)
-				.send({ userId: aliceUserId });
+			const member = await addMember(authToken, project.id, alice.id);
 
 			//Create board
-			response = await request(app)
-				.post(`/api/projects/${projectId}/boards`)
-				.set('Authorization', `Bearer ${authToken}`)
-				.send({ name: 'Board A' });
-
-			boardId = response.body.id;
+			const board = await createBoard(authToken, project.id, 'Board A');
 
 			//Create column
-			response = await request(app)
-				.post(`/api/boards/${boardId}/columns`)
-				.set('Authorization', `Bearer ${authToken}`)
-				.send({ name: 'Column A' });
-
-			columnId = response.body.id;
+			const column = await createColumn(authToken, board.id, 'Column A');
 
 			//Create task
-			response = await request(app)
-				.post(`/api/columns/${columnId}/tasks`)
-				.set('Authorization', `Bearer ${authToken}`)
-				.send({ title: 'Task A', description: 'This is task A' });
-
-			taskId = response.body.id;
+			const task = await createTask(authToken, column.id, 'Task A', 'This is task A');
 
 			//Non-ADMIN member logs in
-			response = await request(app)
-				.post('/api/auth/login')
-				.send({
-					username: 'alice',
-					password: 'password123',
-				});
-
-			authToken = response.body.token;
+			const nonAdminLogin = await loginUser('alice', 'password123');
+			authToken = nonAdminLogin.token;
 
 			//Create comment with non-ADMIN member
-			response = await request(app)
-				.post(`/api/tasks/${taskId}/comments`)
-				.set('Authorization', `Bearer ${authToken}`)
-				.send({ content: 'This is a good comment!' });
-
-			commentId = response.body.id;
+			const comment = await createComment(authToken, task.id, 'This is a good comment!');
+			commentId = comment.id;
 		});
 
 		describe('and comment AUTHOR is logged in', () => {
 			beforeEach(async () => {
-				const response = await request(app)
-					.post('/api/auth/login')
-					.send({
-						username: 'alice',
-						password: 'password123',
-					});
-
-				authToken = response.body.token;
+				const authorLogin = await loginUser('alice', 'password123');
+				authToken = authorLogin.token;
 			});
 
 			describe('on update comment', () => {
@@ -264,14 +183,8 @@ describe('Comment API', () => {
 
 		describe('and project ADMIN is logged in', () => {
 			beforeEach(async () => {
-				const response = await request(app)
-					.post('/api/auth/login')
-					.send({
-						username: 'john',
-						password: 'password123',
-					});
-
-				authToken = response.body.token;
+				const adminLogin = await loginUser('john', 'password123');
+				authToken = adminLogin.token;
 			});
 
 			describe('on update comment', () => {
@@ -403,14 +316,8 @@ describe('Comment API', () => {
 
 		describe('and non-AUTHOR and non-ADMIN is logged in', () => {
 			beforeEach(async () => {
-				const response = await request(app)
-					.post('/api/auth/login')
-					.send({
-						username: 'martin',
-						password: 'password123',
-					});
-
-				authToken = response.body.token;
+				const nonAUTHORorADMINLogin = await loginUser('martin', 'password123');
+				authToken = nonAUTHORorADMINLogin.token;
 			});
 
 			describe('on get comment', () => {
