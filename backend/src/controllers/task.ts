@@ -40,6 +40,32 @@ taskRouter.put('/:id',
 	}
 );
 
+taskRouter.post('/:id/comments',
+	tokenExtractor,
+	userExtractor,
+	taskExtractor,
+	requireTaskMember,
+	async (request: Request, response: Response) => {
+		const user = request.user!;
+		const task = request.task!;
+		const { content } = request.body;
+
+		if (!content) throw new ApiError(400, "COMMENT_REQUIRED", "Comment is required.");
+		if (typeof content !== "string") throw new ApiError(400, "COMMENT_INVALID", "Comment must be a string.");
+		if (content.trim() === "") throw new ApiError(400, "COMMENT_REQUIRED", "Comment is required.");
+
+		const newComment = await prisma.comment.create({
+			data: {
+				content: content.trim(),
+				taskId: task.id,
+				userId: user.id
+			}
+		});
+
+		return response.status(201).json(newComment);
+	}
+);
+
 taskRouter.delete('/:id',
 	tokenExtractor,
 	userExtractor,

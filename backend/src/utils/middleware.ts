@@ -301,3 +301,50 @@ export const requireTaskMember = async (
 
 	next();
 }
+
+export const commentExtractor = async (
+	request: Request,
+	_response: Response,
+	next: NextFunction
+): Promise<void> => {
+	const requestCommentId = Number(request.params.id);
+	if (!Number.isInteger(requestCommentId)) throw new ApiError(400, "INVALID_COMMENT_ID", "Invalid comment id.");
+
+	const comment = await prisma.comment.findUnique({ where: { id: requestCommentId } });
+	if (!comment) throw new ApiError(404, "COMMENT_NOT_FOUND", "Comment not found.");
+
+	request.comment = comment;
+
+	next();
+};
+
+export const requireCommentEditor = async (
+	request: Request,
+	_response: Response,
+	next: NextFunction
+): Promise<void> => {
+	const userId = request.user.id;
+	const comment = request.comment!;
+
+	const isCommentAuthor = comment.userId === userId;
+
+	const task = await prisma.task.findUnique({ where: { id: comment.taskId } });
+	if (!task) throw new ApiError(404, "TASK_NOT_FOUND", "Task not found.");
+	const column = await prisma.boardColumn.findUnique({ where: { id: task.columnId } });
+	if (!column) throw new ApiError(404, "COLUMN_NOT_FOUND", "Column not found.");
+	const board = await prisma.board.findUnique({ where: { id: column.boardId } });
+	if (!board) throw new ApiError(404, "BOARD_NOT_FOUND", "Board not found.");
+
+	const membership = await prisma.projectMember.findFirst({
+		where: {
+			projectId: board.projectId,
+			userId: userId,
+		},
+	});
+
+	const isCommentAdmin = membership && membership.role === ProjectRole.ADMIN;
+
+	if (!isCommentAuthor && !isCommentAdmin) throw new ApiError(403, "COMMENT_ACCESS_DENIED", "You do not have permission to edit this comment.");
+
+	next();
+}

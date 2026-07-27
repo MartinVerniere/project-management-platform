@@ -1,5 +1,5 @@
 import type { JwtPayload } from 'jsonwebtoken';
-import type { Board, BoardColumn, Project, ProjectMember, Task, User } from '../generated/prisma/client.ts';
+import type { Board, BoardColumn, Comment, Project, ProjectMember, Task, User } from '../generated/prisma/client.ts';
 
 declare global {
 	namespace Express {
@@ -13,6 +13,7 @@ declare global {
 			board?: Board;
 			boardColumn?: BoardColumn;
 			task?: Task;
+			comment?: Comment;
 		}
 	}
 }
