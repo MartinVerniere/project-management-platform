@@ -5,10 +5,16 @@ import { TaskModel } from '../../tasks/task-form/task-form';
 
 const API_URL = 'http://localhost:3000/api/tasks';
 
+export interface Comment {
+	id: number,
+	content: string,
+}
+
 export interface Task {
 	id: number,
 	title: string,
 	description?: string,
+	comments: Comment[]
 }
 
 @Service()

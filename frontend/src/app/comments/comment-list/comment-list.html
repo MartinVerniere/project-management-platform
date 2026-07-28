@@ -1,0 +1,12 @@
+<div class="comment-list">
+	<h3 class="comment-title">Comments</h3>
+	@for (comment of commentList(); track comment.id; let i = $index) {
+	<div>comment-element here!</div>
+	} @empty {
+	<div class="comment-list-empty">No comments in this project</div>
+	}
+	<button
+		[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'task', taskId(), 'comments', 'create']">
+		Create new comment
+	</button>
+</div>
