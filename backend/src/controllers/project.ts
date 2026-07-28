@@ -142,7 +142,8 @@ projectRouter.delete('/:id', tokenExtractor, userExtractor, projectExtractor, re
 });
 
 projectRouter.get("/:id/boards", tokenExtractor, userExtractor, projectExtractor, requireProjectMember, async (request: Request, response: Response) => {
-	const boards = await prisma.board.findMany({ where: { projectId: request.project!.id, } });
+	const project = request.project!;
+	const boards = await prisma.board.findMany({ where: { projectId: project.id, } });
 
 	return response.status(200).json(boards);
 });
