@@ -162,13 +162,31 @@ export const boardExtractor = async (
 		include: {
 			columns: {
 				orderBy: { order: "asc" },
-				include: {
+				select: {
+					id: true,
+					name: true,
+					order: true,
+					boardId: true,
 					tasks: {
-						orderBy: { order: "asc" }
+						orderBy: { order: "asc" },
+						select: {
+							id: true,
+							title: true,
+							description: true,
+							order: true,
+							columnId: true,
+							comments: {
+								orderBy: { createdAt: "asc" },
+								select: {
+									id: true,
+									content: true
+								}
+							}
+						},
 					}
-				}
+				},
 			}
-		}
+		},
 	});
 	if (!board) throw new ApiError(404, "BOARD_NOT_FOUND", "Board not found.");
 
