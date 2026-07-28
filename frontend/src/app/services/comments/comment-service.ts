@@ -5,9 +5,15 @@ import { CommentModel } from '../../comments/comment-form/comment-form';
 
 const API_URL = 'http://localhost:3000/api/comments';
 
+export interface CommentAuthor {
+	id: number,
+	username: string
+}
+
 export interface Comment {
 	id: number,
 	content: string,
+	user: CommentAuthor,
 }
 
 @Service()

@@ -179,7 +179,13 @@ export const boardExtractor = async (
 								orderBy: { createdAt: "asc" },
 								select: {
 									id: true,
-									content: true
+									content: true,
+									user: {
+										select: {
+											id: true,
+											username: true
+										}
+									}
 								}
 							}
 						},
