@@ -1,10 +1,11 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { Comment, TaskService } from '../../services/tasks/task-service';
 import { RouterLink } from '@angular/router';
+import { CommentElement } from '../comment-element/comment-element';
 
 @Component({
 	selector: 'app-comment-list',
-	imports: [RouterLink],
+	imports: [RouterLink, CommentElement],
 	templateUrl: './comment-list.html',
 	styleUrl: './comment-list.css',
 })
