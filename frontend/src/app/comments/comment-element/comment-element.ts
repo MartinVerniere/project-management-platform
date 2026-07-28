@@ -1,11 +1,11 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
 import { Comment, CommentService } from '../../services/comments/comment-service';
+import { CommentUpdateForm } from '../comment-update-form/comment-update-form';
 
 @Component({
 	selector: 'app-comment-element',
-	imports: [RouterLink],
+	imports: [CommentUpdateForm],
 	templateUrl: './comment-element.html',
 	styleUrl: './comment-element.css',
 })
@@ -19,8 +19,10 @@ export class CommentElement {
 	columnId = input.required<number>();
 	taskId = input.required<number>();
 
+	commentEdited = output<void>();
 	commentDeleted = output<void>();
 
+	editCommentFormEnabled = signal<boolean>(false);
 	error = signal<string | null>(null);
 
 	onCommentDeleted(commentId: number) {
@@ -35,5 +37,17 @@ export class CommentElement {
 				this.error.set(errorObject.message);
 			}
 		});
+	}
+
+	onEnableEditComment() { this.editCommentFormEnabled.set(true); }
+	onCancelEditComment() { this.editCommentFormEnabled.set(false); }
+
+	onCommentEdited() {
+		this.editCommentFormEnabled.set(false);
+		this.commentEdited.emit();
+	}
+
+	onCommentRemoved() {
+		this.commentEdited.emit();
 	}
 }

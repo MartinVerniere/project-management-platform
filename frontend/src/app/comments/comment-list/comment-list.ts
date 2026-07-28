@@ -32,8 +32,4 @@ export class CommentList {
 		this.addCommentFormEnabled.set(false);
 		this.commentListEdited.emit();
 	}
-
-	onCommentRemoved() {
-		this.commentListEdited.emit();
-	}
 }

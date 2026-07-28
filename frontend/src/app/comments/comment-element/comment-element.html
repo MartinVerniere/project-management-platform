@@ -1,13 +1,17 @@
 <div class="comment-element">
 	@if (comment(); as comment) {
+	@if (editCommentFormEnabled()) {
+	<app-comment-update-form [comment]="comment" (commentEdited)="onCommentEdited()"
+		(canceledCommentEdit)="onCancelEditComment()">
+	</app-comment-update-form>
+	} @else {
 	<div class="comment-content">{{comment.content}}</div>
 	<div class="column-buttons">
-		<button type="button"
-			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', taskId(), 'comments', comment.id, 'edit']">
-			Edit
-		</button>
+		<button type="button" (click)="onEnableEditComment()">Edit</button>
 		<button type="button" (click)="onCommentDeleted(comment.id)">Delete</button>
 	</div>
+	}
+
 	<div class="error"> {{ error() }}</div>
 	}
 </div>

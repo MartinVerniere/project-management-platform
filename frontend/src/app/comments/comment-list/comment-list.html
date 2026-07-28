@@ -2,7 +2,8 @@
 	<h3 class="comment-title">Comments</h3>
 	@for (comment of commentList(); track comment.id; let i = $index) {
 	<app-comment-element [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()" [taskId]="taskId()"
-		[comment]="comment" (commentDeleted)="onCommentRemoved()"></app-comment-element>
+		[comment]="comment" (commentEdited)="commentListEdited.emit()"
+		(commentDeleted)="commentListEdited.emit()"></app-comment-element>
 	} @empty {
 	<div class="comment-list-empty">No comments yet!</div>
 	}
