@@ -1,5 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
-import { TaskService } from '../../services/tasks/task-service';
+import { Component, input, output, signal } from '@angular/core';
 import { CommentElement } from '../comment-element/comment-element';
 import { Comment } from '../../services/comments/comment-service';
 import { CommentForm } from '../comment-form/comment-form';
@@ -11,12 +10,7 @@ import { CommentForm } from '../comment-form/comment-form';
 	styleUrl: './comment-list.css',
 })
 export class CommentList {
-	taskService = inject(TaskService);
-
 	commentList = input.required<Comment[]>();
-	projectId = input.required<number>();
-	boardId = input.required<number>();
-	columnId = input.required<number>();
 	taskId = input.required<number>();
 
 	commentListEdited = output<void>();
