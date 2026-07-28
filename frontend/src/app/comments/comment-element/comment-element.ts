@@ -14,11 +14,6 @@ export class CommentElement {
 
 	comment = input.required<Comment>();
 
-	projectId = input.required<number>();
-	boardId = input.required<number>();
-	columnId = input.required<number>();
-	taskId = input.required<number>();
-
 	commentEdited = output<void>();
 	commentDeleted = output<void>();
 

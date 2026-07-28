@@ -6,7 +6,7 @@
 	</app-comment-update-form>
 	} @else {
 	<div class="comment-content">{{comment.content}}</div>
-	<div class="comment-creatoor">By {{comment.user.username}}</div>
+	<div class="comment-creator">By {{comment.user.username}}</div>
 	<div class="column-buttons">
 		<button type="button" (click)="onEnableEditComment()">Edit</button>
 		<button type="button" (click)="onCommentDeleted(comment.id)">Delete</button>
