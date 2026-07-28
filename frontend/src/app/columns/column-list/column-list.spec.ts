@@ -18,14 +18,14 @@ class ColumnElementStub {
 	column = input.required<Column>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
-	isFirst = input.required<boolean>();
-	isLast = input.required<boolean>();
+	
+	isFirst = input<boolean>();
+	isLast = input<boolean>();
 
+	columnDeleted = output<void>();
 	moveLeft = output<number>();
 	moveRight = output<number>();
-	columnDeleted = output<void>();
-	taskMoved = output<void>();
-	taskDeleted = output<void>();
+	columnTasksEdited = output<void>();
 }
 
 describe('ColumnList', () => {
@@ -111,7 +111,7 @@ describe('ColumnList', () => {
 		expect(html.textContent).toContain('No columns in this project');
 	});
 
-	it('should change column order when column is moved left and emit columnMoved', async () => {
+	it('should change column order when column is moved left and emit columnListEdited', async () => {
 		const expectedOrder = [
 			{ id: 2, order: 0 },
 			{ id: 1, order: 1 },
@@ -121,7 +121,7 @@ describe('ColumnList', () => {
 
 		await createComponent(true, columnList);
 
-		const emitSpy = vi.spyOn(component.columnMoved, 'emit');
+		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
 		component.onMoveLeft(2);
 
@@ -130,7 +130,7 @@ describe('ColumnList', () => {
 		expect(component.error()).toBeNull();
 	});
 
-	it('should change column order when column is moved right and emit columnMoved', async () => {
+	it('should change column order when column is moved right and emit columnListEdited', async () => {
 		const expectedOrder = [
 			{ id: 2, order: 0 },
 			{ id: 1, order: 1 },
@@ -140,7 +140,7 @@ describe('ColumnList', () => {
 
 		await createComponent(true, columnList);
 
-		const emitSpy = vi.spyOn(component.columnMoved, 'emit');
+		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
 		component.onMoveRight(1);
 
@@ -149,44 +149,30 @@ describe('ColumnList', () => {
 		expect(component.error()).toBeNull();
 	});
 
-	it('should emit columnDeleted when column is deleted', async () => {
+	it('should emit columnListEdited when one of the ColumnElement emits columnDeleted', async () => {
 		await createComponent(true, columnList);
 
 		const child = fixture.debugElement
 			.query(By.directive(ColumnElementStub))
 			.componentInstance as ColumnElementStub;
 
-		const emitSpy = vi.spyOn(component.columnDeleted, 'emit');
+		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
 		child.columnDeleted.emit();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});
 
-	it('should emit taskMoved when task is moved up/down', async () => {
+	it('should emit columnListEdited when one of the ColumnElement emits columnTasksEdited', async () => {
 		await createComponent(true, columnList);
 
 		const child = fixture.debugElement
 			.query(By.directive(ColumnElementStub))
 			.componentInstance as ColumnElementStub;
 
-		const emitSpy = vi.spyOn(component.taskMoved, 'emit');
+		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
-		child.taskMoved.emit();
-
-		expect(emitSpy).toHaveBeenCalled();
-	});
-
-	it('should emit taskDeleted when task is deleted', async () => {
-		await createComponent(true, columnList);
-
-		const child = fixture.debugElement
-			.query(By.directive(ColumnElementStub))
-			.componentInstance as ColumnElementStub;
-
-		const emitSpy = vi.spyOn(component.taskDeleted, 'emit');
-
-		child.taskDeleted.emit();
+		child.columnTasksEdited.emit();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});

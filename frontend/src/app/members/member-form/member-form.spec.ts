@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MemberForm } from './member-form';
 import { of, throwError } from 'rxjs';
-import { Project, ProjectMember, ProjectService } from '../../services/projects/project-service';
+import { ProjectMember, ProjectService } from '../../services/projects/project-service';
 import { UserService } from '../../services/users/user-service';
 
 describe('MemberForm', () => {

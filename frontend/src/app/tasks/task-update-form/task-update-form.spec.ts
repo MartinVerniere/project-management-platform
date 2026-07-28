@@ -14,6 +14,7 @@ describe('TaskUpdateForm', () => {
 		id: 1,
 		title: "Task A",
 		description: '',
+		comments: []
 	};
 
 	let taskServiceMock = {

@@ -19,7 +19,8 @@ const columnB: Column = {
 
 const taskA: Task = {
 	id: 1,
-	title: 'Title A'
+	title: 'Title A',
+	comments: []
 }
 
 describe('ColumnService', () => {

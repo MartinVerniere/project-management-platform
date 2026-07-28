@@ -4,6 +4,24 @@ import { TaskElement } from './task-element';
 import { Task, TaskService } from '../../services/tasks/task-service';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { Component, input, output } from '@angular/core';
+import { CommentList } from '../../comments/comment-list/comment-list';
+import { By } from '@angular/platform-browser';
+
+@Component({
+	selector: 'app-comment-list',
+	standalone: true,
+	template: '',
+})
+class CommentListStub {
+	commentList = input.required<Comment[]>();
+	projectId = input.required<number>();
+	boardId = input.required<number>();
+	columnId = input.required<number>();
+	taskId = input.required<number>();
+
+	commentListEdited = output<void>();
+}
 
 describe('TaskElement', () => {
 	let fixture: ComponentFixture<TaskElement>;
@@ -27,7 +45,25 @@ describe('TaskElement', () => {
 	const task: Task = {
 		id: 1,
 		title: 'Task A',
-		description: 'Description'
+		description: 'Description',
+		comments: [
+			{
+				id: 1,
+				content: 'Good',
+				user: {
+					id: 1,
+					username: 'john'
+				}
+			},
+			{
+				id: 2,
+				content: 'Great',
+				user: {
+					id: 1,
+					username: 'john'
+				}
+			}
+		]
 	};
 
 	const projectId = 1;
@@ -63,6 +99,13 @@ describe('TaskElement', () => {
 				{ provide: TaskService, useValue: taskServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock }
 			]
+		}).overrideComponent(TaskElement, {
+			remove: {
+				imports: [CommentList],
+			},
+			add: {
+				imports: [CommentListStub],
+			}
 		}).compileComponents();
 	});
 
@@ -75,7 +118,10 @@ describe('TaskElement', () => {
 	it('should render task information', async () => {
 		await createComponent();
 
+		const children = fixture.debugElement.queryAll(By.directive(CommentListStub));
+
 		expect(html.textContent).toContain('Task A');
+		expect(children).toHaveLength(1);
 	});
 
 	it('should have "move up" button disabled when it is the first task', async () => {
@@ -136,7 +182,6 @@ describe('TaskElement', () => {
 		expect(emitSpy).toHaveBeenCalledWith(1);
 	});
 
-
 	it('should remove task and emit taskRemoved when "Delete" button is clicked', async () => {
 		taskServiceMock.deleteTask.mockReturnValue(of({}));
 
@@ -155,6 +200,20 @@ describe('TaskElement', () => {
 		await fixture.whenStable();
 
 		expect(taskServiceMock.deleteTask).toHaveBeenCalledWith(1);
+		expect(emitSpy).toHaveBeenCalled();
+	});
+
+	it('should emit taskCommentsEdited CommentList emits commentListEdited', async () => {
+		await createComponent();
+
+		const child = fixture.debugElement
+			.query(By.directive(CommentListStub))
+			.componentInstance as CommentListStub;
+
+		const emitSpy = vi.spyOn(component.taskCommentsEdited, 'emit');
+
+		child.commentListEdited.emit();
+
 		expect(emitSpy).toHaveBeenCalled();
 	});
 });

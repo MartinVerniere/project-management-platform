@@ -23,6 +23,7 @@ class TaskElementStub {
 	columnId = input.required<number>();
 
 	taskDeleted = output<void>();
+	taskCommentsEdited = output<void>();
 	moveUp = output<number>();
 	moveDown = output<number>();
 }
@@ -47,8 +48,8 @@ describe('TaskList', () => {
 	};
 
 	const taskList: Task[] = [
-		{ id: 1, title: "Task A" },
-		{ id: 2, title: "Task B" }
+		{ id: 1, title: "Task A", comments: [] },
+		{ id: 2, title: "Task B", comments: [] }
 	];
 
 	const projectId = 1;
@@ -109,10 +110,10 @@ describe('TaskList', () => {
 	it('should render empty message when no task exists', async () => {
 		await createComponent(true);
 
-		expect(html.textContent).toContain('No tasks in this project');
+		expect(html.textContent).toContain('No tasks yet!');
 	});
 
-	it('should change task order when task is moved up and emit taskMoved', async () => {
+	it('should change task order when task is moved up and emit taskListEdited', async () => {
 		const expectedOrder = [
 			{ id: 2, order: 0 },
 			{ id: 1, order: 1 },
@@ -122,7 +123,7 @@ describe('TaskList', () => {
 
 		await createComponent(true, taskList);
 
-		const emitSpy = vi.spyOn(component.taskMoved, 'emit');
+		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
 
 		component.onMoveUp(2);
 
@@ -131,7 +132,7 @@ describe('TaskList', () => {
 		expect(component.error()).toBeNull();
 	});
 
-	it('should change task order when task is moved down and emit taskMoved', async () => {
+	it('should change task order when task is moved down and emit taskListEdited', async () => {
 		const expectedOrder = [
 			{ id: 2, order: 0 },
 			{ id: 1, order: 1 },
@@ -141,7 +142,7 @@ describe('TaskList', () => {
 
 		await createComponent(true, taskList);
 
-		const emitSpy = vi.spyOn(component.taskMoved, 'emit');
+		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
 
 		component.onMoveDown(1);
 
@@ -150,16 +151,30 @@ describe('TaskList', () => {
 		expect(component.error()).toBeNull();
 	});
 
-	it('should delete task when task is deleted', async () => {
+	it('should emit taskListEdited when TaskElement emits taskDeleted', async () => {
 		await createComponent(true, taskList);
 
 		const child = fixture.debugElement
 			.query(By.directive(TaskElementStub))
 			.componentInstance as TaskElementStub;
 
-		const emitSpy = vi.spyOn(component.taskDeleted, 'emit');
+		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
 
 		child.taskDeleted.emit();
+
+		expect(emitSpy).toHaveBeenCalled();
+	});
+
+	it('should emit taskListEdited when TaskElement emits taskCommentsEdited', async () => {
+		await createComponent(true, taskList);
+
+		const child = fixture.debugElement
+			.query(By.directive(TaskElementStub))
+			.componentInstance as TaskElementStub;
+
+		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
+
+		child.taskCommentsEdited.emit();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});

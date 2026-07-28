@@ -4,6 +4,23 @@ import { BoardDetails } from './board-details';
 import { ActivatedRoute } from '@angular/router';
 import { BoardService } from '../../services/boards/board-service';
 import { NEVER, of, throwError } from 'rxjs';
+import { Component, input, output } from '@angular/core';
+import { Column } from '../../services/columns/column-service';
+import { ColumnList } from '../../columns/column-list/column-list';
+import { By } from '@angular/platform-browser';
+
+@Component({
+	selector: 'app-column-list',
+	standalone: true,
+	template: '',
+})
+class ColumnListStub {
+	columnList = input.required<Column[]>();
+	projectId = input.required<number>();
+	boardId = input.required<number>();
+
+	columnListEdited = output<void>();
+}
 
 describe('BoardDetails', () => {
 	let component: BoardDetails;
@@ -52,6 +69,13 @@ describe('BoardDetails', () => {
 				{ provide: BoardService, useValue: boardServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock }
 			]
+		}).overrideComponent(BoardDetails, {
+			remove: {
+				imports: [ColumnList],
+			},
+			add: {
+				imports: [ColumnListStub],
+			}
 		}).compileComponents();
 	});
 
@@ -96,26 +120,18 @@ describe('BoardDetails', () => {
 		expect(html.textContent).toContain('Board A');
 	});
 
-	it('should reload board when onDeleteColumn is called', async () => {
+	it('should reload board when ColumnList emits columnListEdited', async () => {
 		boardServiceMock.getBoard.mockReturnValue(of(board));
 
 		await createComponent();
 
-		const emitSpy = vi.spyOn(component.board, 'reload');
-
-		component.onDeleteColumn();
-
-		expect(emitSpy).toHaveBeenCalled();
-	});
-
-	it('should reload board when onMovedColumn is called', async () => {
-		boardServiceMock.getBoard.mockReturnValue(of(board));
-
-		await createComponent();
+		const child = fixture.debugElement
+			.query(By.directive(ColumnListStub))
+			.componentInstance as ColumnListStub;
 
 		const emitSpy = vi.spyOn(component.board, 'reload');
 
-		component.onMovedColumn();
+		child.columnListEdited.emit();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});
