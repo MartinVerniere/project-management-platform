@@ -6,7 +6,7 @@
 		(moveDown)="onMoveDown($event)" (taskDeleted)="taskDeleted.emit()">
 	</app-task-element>
 	} @empty {
-	<div class="task-list-empty">No tasks in this project</div>
+	<div class="task-list-empty">No tasks yet!</div>
 	}
 	<button [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', 'create']">
 		Create new task
