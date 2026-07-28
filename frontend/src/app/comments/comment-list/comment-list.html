@@ -1,13 +1,15 @@
 <div class="comment-list">
 	<h3 class="comment-title">Comments</h3>
 	@for (comment of commentList(); track comment.id; let i = $index) {
-	<app-comment-element [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()"
-		[taskId]="taskId()" [comment]="comment"></app-comment-element>
+	<app-comment-element [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()" [taskId]="taskId()"
+		[comment]="comment" (commentDeleted)="onCommentRemoved()"></app-comment-element>
 	} @empty {
 	<div class="comment-list-empty">No comments yet!</div>
 	}
-	<button
-		[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'task', taskId(), 'comments', 'create']">
-		Create new comment
-	</button>
+	@if (addCommentFormEnabled()) {
+	<app-comment-form [taskId]="taskId()" (commentAdded)="onCommentAdded()"
+		(canceledCommentAdd)="onCancelAddComment()"></app-comment-form>
+	} @else {
+	<button type="button" (click)="onEnableAddComment()">Add comment</button>
+	}
 </div>

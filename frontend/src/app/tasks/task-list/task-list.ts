@@ -19,8 +19,7 @@ export class TaskList {
 	boardId = input.required<number>();
 	columnId = input.required<number>();
 
-	taskMoved = output<void>();
-	taskDeleted = output<void>();
+	taskListEdited = output<void>();
 
 	error = signal<string | null>(null);
 
@@ -36,7 +35,7 @@ export class TaskList {
 
 		this.columnService.changeTaskOrder(this.columnId(), { taskOrder: reorderedTasks }).subscribe({
 			next: () => {
-				this.taskMoved.emit();
+				this.taskListEdited.emit();
 				this.error.set(null);
 			},
 			error: (response: HttpErrorResponse) => {
@@ -59,7 +58,7 @@ export class TaskList {
 
 		this.columnService.changeTaskOrder(this.columnId(), { taskOrder: reorderedTasks }).subscribe({
 			next: () => {
-				this.taskMoved.emit();
+				this.taskListEdited.emit();
 				this.error.set(null);
 			},
 			error: (response: HttpErrorResponse) => {

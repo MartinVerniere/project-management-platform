@@ -21,6 +21,7 @@ export class TaskElement {
 	columnId = input.required<number>();
 
 	taskDeleted = output<void>();
+	taskCommentsEdited = output<void>();
 	moveUp = output<number>();
 	moveDown = output<number>();
 

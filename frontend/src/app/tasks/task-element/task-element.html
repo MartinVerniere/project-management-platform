@@ -5,7 +5,7 @@
 	<div class="task-description">{{task.description}}</div>
 	}
 	<app-comment-list [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()" [taskId]="task.id"
-		[commentList]="task.comments"></app-comment-list>
+		[commentList]="task.comments" (commentListEdited)="taskCommentsEdited.emit()"></app-comment-list>
 	<div class="task-move-buttons">
 		<button type="button" [disabled]="isFirst()" (click)="moveUp.emit(task.id)">Move up</button>
 		<button type="button" [disabled]="isLast()" (click)="moveDown.emit(task.id)">Move down</button>

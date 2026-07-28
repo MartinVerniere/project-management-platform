@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, input, output, resource, computed, signal } from "@angular/core";
 import { FormField, form, required, submit } from "@angular/forms/signals";
 import { firstValueFrom } from "rxjs";
-import { ProjectService, Project, ProjectMember } from "../../services/projects/project-service";
+import { ProjectService, ProjectMember } from "../../services/projects/project-service";
 import { UserService } from "../../services/users/user-service";
 
 export interface MemberModel {

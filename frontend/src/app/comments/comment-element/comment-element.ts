@@ -1,7 +1,7 @@
-import { Component, input, output, signal } from '@angular/core';
-import { Comment } from '../../services/tasks/task-service';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
+import { Comment, CommentService } from '../../services/comments/comment-service';
 
 @Component({
 	selector: 'app-comment-element',
@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
 	styleUrl: './comment-element.css',
 })
 export class CommentElement {
-	commentService = 'commentService';
+	commentService = inject(CommentService);
 
 	comment = input.required<Comment>();
 
@@ -24,16 +24,16 @@ export class CommentElement {
 	error = signal<string | null>(null);
 
 	onCommentDeleted(commentId: number) {
-		// this.commentService.deleteComment(commentId).subscribe({
-		// 	next: () => {
-		// 		this.commentDeleted.emit();
-		// 		this.error.set(null);
-		// 	},
-		// 	error: (response: HttpErrorResponse) => {
-		// 		const errorObject = response.error.error;
-		// 		console.log(errorObject);
-		// 		this.error.set(errorObject.message);
-		// 	}
-		// });
+		this.commentService.deleteComment(commentId).subscribe({
+			next: () => {
+				this.commentDeleted.emit();
+				this.error.set(null);
+			},
+			error: (response: HttpErrorResponse) => {
+				const errorObject = response.error.error;
+				console.log(errorObject);
+				this.error.set(errorObject.message);
+			}
+		});
 	}
 }
