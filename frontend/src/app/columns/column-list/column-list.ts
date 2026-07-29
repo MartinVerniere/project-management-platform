@@ -4,6 +4,7 @@ import { Column } from "../../services/columns/column-service";
 import { ColumnElement } from "../column-element/column-element";
 import { BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
+import { TaskService } from "../../services/tasks/task-service";
 
 @Component({
 	selector: 'app-column-list',
@@ -14,6 +15,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 export class ColumnList {
 	route = inject(ActivatedRoute);
 	boardService = inject(BoardService);
+	taskService = inject(TaskService);
 
 	columnList = input.required<Column[]>();
 	projectId = input.required<number>();
@@ -64,6 +66,32 @@ export class ColumnList {
 			error: (response: HttpErrorResponse) => {
 				const errorObject = response.error.error;
 				console.log(errorObject);
+				this.error.set(errorObject.message);
+			}
+		});
+	}
+
+	onMoveTaskToColumn(columnId: number, event: { taskId: number; direction: 'left' | 'right' }) {
+		const columns = this.columnList();
+
+		const currentIndex = columns.findIndex(column => column.id === columnId);
+		if (currentIndex === -1) return;
+
+		const destinationIndex = event.direction === 'left'
+			? currentIndex - 1
+			: currentIndex + 1;
+
+		if (destinationIndex < 0 || destinationIndex >= columns.length) return;
+
+		const destinationColumn = columns[destinationIndex];
+
+		this.taskService.moveTask(event.taskId, destinationColumn.id).subscribe({
+			next: () => {
+				this.columnListEdited.emit();
+				this.error.set(null);
+			},
+			error: (response: HttpErrorResponse) => {
+				const errorObject = response.error.error;
 				this.error.set(errorObject.message);
 			}
 		});

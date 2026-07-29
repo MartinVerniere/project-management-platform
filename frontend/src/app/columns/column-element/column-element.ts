@@ -17,14 +17,17 @@ export class ColumnElement {
 	column = input.required<Column>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
-	
+
 	isFirst = input<boolean>();
 	isLast = input<boolean>();
+	isInFirstColumn = input<boolean>();
+	isInLastColumn = input<boolean>();
 
 	columnDeleted = output<void>();
 	moveLeft = output<number>();
 	moveRight = output<number>();
 	columnTasksEdited = output<void>();
+	moveTaskToColumn = output<{ taskId: number; direction: 'left' | 'right' }>();
 
 	error = signal<string | null>(null);
 

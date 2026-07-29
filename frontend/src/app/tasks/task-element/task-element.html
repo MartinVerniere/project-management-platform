@@ -10,6 +10,10 @@
 		<button type="button" [disabled]="isFirst()" (click)="moveUp.emit(task.id)">Move up</button>
 		<button type="button" [disabled]="isLast()" (click)="moveDown.emit(task.id)">Move down</button>
 	</div>
+	<div class="task-move-buttons">
+		<button type="button" [disabled]="isInFirstColumn()" (click)="moveTaskToColumn.emit('left')">Move left</button>
+		<button type="button" [disabled]="isInLastColumn()" (click)="moveTaskToColumn.emit('right')">Move right</button>
+	</div>
 	<div class="column-buttons">
 		<button type="button"
 			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">

@@ -1,0 +1,6 @@
+.column-element-list {
+	display: flex;
+	gap: 100px;
+	align-items: flex-start;
+	overflow-x: auto;
+}
