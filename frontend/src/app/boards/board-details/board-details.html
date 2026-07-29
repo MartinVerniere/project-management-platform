@@ -6,8 +6,8 @@
 	} @else {
 	@if (board.value(); as board) {
 	<h2 class="board-name">Name: {{board.name}}</h2>
-	<app-column-list [columnList]="board.columns" [projectId]="projectId" [boardId]="boardId" (columnDeleted)="onDeleteColumn()"
-		(columnMoved)="onMovedColumn()" (taskDeleted)="onDeleteTask()" (taskMoved)="onMovedTask()"></app-column-list>
+	<app-column-list [columnList]="board.columns" [projectId]="projectId" [boardId]="boardId"
+		(columnListEdited)="onColumnListEdited()"></app-column-list>
 	}
 	}
 	<button type="button" [routerLink]="['/projects', projectId]">Go back</button>

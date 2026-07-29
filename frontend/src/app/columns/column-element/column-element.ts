@@ -24,8 +24,7 @@ export class ColumnElement {
 	columnDeleted = output<void>();
 	moveLeft = output<number>();
 	moveRight = output<number>();
-	taskDeleted = output<void>();
-	taskMoved = output<void>();
+	columnTasksEdited = output<void>();
 
 	error = signal<string | null>(null);
 

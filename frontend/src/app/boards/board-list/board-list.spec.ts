@@ -127,7 +127,7 @@ describe('BoardList', () => {
 		expect(html.textContent).toContain('Error loading boards');
 	});
 
-	it('should reload board list when board is deleted', async () => {
+	it('should reload board list when BoardElement emits boardDeleted', async () => {
 		projectServiceMock.getBoards.mockReturnValue(of(boards));
 
 		await createComponent();

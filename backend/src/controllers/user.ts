@@ -30,7 +30,7 @@ userRouter.get('/:id', tokenExtractor, userExtractor, async (request: Request, r
 		} 
 	});
 
-	if (!user) throw new ApiError(404, "USER_NOT_FOUND", "Could not find user with that id.");
+	if (!user) throw new ApiError(404, "USER_NOT_FOUND", "User not found.");
 
 	return response.status(200).json(user);
 })

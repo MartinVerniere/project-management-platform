@@ -3,378 +3,395 @@ import request from 'supertest';
 
 import { app } from '../app.js';
 import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
+import { createBoard, createColumn, createProject, createTask, loginUser, registerUser } from '../helpers/test.js';
 
-describe('Board API', () => {
+describe('Task API', () => {
 	beforeEach(async () => {
 		await clearDatabase();
 	});
 
-	describe('when at least one user exists in database', () => {
-		let johnUserId: number;
-		let aliceUserId: number;
+	describe('when a task exists in the database', () => {
 		let authToken: string;
+		let taskId: number;
 
 		beforeEach(async () => {
-			let response = await request(app)
-				.post('/api/auth/register')
-				.send({
-					username: 'john',
-					email: 'john@test.com',
-					password: 'password123',
-				});
+			//Create users
+			const john = await registerUser('john', 'john@test.com', 'password123');
+			const alice = await registerUser('alice', 'alice@test.com', 'password123');
 
-			johnUserId = response.body.id;
+			//Login
+			const login = await loginUser('john', 'password123');
+			authToken = login.token;
 
-			response = await request(app)
-				.post('/api/auth/register')
-				.send({
-					username: 'alice',
-					email: 'alice@test.com',
-					password: 'password123',
-				});
+			//Create project
+			const project = await createProject(authToken, 'Test 1', 'TEST1', 'test desc');
 
-			aliceUserId = response.body.id;
+			//Create board
+			const board = await createBoard(authToken, project.id, 'Board A');
+
+			//Create column
+			const column = await createColumn(authToken, board.id, 'Column A');
+
+			//Create task
+			const task = await createTask(authToken, column.id, 'Task A', 'This is task A');
+			taskId = task.id;
 		});
 
-		describe('and a user is logged in', () => {
+		describe('and project MEMBER is logged in', () => {
 			beforeEach(async () => {
-				const response = await request(app)
-					.post('/api/auth/login')
-					.send({
-						username: 'john',
-						password: 'password123',
-					});
-
-				authToken = response.body.token;
+				const member = await loginUser('john', 'password123');
+				authToken = member.token;
 			});
 
-			describe('and at least one project exist in database', () => {
-				let projectId: number;
-
-				beforeEach(async () => {
+			describe('on get task', () => {
+				it('gets task by id', async () => {
 					const response = await request(app)
-						.post('/api/projects')
-						.set('Authorization', `Bearer ${authToken}`)
-						.send({
-							name: 'Test 1',
-							key: 'TEST1',
-							description: 'test desc'
-						});
+						.get(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer ${authToken}`);
 
-					projectId = response.body.id;
+					expect(response.status).toBe(200);
+					expect(response.body.title).toBe('Task A');
 				});
 
-				describe('and project has at least one board', () => {
-					let boardId: number;
+				it('returns 400 if invalid task id', async () => {
+					const response = await request(app)
+						.get(`/api/tasks/${INVALID_ID}`)
+						.set('Authorization', `Bearer ${authToken}`);
 
-					beforeEach(async () => {
-						const response = await request(app)
-							.post(`/api/projects/${projectId}/boards`)
-							.set('Authorization', `Bearer ${authToken}`)
-							.send({ name: 'Board A' });
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Invalid task id.");
+				});
 
-						boardId = response.body.id;
-					});
+				it('returns 404 if task not found', async () => {
+					const response = await request(app)
+						.get(`/api/tasks/${NOT_FOUND_ID}`)
+						.set('Authorization', `Bearer ${authToken}`);
 
-					describe('and board has at least one column', () => {
-						let columnId: number;
+					expect(response.status).toBe(404);
+					expect(response.body.error.message).toBe("Task not found.");
+				});
 
-						beforeEach(async () => {
-							const response = await request(app)
-								.post(`/api/boards/${boardId}/columns`)
-								.set('Authorization', `Bearer ${authToken}`)
-								.send({ name: 'Column A' });
+				it('returns 401 if token is invalid', async () => {
+					const response = await request(app)
+						.get(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer INVALID_TOKEN`);
 
-							columnId = response.body.id;
-						});
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is invalid.");
+				});
 
-						describe('and column has at least one task', () => {
-							let taskId: number;
+				it('returns 401 if token is missing', async () => {
+					const response = await request(app)
+						.get(`/api/tasks/${taskId}`);
 
-							beforeEach(async () => {
-								const response = await request(app)
-									.post(`/api/columns/${columnId}/tasks`)
-									.set('Authorization', `Bearer ${authToken}`)
-									.send({ title: 'Task A', description: 'This is task A' });
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is missing.");
+				});
+			});
 
-								taskId = response.body.id;
-							});
+			describe('on update task', () => {
+				it('updates task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
-							describe('and project MEMBER is logged in', () => {
-								beforeEach(async () => {
-									const response = await request(app)
-										.post('/api/auth/login')
-										.send({
-											username: 'john',
-											password: 'password123',
-										});
+					expect(response.status).toBe(200);
+					expect(response.body.title).toBe('Updated task A');
+				});
 
-									authToken = response.body.token;
-								});
+				it('returns 400 if missing field title in request', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ description: 'This is task A - UPDATED' });
 
-								describe('on get task', () => {
-									it('gets task by id', async () => {
-										const response = await request(app)
-											.get(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer ${authToken}`);
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Task title is required.");
+				});
 
-										expect(response.status).toBe(200);
-										expect(response.body.title).toBe('Task A');
-									});
+				it('returns 400 if task title is not a string', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ title: 5, description: 'This is task A - UPDATED' });
 
-									it('returns 400 if invalid task id', async () => {
-										const response = await request(app)
-											.get(`/api/tasks/${INVALID_ID}`)
-											.set('Authorization', `Bearer ${authToken}`);
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Task title must be a string.");
+				});
 
-										expect(response.status).toBe(400);
-										expect(response.body.error.message).toBe("Invalid task id.");
-									});
+				it('returns 400 if task title is an empty string', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ title: '', description: 'This is task A - UPDATED' });
 
-									it('returns 404 if task not found', async () => {
-										const response = await request(app)
-											.get(`/api/tasks/${NOT_FOUND_ID}`)
-											.set('Authorization', `Bearer ${authToken}`);
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Task title is required.");
+				});
 
-										expect(response.status).toBe(404);
-										expect(response.body.error.message).toBe("Task not found.");
-									});
+				it('returns 400 if invalid task id', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${INVALID_ID}`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
-									it('returns 401 if token is invalid', async () => {
-										const response = await request(app)
-											.get(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer INVALID_TOKEN`);
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Invalid task id.");
+				});
 
-										expect(response.status).toBe(401);
-										expect(response.body.error.message).toBe("Authentication token is invalid.");
-									});
+				it('returns 404 if task not found', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${NOT_FOUND_ID}`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
-									it('returns 401 if token is missing', async () => {
-										const response = await request(app)
-											.get(`/api/tasks/${taskId}`);
+					expect(response.status).toBe(404);
+					expect(response.body.error.message).toBe("Task not found.");
+				});
 
-										expect(response.status).toBe(401);
-										expect(response.body.error.message).toBe("Authentication token is missing.");
-									});
-								});
+				it('returns 401 if token is invalid', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer INVALID_TOKEN`)
+						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
-								describe('on update task', () => {
-									it('updates task', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer ${authToken}`)
-											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is invalid.");
+				});
 
-										expect(response.status).toBe(200);
-										expect(response.body.title).toBe('Updated task A');
-									});
+				it('returns 401 if token is missing', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}`)
+						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
-									it('returns 400 if missing field title in request', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer ${authToken}`)
-											.send({ description: 'This is task A - UPDATED' });
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is missing.");
+				});
+			});
 
-										expect(response.status).toBe(400);
-										expect(response.body.error.message).toBe("Task title is required.");
-									});
+			describe('on add comment to task', () => {
+				it('adds comment', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${taskId}/comments`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ content: 'This is a comment!' });
 
-									it('returns 400 if task title is not a string', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer ${authToken}`)
-											.send({ title: 5, description: 'This is task A - UPDATED' });
+					expect(response.status).toBe(201);
+					expect(response.body.content).toBe('This is a comment!');
+				});
 
-										expect(response.status).toBe(400);
-										expect(response.body.error.message).toBe("Task title must be a string.");
-									});
+				it('returns 400 if missing field content in request', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${taskId}/comments`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({});
 
-									it('returns 400 if task title is an empty string', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer ${authToken}`)
-											.send({ title: '', description: 'This is task A - UPDATED' });
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Comment is required.");
+				});
 
-										expect(response.status).toBe(400);
-										expect(response.body.error.message).toBe("Task title is required.");
-									});
+				it('returns 400 if comment content is not a string', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${taskId}/comments`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ content: 5 });
 
-									it('returns 400 if invalid task id', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${INVALID_ID}`)
-											.set('Authorization', `Bearer ${authToken}`)
-											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Comment must be a string.");
+				});
 
-										expect(response.status).toBe(400);
-										expect(response.body.error.message).toBe("Invalid task id.");
-									});
+				it('returns 400 if comment content is an empty string', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${taskId}/comments`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ content: '' });
 
-									it('returns 404 if task not found', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${NOT_FOUND_ID}`)
-											.set('Authorization', `Bearer ${authToken}`)
-											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Comment is required.");
+				});
 
-										expect(response.status).toBe(404);
-										expect(response.body.error.message).toBe("Task not found.");
-									});
+				it('returns 400 if invalid task id', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${INVALID_ID}/comments`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ content: 'This is a comment!' });
 
-									it('returns 401 if token is invalid', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer INVALID_TOKEN`)
-											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Invalid task id.");
+				});
 
-										expect(response.status).toBe(401);
-										expect(response.body.error.message).toBe("Authentication token is invalid.");
-									});
+				it('returns 404 if task not found', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${NOT_FOUND_ID}/comments`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ content: 'This is a comment!' });
 
-									it('returns 401 if token is missing', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${taskId}`)
-											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
+					expect(response.status).toBe(404);
+					expect(response.body.error.message).toBe("Task not found.");
+				});
 
-										expect(response.status).toBe(401);
-										expect(response.body.error.message).toBe("Authentication token is missing.");
-									});
-								});
+				it('returns 401 if token is invalid', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${taskId}/comments`)
+						.set('Authorization', `Bearer INVALID_TOKEN`)
+						.send({ content: 'This is a comment!' });
 
-								describe('on delete task', () => {
-									it('deletes task', async () => {
-										const response = await request(app)
-											.delete(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer ${authToken}`);
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is invalid.");
+				});
 
-										expect(response.status).toBe(204);
-									});
-									it('returns 400 if invalid task id', async () => {
-										const response = await request(app)
-											.delete(`/api/tasks/${INVALID_ID}`)
-											.set('Authorization', `Bearer ${authToken}`);
+				it('returns 401 if token is missing', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${taskId}/comments`)
+						.send({ content: 'This is a comment!' });
 
-										expect(response.status).toBe(400);
-										expect(response.body.error.message).toBe("Invalid task id.");
-									});
-									it('returns 404 if task not found', async () => {
-										const response = await request(app)
-											.delete(`/api/tasks/${NOT_FOUND_ID}`)
-											.set('Authorization', `Bearer ${authToken}`);
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is missing.");
+				});
+			});
 
-										expect(response.status).toBe(404);
-										expect(response.body.error.message).toBe("Task not found.");
-									});
-									it('returns 401 if token is invalid', async () => {
-										const response = await request(app)
-											.delete(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer INVALID_TOKEN`);
+			describe('on delete task', () => {
+				it('deletes task', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer ${authToken}`);
 
-										expect(response.status).toBe(401);
-										expect(response.body.error.message).toBe("Authentication token is invalid.");
-									});
-									it('returns 401 if token is missing', async () => {
-										const response = await request(app)
-											.delete(`/api/tasks/${taskId}`);
+					expect(response.status).toBe(204);
+				});
+				it('returns 400 if invalid task id', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${INVALID_ID}`)
+						.set('Authorization', `Bearer ${authToken}`);
 
-										expect(response.status).toBe(401);
-										expect(response.body.error.message).toBe("Authentication token is missing.");
-									});
-								});
-							});
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Invalid task id.");
+				});
+				it('returns 404 if task not found', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${NOT_FOUND_ID}`)
+						.set('Authorization', `Bearer ${authToken}`);
 
-							describe('and non-MEMBER is logged in', () => {
-								beforeEach(async () => {
-									const response = await request(app)
-										.post('/api/auth/login')
-										.send({
-											username: 'alice',
-											password: 'password123',
-										});
+					expect(response.status).toBe(404);
+					expect(response.body.error.message).toBe("Task not found.");
+				});
+				it('returns 401 if token is invalid', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer INVALID_TOKEN`);
 
-									authToken = response.body.token;
-								});
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is invalid.");
+				});
+				it('returns 401 if token is missing', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskId}`);
 
-								describe('on get task', () => {
-									it('returns 403 if user is not a member of the project that contains the task', async () => {
-										const response = await request(app)
-											.get(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer ${authToken}`);
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is missing.");
+				});
+			});
+		});
 
-										expect(response.status).toBe(403);
-										expect(response.body.error.message).toBe("You do not have access to this project.");
-									});
-								});
+		describe('and non-MEMBER is logged in', () => {
+			beforeEach(async () => {
+				const nonMember = await loginUser('alice', 'password123');
 
-								describe('on update task', () => {
-									it('returns 403 if user is not a member of the project that contains the task', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer ${authToken}`)
-											.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
+				authToken = nonMember.token;
+			});
 
-										expect(response.status).toBe(403);
-										expect(response.body.error.message).toBe("You do not have access to this project.");
-									});
-								});
+			describe('on get task', () => {
+				it('returns 403 if user is not a member of the project that contains the task', async () => {
+					const response = await request(app)
+						.get(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer ${authToken}`);
 
-								describe('on delete task', () => {
-									it('returns 403 if user is not a member of the project that contains the task', async () => {
-										const response = await request(app)
-											.delete(`/api/tasks/${taskId}`)
-											.set('Authorization', `Bearer ${authToken}`);
+					expect(response.status).toBe(403);
+					expect(response.body.error.message).toBe("You do not have access to this project.");
+				});
+			});
 
-										expect(response.status).toBe(403);
-										expect(response.body.error.message).toBe("You do not have access to this project.");
-									});
-								});
-							});
-						});
+			describe('on update task', () => {
+				it('returns 403 if user is not a member of the project that contains the task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
-						describe('and column has at least two tasks', () => {
-							let taskAId: number;
-							let taskBId: number;
+					expect(response.status).toBe(403);
+					expect(response.body.error.message).toBe("You do not have access to this project.");
+				});
+			});
 
-							beforeEach(async () => {
-								let response = await request(app)
-									.post(`/api/columns/${columnId}/tasks`)
-									.set('Authorization', `Bearer ${authToken}`)
-									.send({ title: 'Task A', description: 'This is task A' });
+			describe('on add comment to task', () => {
+				it('returns 403 if user is not a member of the project that contains the task', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${taskId}/comments`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ content: 'This is an updated comment!' });
 
-								taskAId = response.body.id;
+					expect(response.status).toBe(403);
+					expect(response.body.error.message).toBe("You do not have access to this project.");
+				});
+			});
 
-								response = await request(app)
-									.post(`/api/columns/${columnId}/tasks`)
-									.set('Authorization', `Bearer ${authToken}`)
-									.send({ title: 'Task B', description: 'This is task B' });
+			describe('on delete task', () => {
+				it('returns 403 if user is not a member of the project that contains the task', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskId}`)
+						.set('Authorization', `Bearer ${authToken}`);
 
-								taskBId = response.body.id;
-							});
+					expect(response.status).toBe(403);
+					expect(response.body.error.message).toBe("You do not have access to this project.");
+				});
+			});
+		});
+	});
 
-							describe('and project MEMBER is logged in', () => {
-								beforeEach(async () => {
-									const response = await request(app)
-										.post('/api/auth/login')
-										.send({
-											username: 'john',
-											password: 'password123',
-										});
+	describe('when multiple tasks exist in the database', () => {
+		let authToken: string;
+		let taskAId: number;
+		let taskBId: number;
 
-									authToken = response.body.token;
-								});
+		beforeEach(async () => {
+			//Create users
+			const john = await registerUser('john', 'john@test.com', 'password123');
 
-								describe('on update task', () => {
-									it('returns 409 if a task with that same title already exists in that column', async () => {
-										const response = await request(app)
-											.put(`/api/tasks/${taskAId}`)
-											.set('Authorization', `Bearer ${authToken}`)
-											.send({ title: 'Task B', description: 'This is task B' });
+			//Login
+			const login = await loginUser('john', 'password123');
+			authToken = login.token;
 
-										expect(response.status).toBe(409);
-										expect(response.body.error.message).toBe("A task with this title already exists in the column.");
-									});
-								});
-							});
-						});
-					});
+			//Create project
+			const project = await createProject(authToken, 'Test 1', 'TEST1', 'test desc');
+
+			//Create board
+			const board = await createBoard(authToken, project.id, 'Board A');
+
+			//Create column
+			const column = await createColumn(authToken, board.id, 'Column A');
+
+			//Create tasks
+			const task = await createTask(authToken, column.id, 'Task A', 'This is task A');
+			taskAId = task.id;
+			const taskB = await createTask(authToken, column.id, 'Task B', 'This is task B');
+			taskBId = taskB.id;
+		});
+
+		describe('and project MEMBER is logged in', () => {
+			beforeEach(async () => {
+				const member = await loginUser('john', 'password123');
+				authToken = member.token;
+			});
+
+			describe('on update task', () => {
+				it('returns 409 if a task with that same title already exists in that column', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ title: 'Task B', description: 'This is task B' });
+
+					expect(response.status).toBe(409);
+					expect(response.body.error.message).toBe("A task with this title already exists in the column.");
 				});
 			});
 		});

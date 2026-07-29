@@ -4,16 +4,19 @@ import { Task, TaskService } from './task-service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { TaskModel } from '../../tasks/task-form/task-form';
+import { Comment } from '../comments/comment-service';
 
 const taskA: Task = {
 	id: 1,
 	title: 'Title A',
-	description: 'Description'
+	description: 'Description',
+	comments: []
 }
 
 const taskB: Task = {
 	id: 2,
-	title: 'Title B'
+	title: 'Title B',
+	comments: []
 }
 
 describe('TaskService', () => {
@@ -69,6 +72,25 @@ describe('TaskService', () => {
 		const request = httpMock.expectOne(`http://localhost:3000/api/tasks/${taskA.id}`);
 
 		expect(request.request.method).toBe('DELETE');
+
+		request.flush({});
+	});
+
+	it('should add comment to task', () => {
+		const newComment: Comment = {
+			id: 1,
+			content: 'Good work!',
+			user: {
+				id: 1,
+				username: 'john'
+			}
+		}
+		
+		service.addComment(taskA.id, newComment).subscribe();
+
+		const request = httpMock.expectOne(`http://localhost:3000/api/tasks/${taskA.id}/comments`);
+
+		expect(request.request.method).toBe('POST');
 
 		request.flush({});
 	});

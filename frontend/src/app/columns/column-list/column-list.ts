@@ -19,10 +19,7 @@ export class ColumnList {
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 
-	columnMoved = output<void>();
-	columnDeleted = output<void>();
-	taskMoved = output<void>();
-	taskDeleted = output<void>();
+	columnListEdited = output<void>();
 
 	error = signal<string | null>(null);
 
@@ -38,7 +35,7 @@ export class ColumnList {
 
 		this.boardService.changeColumnOrder(this.boardId(), { columnOrder: reorderedColumns }).subscribe({
 			next: () => {
-				this.columnMoved.emit();
+				this.columnListEdited.emit();
 				this.error.set(null);
 			},
 			error: (response: HttpErrorResponse) => {
@@ -61,7 +58,7 @@ export class ColumnList {
 
 		this.boardService.changeColumnOrder(this.boardId(), { columnOrder: reorderedColumns }).subscribe({
 			next: () => {
-				this.columnMoved.emit();
+				this.columnListEdited.emit();
 				this.error.set(null);
 			},
 			error: (response: HttpErrorResponse) => {

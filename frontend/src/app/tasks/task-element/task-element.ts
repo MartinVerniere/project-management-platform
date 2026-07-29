@@ -2,10 +2,11 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { Task, TaskService } from '../../services/tasks/task-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
+import { CommentList } from '../../comments/comment-list/comment-list';
 
 @Component({
 	selector: 'app-task-element',
-	imports: [RouterLink],
+	imports: [RouterLink, CommentList],
 	templateUrl: './task-element.html',
 	styleUrl: './task-element.css',
 })
@@ -20,6 +21,7 @@ export class TaskElement {
 	columnId = input.required<number>();
 
 	taskDeleted = output<void>();
+	taskCommentsEdited = output<void>();
 	moveUp = output<number>();
 	moveDown = output<number>();
 

@@ -20,8 +20,7 @@ class TaskListStub {
 	boardId = input.required<number>();
 	columnId = input.required<number>();
 
-	taskMoved = output<void>();
-	taskDeleted = output<void>();
+	taskListEdited = output<void>();
 }
 
 describe('ColumnElement', () => {
@@ -184,30 +183,16 @@ describe('ColumnElement', () => {
 		expect(emitSpy).toHaveBeenCalled();
 	});
 
-	it('should emit taskMoved when TaskList emits taskMoved', async () => {
+	it('should emit columnTasksEdited when TaskList emits taskListEdited', async () => {
 		await createComponent();
 
 		const taskList = fixture.debugElement
 			.query(By.directive(TaskListStub))
 			.componentInstance as TaskListStub;
 
-		const emitSpy = vi.spyOn(component.taskMoved, 'emit');
+		const emitSpy = vi.spyOn(component.columnTasksEdited, 'emit');
 
-		taskList.taskMoved.emit();
-
-		expect(emitSpy).toHaveBeenCalledOnce();
-	});
-
-	it('should emit taskDeleted when TaskList emits taskDeleted', async () => {
-		await createComponent();
-
-		const taskList = fixture.debugElement
-			.query(By.directive(TaskListStub))
-			.componentInstance as TaskListStub;
-
-		const emitSpy = vi.spyOn(component.taskDeleted, 'emit');
-
-		taskList.taskDeleted.emit();
+		taskList.taskListEdited.emit();
 
 		expect(emitSpy).toHaveBeenCalledOnce();
 	});

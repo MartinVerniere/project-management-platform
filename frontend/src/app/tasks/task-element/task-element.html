@@ -4,12 +4,15 @@
 	@if (task.description) {
 	<div class="task-description">{{task.description}}</div>
 	}
+	<app-comment-list [taskId]="task.id" [commentList]="task.comments"
+		(commentListEdited)="taskCommentsEdited.emit()"></app-comment-list>
 	<div class="task-move-buttons">
 		<button type="button" [disabled]="isFirst()" (click)="moveUp.emit(task.id)">Move up</button>
 		<button type="button" [disabled]="isLast()" (click)="moveDown.emit(task.id)">Move down</button>
 	</div>
 	<div class="column-buttons">
-		<button type="button" [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
+		<button type="button"
+			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
 			Edit
 		</button>
 		<button type="button" (click)="onTaskDeleted(task.id)">Delete</button>

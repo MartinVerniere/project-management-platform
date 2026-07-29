@@ -103,7 +103,7 @@ describe('MemberList', () => {
 		expect(children).toHaveLength(2);
 	});
 
-	it('should enable add member form on ', async () => {
+	it('should enable add member form on click', async () => {
 		await createComponent();
 
 		component.onEnableAddMember();
@@ -120,7 +120,7 @@ describe('MemberList', () => {
 		expect(component.addMemberFormEnabled()).toBe(false);
 	});
 
-	it('should emit memberAdded when member is added, and close form', async () => {
+	it('should emit memberAdded when MemberForm emits memberAdded, and hide the form', async () => {
 		await createComponent();
 
 		component.onEnableAddMember();
@@ -139,7 +139,7 @@ describe('MemberList', () => {
 		expect(emitSpy).toHaveBeenCalled();
 	});
 
-	it('should emit removeMember when member is removed', async () => {
+	it('should emit removeMember when MemberElement emits memberRemoved', async () => {
 		await createComponent();
 
 		const child = fixture.debugElement

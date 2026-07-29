@@ -1,0 +1,23 @@
+<form class="comment-update-form" (submit)="(onSubmit($event))">
+	<div class="form-grid">
+		<div class="form-group">
+			<label class="form-label" for="content"> Comment </label>
+			<input id="content" type="text" class="form-input" [formField]="commentForm.content"/>
+		</div>
+
+		<div class="form-error">
+			@if (error()) {
+			<div class="error">
+				<span>{{ error() }}</span>
+			</div>
+			}
+		</div>
+
+		<div class="form-actions">
+			<button class="btn btn-primary" type="submit" [disabled]="commentForm().invalid()">
+				Edit comment
+			</button>
+			<button type="button" (click)="onCancel()">Cancel</button>
+		</div>
+	</div>
+</form>

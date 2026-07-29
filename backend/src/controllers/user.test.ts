@@ -3,98 +3,75 @@ import request from 'supertest';
 
 import { app } from '../app.js';
 import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
+import { registerUser, loginUser } from '../helpers/test.js';
 
 describe('User API', () => {
 	let authToken: string;
-	let johnUserId: number;
-	let aliceUserId: number;
+	let aliceId: number;
 
 	beforeEach(async () => {
 		await clearDatabase();
 	});
 
-	describe('when users exist in database', () => {
+	describe('when a user is logged in', () => {
 		beforeEach(async () => {
-			const johnResponse = await request(app)
-				.post('/api/auth/register')
-				.send({
-					username: 'john',
-					email: 'john@test.com',
-					password: 'password123',
-				});
+			//Create user
+			const john = await registerUser('john', 'john@test.com', 'password123');
+			const alice = await registerUser('alice', 'alice@test.com', 'password123');
+			aliceId = alice.id;
+			const martin = await registerUser('martin', 'martin@test.com', 'password123');
 
-			johnUserId = johnResponse.body.id;
-
-			const aliceResponse = await request(app)
-				.post('/api/auth/register')
-				.send({
-					username: 'alice',
-					email: 'alice@test.com',
-					password: 'password123',
-				});
-
-			aliceUserId = aliceResponse.body.id;
-
-			const response = await request(app)
-				.post('/api/auth/login')
-				.send({
-					username: 'john',
-					password: 'password123',
-				});
-
-			authToken = response.body.token
+			//Login
+			const login = await loginUser('john', 'password123');
+			authToken = login.token;
 		});
 
-		describe('GET /api/users', () => {
-			it('returns all users', async () => {
+		describe('on get users', () => {
+			it('returns users', async () => {
 				const response = await request(app)
 					.get('/api/users')
 					.set('Authorization', `Bearer ${authToken}`);
 
 				expect(response.status).toBe(200);
-				expect(response.body).toHaveLength(2);
+				expect(response.body).toHaveLength(3);
 				expect(response.body).toEqual(
 					expect.arrayContaining([
 						expect.objectContaining({ username: 'john', email: 'john@test.com' }),
-						expect.objectContaining({ username: 'alice', email: 'alice@test.com' })
+						expect.objectContaining({ username: 'alice', email: 'alice@test.com' }),
+						expect.objectContaining({ username: 'martin', email: 'martin@test.com' })
 					])
 				);
 			});
 
-			it('rejects request without token', async () => {
+			it('returns 401 if token is invalid', async () => {
+				const response = await request(app)
+					.get('/api/users')
+					.set('Authorization', `Bearer INVALID_TOKEN`);
+
+				expect(response.status).toBe(401);
+				expect(response.body.error.message).toBe("Authentication token is invalid.");
+			});
+
+			it('returns 401 if token is missing', async () => {
 				const response = await request(app)
 					.get('/api/users');
 
 				expect(response.status).toBe(401);
-				expect(response.body.error.message).toEqual('Authentication token is missing.');
-			});
-
-			it('rejects invalid token', async () => {
-				const response = await request(app)
-					.get('/api/users')
-					.set('Authorization', 'Bearer invalid-token');
-
-				expect(response.status).toBe(401);
-				expect(response.body.error.message).toBe('Authentication token is invalid.');
+				expect(response.body.error.message).toBe("Authentication token is missing.");
 			});
 		});
 
-		describe('GET /api/users/:id', () => {
-			it('returns user by id', async () => {
+		describe('on get user by id', () => {
+			it('returns user', async () => {
 				const response = await request(app)
-					.get(`/api/users/${aliceUserId}`)
+					.get(`/api/users/${aliceId}`)
 					.set('Authorization', `Bearer ${authToken}`);
 
 				expect(response.status).toBe(200);
-				expect(response.body).toEqual({
-					id: aliceUserId,
-					username: 'alice',
-					email: 'alice@test.com',
-				});
+				expect(response.body).toEqual({ id: aliceId, username: 'alice', email: 'alice@test.com' });
 			});
 
-
-			it('returns 400 for invalid user id', async () => {
+			it('returns 400 if invalid user id', async () => {
 				const response = await request(app)
 					.get(`/api/users/${INVALID_ID}`)
 					.set('Authorization', `Bearer ${authToken}`);
@@ -103,14 +80,30 @@ describe('User API', () => {
 				expect(response.body.error.message).toEqual('Invalid user id.');
 			});
 
-
-			it('returns 404 when user does not exist', async () => {
+			it('returns 404 if user not found', async () => {
 				const response = await request(app)
 					.get(`/api/users/${NOT_FOUND_ID}`)
 					.set('Authorization', `Bearer ${authToken}`);
 
 				expect(response.status).toBe(404);
-				expect(response.body.error.message).toEqual('Could not find user with that id.');
+				expect(response.body.error.message).toEqual('User not found.');
+			});
+
+			it('returns 401 if token is invalid', async () => {
+				const response = await request(app)
+					.get(`/api/users/${aliceId}`)
+					.set('Authorization', `Bearer INVALID_TOKEN`);
+
+				expect(response.status).toBe(401);
+				expect(response.body.error.message).toBe("Authentication token is invalid.");
+			});
+
+			it('returns 401 if token is missing', async () => {
+				const response = await request(app)
+					.get(`/api/users/${aliceId}`);
+
+				expect(response.status).toBe(401);
+				expect(response.body.error.message).toBe("Authentication token is missing.");
 			});
 		});
 	});

@@ -19,19 +19,7 @@ export class BoardDetails {
 
 	board = resource({ loader: () => firstValueFrom(this.boardService.getBoard(this.boardId)) });
 
-	async onDeleteColumn() {
-		this.board.reload();
-	}
-
-	async onMovedColumn() {
-		this.board.reload();
-	}
-
-	async onDeleteTask() {
-		this.board.reload();
-	}
-
-	async onMovedTask() {
+	async onColumnListEdited() {
 		this.board.reload();
 	}
 }

@@ -3,7 +3,7 @@
 	@for (column of columnList(); track column.id; let i = $index) {
 	<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()" [isFirst]="i === 0"
 		[isLast]="i === columnList().length - 1" (moveLeft)="onMoveLeft($event)" (moveRight)="onMoveRight($event)"
-		(columnDeleted)="columnDeleted.emit()" (taskMoved)="taskMoved.emit()" (taskDeleted)="taskDeleted.emit()">
+		(columnDeleted)="columnListEdited.emit()" (columnTasksEdited)="columnListEdited.emit()">
 	</app-column-element>
 	} @empty {
 	<div class="column-list-empty">No columns in this project</div>
