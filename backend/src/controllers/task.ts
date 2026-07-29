@@ -66,6 +66,63 @@ taskRouter.post('/:id/comments',
 	}
 );
 
+taskRouter.put('/:id/column',
+	tokenExtractor,
+	userExtractor,
+	taskExtractor,
+	requireTaskMember,
+	async (request: Request, response: Response) => {
+		const task = request.task!;
+		const { columnId } = request.body;
+
+		const originColumn = await prisma.boardColumn.findUnique({ where: { id: task.columnId } });
+		if (!originColumn) throw new ApiError(404, "ORIGIN_COLUMN_NOT_FOUND", "Origin column not found.");
+
+		if (!columnId) throw new ApiError(400, "COLUMN_ID_REQUIRED", "Column id is required.");
+		if (!Number.isInteger(columnId)) throw new ApiError(400, "INVALID_COLUMN_ID", "Invalid column id.");
+
+		// If already in column, just return
+		if (task.columnId === columnId) return response.status(200).json(task);
+
+		const destinationColumn = await prisma.boardColumn.findUnique({
+			where: { id: columnId },
+			include: { tasks: true }
+		});
+		if (!destinationColumn) throw new ApiError(404, "DESTINATION_COLUMN_NOT_FOUND", "Destination column not found.");
+		if (originColumn.boardId !== destinationColumn.boardId) throw new ApiError(409, "INVALID_TASK_MOVE", "Can't move a task to a column of a different board.");
+
+		const destinationTaskCount = destinationColumn.tasks.length;
+
+		const updatedTask = await prisma.$transaction(async (transaction) => {
+			// Move task to destination column (append at the end)
+			const updatedTask = await transaction.task.update({
+				where: { id: task.id },
+				data: {
+					columnId: destinationColumn.id,
+					order: destinationTaskCount,
+				},
+			});
+
+			// Reorder old column
+			const remainingTasks = await transaction.task.findMany({
+				where: { columnId: originColumn.id },
+				orderBy: { order: "asc" },
+			});
+
+			for (const [index, remainingTask] of remainingTasks.entries()) {
+				await transaction.task.update({
+					where: { id: remainingTask.id },
+					data: { order: index },
+				});
+			}
+
+			return updatedTask;
+		});
+
+		return response.status(200).json(updatedTask);
+	}
+);
+
 taskRouter.delete('/:id',
 	tokenExtractor,
 	userExtractor,
