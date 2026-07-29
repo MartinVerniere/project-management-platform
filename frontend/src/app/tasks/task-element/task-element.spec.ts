@@ -15,9 +15,6 @@ import { By } from '@angular/platform-browser';
 })
 class CommentListStub {
 	commentList = input.required<Comment[]>();
-	projectId = input.required<number>();
-	boardId = input.required<number>();
-	columnId = input.required<number>();
 	taskId = input.required<number>();
 
 	commentListEdited = output<void>();

@@ -76,6 +76,19 @@ describe('TaskService', () => {
 		request.flush({});
 	});
 
+	it('should move task to another column', () => {
+		const destinationColumnId = 2;
+
+		service.moveTask(taskA.id, destinationColumnId).subscribe();
+
+		const request = httpMock.expectOne(`http://localhost:3000/api/tasks/${taskA.id}/column`);
+
+		expect(request.request.method).toBe('PUT');
+		expect(request.request.body).toEqual({ columnId: destinationColumnId });
+
+		request.flush({});
+	});
+
 	it('should add comment to task', () => {
 		const newComment: Comment = {
 			id: 1,
@@ -85,7 +98,7 @@ describe('TaskService', () => {
 				username: 'john'
 			}
 		}
-		
+
 		service.addComment(taskA.id, newComment).subscribe();
 
 		const request = httpMock.expectOne(`http://localhost:3000/api/tasks/${taskA.id}/comments`);
