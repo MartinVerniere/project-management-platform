@@ -4,7 +4,7 @@ import { ColumnList } from './column-list';
 import { BoardService } from '../../services/boards/board-service';
 import { ActivatedRoute } from '@angular/router';
 import { Column } from '../../services/columns/column-service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { ColumnElement } from '../column-element/column-element';
 import { By } from '@angular/platform-browser';
@@ -22,14 +22,11 @@ class ColumnElementStub {
 
 	isFirst = input<boolean>();
 	isLast = input<boolean>();
-	isInFirstColumn = input<boolean>();
-	isInLastColumn = input<boolean>();
 
-	columnDeleted = output<void>();
+	columnElementEdited = output<void>();
 	moveLeft = output<number>();
 	moveRight = output<number>();
-	columnTasksEdited = output<void>();
-	moveTaskToColumn = output<{ taskId: number; direction: 'left' | 'right' }>();
+	moveTaskToColumn = output<{ taskId: number; destinationColumnId: number; }>();
 }
 
 describe('ColumnList', () => {
@@ -164,29 +161,7 @@ describe('ColumnList', () => {
 		expect(component.error()).toBeNull();
 	});
 
-	it('should not move task left from first column', async () => {
-		await createComponent(true, columnList);
-
-		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
-		const firstColumn = children[0].componentInstance as ColumnElementStub;
-
-		firstColumn.moveTaskToColumn.emit({ taskId: 1, direction: 'left' });
-
-		expect(taskServiceMock.moveTask).not.toHaveBeenCalled();
-	});
-
-	it('should not move task right from last column', async () => {
-		await createComponent(true, columnList);
-
-		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
-		const secondColumn = children[1].componentInstance as ColumnElementStub;
-
-		secondColumn.moveTaskToColumn.emit({ taskId: 1, direction: 'right' });
-
-		expect(taskServiceMock.moveTask).not.toHaveBeenCalled();
-	});
-
-	it('should move task to previous column when moving left and emit columnTasksEdited', async () => {
+	it('should move task to destination column when task is dragged and emit columnListEdited', async () => {
 		taskServiceMock.moveTask.mockReturnValue(of({}));
 
 		await createComponent(true, columnList);
@@ -196,43 +171,37 @@ describe('ColumnList', () => {
 		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
 		const secondColumn = children[1].componentInstance as ColumnElementStub;
 
-		secondColumn.moveTaskToColumn.emit({ taskId: 1, direction: 'left' });
-
-		expect(taskServiceMock.moveTask).toHaveBeenCalledWith(1, 1);
-		expect(emitSpy).toHaveBeenCalled();
-	});
-
-	it('should move task to next column when moving right and emit columnTasksEdited', async () => {
-		taskServiceMock.moveTask.mockReturnValue(of({}));
-
-		await createComponent(true, columnList);
-
-		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
-
-		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
-		const firstColumn = children[0].componentInstance as ColumnElementStub;
-
-		firstColumn.moveTaskToColumn.emit({ taskId: 1, direction: 'right' });
+		secondColumn.moveTaskToColumn.emit({ taskId: 1, destinationColumnId: 2 });
 
 		expect(taskServiceMock.moveTask).toHaveBeenCalledWith(1, 2);
 		expect(emitSpy).toHaveBeenCalled();
 	});
 
-	it('should emit columnListEdited when one of the ColumnElement emits columnDeleted', async () => {
-		await createComponent(true, columnList);
+	it('should not move task to destination column when dragging action fails', async () => {
+		taskServiceMock.moveTask.mockReturnValue(throwError(() => ({
+			error: {
+				error: {
+					code: 'ERROR_MESSAGE',
+					message: 'Error message'
+				}
+			}
+		})));
 
-		const child = fixture.debugElement
-			.query(By.directive(ColumnElementStub))
-			.componentInstance as ColumnElementStub;
+		await createComponent(true, columnList);
 
 		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
-		child.columnDeleted.emit();
+		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
+		const firstColumn = children[0].componentInstance as ColumnElementStub;
 
-		expect(emitSpy).toHaveBeenCalled();
+		firstColumn.moveTaskToColumn.emit({ taskId: 1, destinationColumnId: 2 });
+
+		expect(taskServiceMock.moveTask).toHaveBeenCalledWith(1, 2);
+		expect(emitSpy).not.toHaveBeenCalled();
+		expect(component.error()).not.toBe(null);
 	});
 
-	it('should emit columnListEdited when one of the ColumnElement emits columnTasksEdited', async () => {
+	it('should emit columnListEdited when one of the ColumnElement emits columnElementEdited', async () => {
 		await createComponent(true, columnList);
 
 		const child = fixture.debugElement
@@ -241,7 +210,7 @@ describe('ColumnList', () => {
 
 		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
-		child.columnTasksEdited.emit();
+		child.columnElementEdited.emit();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});

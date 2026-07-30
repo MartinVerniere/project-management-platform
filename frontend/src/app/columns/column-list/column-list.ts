@@ -72,7 +72,7 @@ export class ColumnList {
 		});
 	}
 
-	onMoveTaskToColumn(event: any) {
+	onMoveTaskToColumn(event: { taskId: number; destinationColumnId: number; }) {
 		const { taskId, destinationColumnId } = event;
 		this.taskService.moveTask(taskId, destinationColumnId).subscribe({
 			next: () => {
