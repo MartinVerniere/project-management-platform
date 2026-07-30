@@ -5,10 +5,11 @@ import { ColumnElement } from "../column-element/column-element";
 import { BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TaskService } from "../../services/tasks/task-service";
+import { CdkDropListGroup } from "@angular/cdk/drag-drop";
 
 @Component({
 	selector: 'app-column-list',
-	imports: [RouterLink, ColumnElement],
+	imports: [RouterLink, ColumnElement, CdkDropListGroup],
 	templateUrl: './column-list.html',
 	styleUrl: './column-list.css',
 })
