@@ -18,8 +18,12 @@ export class TaskList {
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
+	
+	isInFirstColumn = input<boolean>();
+	isInLastColumn = input<boolean>();
 
 	taskListEdited = output<void>();
+	moveTaskToColumn = output<{ taskId: number; direction: 'left' | 'right' }>();
 
 	error = signal<string | null>(null);
 

@@ -20,7 +20,11 @@ class TaskListStub {
 	boardId = input.required<number>();
 	columnId = input.required<number>();
 
+	isInFirstColumn = input<boolean>();
+	isInLastColumn = input<boolean>();
+
 	taskListEdited = output<void>();
+	moveTaskToColumn = output<{ taskId: number; direction: 'left' | 'right' }>();
 }
 
 describe('ColumnElement', () => {
@@ -195,5 +199,19 @@ describe('ColumnElement', () => {
 		taskList.taskListEdited.emit();
 
 		expect(emitSpy).toHaveBeenCalledOnce();
+	});
+
+	it('should emit moveTaskToColumn when TaskList emits moveTaskToColumn', async () => {
+		await createComponent();
+
+		const taskList = fixture.debugElement
+			.query(By.directive(TaskListStub))
+			.componentInstance as TaskListStub;
+
+		const emitSpy = vi.spyOn(component.moveTaskToColumn, 'emit');
+
+		taskList.moveTaskToColumn.emit({ taskId: 1, direction: 'left' });
+
+		expect(emitSpy).toHaveBeenCalledWith({ taskId: 1, direction: 'left' });
 	});
 });

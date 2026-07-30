@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { ColumnElement } from '../column-element/column-element';
 import { By } from '@angular/platform-browser';
+import { TaskService } from '../../services/tasks/task-service';
 
 @Component({
 	selector: 'app-column-element',
@@ -18,14 +19,17 @@ class ColumnElementStub {
 	column = input.required<Column>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
-	
+
 	isFirst = input<boolean>();
 	isLast = input<boolean>();
+	isInFirstColumn = input<boolean>();
+	isInLastColumn = input<boolean>();
 
 	columnDeleted = output<void>();
 	moveLeft = output<number>();
 	moveRight = output<number>();
 	columnTasksEdited = output<void>();
+	moveTaskToColumn = output<{ taskId: number; direction: 'left' | 'right' }>();
 }
 
 describe('ColumnList', () => {
@@ -34,6 +38,7 @@ describe('ColumnList', () => {
 	let html: HTMLElement;
 
 	const boardServiceMock = { changeColumnOrder: vi.fn() };
+	const taskServiceMock = { moveTask: vi.fn() };
 
 	const activatedRouteMock = {
 		snapshot: {
@@ -48,7 +53,16 @@ describe('ColumnList', () => {
 	};
 
 	const columnList: Column[] = [
-		{ id: 1, name: "Column A", tasks: [] },
+		{
+			id: 1, name: "Column A",
+			tasks: [
+				{
+					id: 1,
+					title: 'Task A',
+					comments: []
+				}
+			]
+		},
 		{ id: 2, name: "Column B", tasks: [] }
 	];
 
@@ -79,6 +93,7 @@ describe('ColumnList', () => {
 			imports: [ColumnList],
 			providers: [
 				{ provide: BoardService, useValue: boardServiceMock },
+				{ provide: TaskService, useValue: taskServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock },
 			]
 		}).overrideComponent(ColumnList, {
@@ -147,6 +162,60 @@ describe('ColumnList', () => {
 		expect(boardServiceMock.changeColumnOrder).toHaveBeenCalledWith(1, { columnOrder: expectedOrder });
 		expect(emitSpy).toHaveBeenCalled();
 		expect(component.error()).toBeNull();
+	});
+
+	it('should not move task left from first column', async () => {
+		await createComponent(true, columnList);
+
+		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
+		const firstColumn = children[0].componentInstance as ColumnElementStub;
+
+		firstColumn.moveTaskToColumn.emit({ taskId: 1, direction: 'left' });
+
+		expect(taskServiceMock.moveTask).not.toHaveBeenCalled();
+	});
+
+	it('should not move task right from last column', async () => {
+		await createComponent(true, columnList);
+
+		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
+		const secondColumn = children[1].componentInstance as ColumnElementStub;
+
+		secondColumn.moveTaskToColumn.emit({ taskId: 1, direction: 'right' });
+
+		expect(taskServiceMock.moveTask).not.toHaveBeenCalled();
+	});
+
+	it('should move task to previous column when moving left and emit columnTasksEdited', async () => {
+		taskServiceMock.moveTask.mockReturnValue(of({}));
+
+		await createComponent(true, columnList);
+
+		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
+
+		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
+		const secondColumn = children[1].componentInstance as ColumnElementStub;
+
+		secondColumn.moveTaskToColumn.emit({ taskId: 1, direction: 'left' });
+
+		expect(taskServiceMock.moveTask).toHaveBeenCalledWith(1, 1);
+		expect(emitSpy).toHaveBeenCalled();
+	});
+
+	it('should move task to next column when moving right and emit columnTasksEdited', async () => {
+		taskServiceMock.moveTask.mockReturnValue(of({}));
+
+		await createComponent(true, columnList);
+
+		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
+
+		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
+		const firstColumn = children[0].componentInstance as ColumnElementStub;
+
+		firstColumn.moveTaskToColumn.emit({ taskId: 1, direction: 'right' });
+
+		expect(taskServiceMock.moveTask).toHaveBeenCalledWith(1, 2);
+		expect(emitSpy).toHaveBeenCalled();
 	});
 
 	it('should emit columnListEdited when one of the ColumnElement emits columnDeleted', async () => {

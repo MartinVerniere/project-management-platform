@@ -13,6 +13,8 @@ describe('Task API', () => {
 	describe('when a task exists in the database', () => {
 		let authToken: string;
 		let taskId: number;
+		let columnBId: number;
+		let columnCId: number;
 
 		beforeEach(async () => {
 			//Create users
@@ -26,14 +28,19 @@ describe('Task API', () => {
 			//Create project
 			const project = await createProject(authToken, 'Test 1', 'TEST1', 'test desc');
 
-			//Create board
-			const board = await createBoard(authToken, project.id, 'Board A');
+			//Create boards
+			const boardA = await createBoard(authToken, project.id, 'Board A');
+			const boardB = await createBoard(authToken, project.id, 'Board B');
 
 			//Create column
-			const column = await createColumn(authToken, board.id, 'Column A');
+			const columnA = await createColumn(authToken, boardA.id, 'Column A');
+			const columnB = await createColumn(authToken, boardA.id, 'Column B');
+			columnBId = columnB.id;
+			const columnC = await createColumn(authToken, boardB.id, 'Column C');
+			columnCId = columnC.id;
 
 			//Create task
-			const task = await createTask(authToken, column.id, 'Task A', 'This is task A');
+			const task = await createTask(authToken, columnA.id, 'Task A', 'This is task A');
 			taskId = task.id;
 		});
 
@@ -251,6 +258,97 @@ describe('Task API', () => {
 				});
 			});
 
+			describe('on move task to another column', () => {
+				it('moves task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}/column`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ columnId: columnBId });
+
+					expect(response.status).toBe(200);
+					expect(response.body.columnId).toBe(columnBId);
+				});
+
+				it('returns 400 if missing field column id in request', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}/column`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({});
+
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe('Column id is required.');
+				});
+
+				it('returns 400 if invalid column id', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}/column`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ columnId: INVALID_ID });
+
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe('Invalid column id.');
+				});
+
+				it('returns 404 if destination column not found', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}/column`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ columnId: NOT_FOUND_ID });
+
+					expect(response.status).toBe(404);
+					expect(response.body.error.message).toBe('Destination column not found.');
+				});
+
+				it('returns 409 if destination column belongs to a different board', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}/column`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ columnId: columnCId });
+
+					expect(response.status).toBe(409);
+					expect(response.body.error.message).toBe("Can't move a task to a column of a different board.");
+				});
+
+				it('returns 400 if invalid task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${INVALID_ID}/column`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ columnId: columnBId });
+
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe('Invalid task id.');
+				});
+
+				it('returns 404 if task not found', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${NOT_FOUND_ID}/column`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ columnId: columnBId });
+
+					expect(response.status).toBe(404);
+					expect(response.body.error.message).toBe('Task not found.');
+				});
+
+				it('returns 401 if token is invalid', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}/column`)
+						.set('Authorization', `Bearer INVALID_TOKEN`)
+						.send({ columnId: columnBId });
+
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is invalid.");
+				});
+
+				it('returns 401 if token is missing', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}/column`)
+						.send({ columnId: columnBId });
+
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is missing.");
+				});
+			});
+
 			describe('on delete task', () => {
 				it('deletes task', async () => {
 					const response = await request(app)
@@ -329,6 +427,18 @@ describe('Task API', () => {
 						.post(`/api/tasks/${taskId}/comments`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ content: 'This is an updated comment!' });
+
+					expect(response.status).toBe(403);
+					expect(response.body.error.message).toBe("You do not have access to this project.");
+				});
+			});
+
+			describe('on move task to another column', () => {
+				it('returns 403 if user is not a member of the project that contains the task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskId}/column`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ columnId: columnBId });
 
 					expect(response.status).toBe(403);
 					expect(response.body.error.message).toBe("You do not have access to this project.");

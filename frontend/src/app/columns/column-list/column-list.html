@@ -1,13 +1,16 @@
 <div class="column-list">
 	<h3 class="column-title">Columns</h3>
-	@for (column of columnList(); track column.id; let i = $index) {
-	<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()" [isFirst]="i === 0"
-		[isLast]="i === columnList().length - 1" (moveLeft)="onMoveLeft($event)" (moveRight)="onMoveRight($event)"
-		(columnDeleted)="columnListEdited.emit()" (columnTasksEdited)="columnListEdited.emit()">
-	</app-column-element>
-	} @empty {
-	<div class="column-list-empty">No columns in this project</div>
-	}
+	<div class="column-element-list">
+		@for (column of columnList(); track column.id; let i = $index) {
+		<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()" [isFirst]="i === 0"
+			[isLast]="i === columnList().length - 1" (moveLeft)="onMoveLeft($event)" (moveRight)="onMoveRight($event)"
+			(columnDeleted)="columnListEdited.emit()" (columnTasksEdited)="columnListEdited.emit()"
+			(moveTaskToColumn)="onMoveTaskToColumn(column.id, $event)">
+		</app-column-element>
+		} @empty {
+		<div class="column-list-empty">No columns in this project</div>
+		}
+	</div>
 	<button type="button" [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', 'create']">
 		Create new column
 	</button>

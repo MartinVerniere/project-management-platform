@@ -30,6 +30,10 @@ export class TaskService {
 		return this.http.delete<void>(`${API_URL}/${taskId}`);
 	}
 
+	moveTask(taskId: number, destinationColumnId: number): Observable<Task> {
+		return this.http.put<Task>(`${API_URL}/${taskId}/column`, { columnId: destinationColumnId });
+	}
+
 	addComment(taskId: number, request: CommentModel): Observable<Comment> {
 		return this.http.post<Comment>(`${API_URL}/${taskId}/comments`, request);
 	}
