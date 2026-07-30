@@ -20,21 +20,18 @@ export class ColumnElement {
 
 	isFirst = input<boolean>();
 	isLast = input<boolean>();
-	isInFirstColumn = input<boolean>();
-	isInLastColumn = input<boolean>();
 
-	columnDeleted = output<void>();
+	columnElementEdited = output<void>();
 	moveLeft = output<number>();
 	moveRight = output<number>();
-	columnTasksEdited = output<void>();
-	moveTaskToColumn = output<{ taskId: number; direction: 'left' | 'right' }>();
+	moveTaskToColumn = output<{ taskId: number; destinationColumnId: number; }>();
 
 	error = signal<string | null>(null);
 
 	onRemoveColumn(columnId: number) {
 		this.columnService.deleteColumn(columnId).subscribe({
 			next: () => {
-				this.columnDeleted.emit();
+				this.columnElementEdited.emit();
 				this.error.set(null);
 			},
 			error: (response: HttpErrorResponse) => {

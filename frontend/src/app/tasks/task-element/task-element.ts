@@ -18,16 +18,8 @@ export class TaskElement {
 	boardId = input.required<number>();
 	columnId = input.required<number>();
 
-	isFirst = input<boolean>();
-	isLast = input<boolean>();
-	isInFirstColumn = input<boolean>();
-	isInLastColumn = input<boolean>();
-
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();
-	moveUp = output<number>();
-	moveDown = output<number>();
-	moveTaskToColumn = output<'left' | 'right'>();
 
 	error = signal<string | null>(null);
 

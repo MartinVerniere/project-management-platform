@@ -71,21 +71,9 @@ export class ColumnList {
 		});
 	}
 
-	onMoveTaskToColumn(columnId: number, event: { taskId: number; direction: 'left' | 'right' }) {
-		const columns = this.columnList();
-
-		const currentIndex = columns.findIndex(column => column.id === columnId);
-		if (currentIndex === -1) return;
-
-		const destinationIndex = event.direction === 'left'
-			? currentIndex - 1
-			: currentIndex + 1;
-
-		if (destinationIndex < 0 || destinationIndex >= columns.length) return;
-
-		const destinationColumn = columns[destinationIndex];
-
-		this.taskService.moveTask(event.taskId, destinationColumn.id).subscribe({
+	onMoveTaskToColumn(event: any) {
+		const { taskId, destinationColumnId } = event;
+		this.taskService.moveTask(taskId, destinationColumnId).subscribe({
 			next: () => {
 				this.columnListEdited.emit();
 				this.error.set(null);
