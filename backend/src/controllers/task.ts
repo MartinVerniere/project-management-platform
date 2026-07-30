@@ -91,6 +91,17 @@ taskRouter.put('/:id/column',
 		if (!destinationColumn) throw new ApiError(404, "DESTINATION_COLUMN_NOT_FOUND", "Destination column not found.");
 		if (originColumn.boardId !== destinationColumn.boardId) throw new ApiError(409, "INVALID_TASK_MOVE", "Can't move a task to a column of a different board.");
 
+		const taskTitleExists = await prisma.task.findUnique({
+			where: {
+				columnId_title: {
+					columnId: destinationColumn.id,
+					title: task.title,
+				}
+			}
+		});
+
+		if (taskTitleExists) throw new ApiError(409, "TASK_TITLE_ALREADY_EXISTS", "A task with this title already exists in the destination column.");
+
 		const destinationTaskCount = destinationColumn.tasks.length;
 
 		const updatedTask = await prisma.$transaction(async (transaction) => {
