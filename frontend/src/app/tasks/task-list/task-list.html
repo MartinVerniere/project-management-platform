@@ -1,16 +1,22 @@
-<div class="task-list">
-	<h3 class="task-title">Tasks</h3>
-	@for (task of taskList(); track task.id; let i = $index) {
-	<app-task-element [task]="task" [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()"
-		[isFirst]="i === 0" [isLast]="i === taskList().length - 1" [isInFirstColumn]="isInFirstColumn()"
-		[isInLastColumn]="isInLastColumn()" (moveUp)="onMoveUp($event)" (moveDown)="onMoveDown($event)"
-		(moveTaskToColumn)="moveTaskToColumn.emit({ taskId: task.id, direction: $event })"
-		(taskDeleted)="taskListEdited.emit()" (taskCommentsEdited)="taskListEdited.emit()">
-	</app-task-element>
-	} @empty {
-	<div class="task-list-empty">No tasks yet!</div>
-	}
-	<button [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', 'create']">
-		Create new task
-	</button>
+@if (taskList(); as taskList){
+<div cdkDropList [cdkDropListData]="taskList" (cdkDropListDropped)="onMoveTask($event)">
+	<div class="task-list">
+		<h3 class="task-title"> Tasks </h3>
+		<div class="task-element-list">
+			@for (task of taskList; track task.id; let i = $index) {
+			<div cdkDrag [cdkDragData]="task">
+				<app-task-element [task]="task" [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()"
+					(taskDeleted)="taskListEdited.emit()" (taskCommentsEdited)="taskListEdited.emit()">
+				</app-task-element>
+			</div>
+			} @empty {
+			<div class="task-list-empty">No tasks yet!</div>
+			}
+		</div>
+		<button
+			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', 'create']">
+			Create new task
+		</button>
+	</div>
 </div>
+}

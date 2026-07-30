@@ -42,7 +42,7 @@ export class ColumnService {
 		return this.http.post<Column>(`${API_URL}/${columnId}/tasks`, request);
 	}
 
-	changeTaskOrder(boardId: number, request: TaskOrderRequest): Observable<Column> {
-		return this.http.put<Column>(`${API_URL}/${boardId}/tasks/order`, request);
+	changeTaskOrder(columnId: number, request: TaskOrderRequest): Observable<Column> {
+		return this.http.put<Column>(`${API_URL}/${columnId}/tasks/order`, request);
 	}
 }

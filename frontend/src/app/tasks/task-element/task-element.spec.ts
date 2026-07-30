@@ -67,7 +67,7 @@ describe('TaskElement', () => {
 	const boardId = 1;
 	const columnId = 1;
 
-	async function createComponent(shouldAwait: boolean = true, isFirst = false, isLast = false) {
+	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(TaskElement);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -76,8 +76,6 @@ describe('TaskElement', () => {
 		fixture.componentRef.setInput('projectId', projectId);
 		fixture.componentRef.setInput('boardId', boardId);
 		fixture.componentRef.setInput('columnId', columnId);
-		fixture.componentRef.setInput('isFirst', isFirst);
-		fixture.componentRef.setInput('isLast', isLast);
 
 		fixture.detectChanges();
 
@@ -119,64 +117,6 @@ describe('TaskElement', () => {
 
 		expect(html.textContent).toContain('Task A');
 		expect(children).toHaveLength(1);
-	});
-
-	it('should have "move up" button disabled when it is the first task', async () => {
-		await createComponent(true, true, false);
-
-		const moveUpButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Move up'));
-
-		expect(moveUpButton).toBeTruthy();
-		expect(moveUpButton!.hasAttribute('disabled')).toBe(true);
-	});
-
-	it('should have "move down" button disabled when it is the last task', async () => {
-		await createComponent(true, false, true);
-
-		const moveDownButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Move down'));
-
-		expect(moveDownButton).toBeTruthy();
-		expect(moveDownButton!.hasAttribute('disabled')).toBe(true);
-	});
-
-	it('should emit moveUp on "Move up" button clicked', async () => {
-		await createComponent();
-
-		const emitSpy = vi.spyOn(component.moveUp, 'emit');
-
-		const moveUpButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Move up'));
-
-		expect(moveUpButton).toBeTruthy();
-
-		moveUpButton!.click();
-
-		await fixture.whenStable();
-
-		expect(emitSpy).toHaveBeenCalledWith(1);
-	});
-
-	it('should emit moveDown on "Move down" button clicked', async () => {
-		await createComponent();
-
-		const emitSpy = vi.spyOn(component.moveDown, 'emit');
-
-		const moveDownButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Move down'));
-
-		expect(moveDownButton).toBeTruthy();
-
-		moveDownButton!.click();
-
-		await fixture.whenStable();
-
-		expect(emitSpy).toHaveBeenCalledWith(1);
 	});
 
 	it('should remove task and emit taskRemoved when "Delete" button is clicked', async () => {

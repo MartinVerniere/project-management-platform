@@ -7,11 +7,10 @@
 		<button type="button" [disabled]="isLast()" (click)="moveRight.emit(column.id)">Move right</button>
 	</div>
 	<app-task-list [taskList]="column.tasks" [projectId]="projectId()" [boardId]="boardId()" [columnId]="column.id"
-		[isInFirstColumn]="isFirst()" [isInLastColumn]="isLast()" (taskListEdited)="columnTasksEdited.emit()"
-		(moveTaskToColumn)="moveTaskToColumn.emit($event)"></app-task-list>
+		(taskListEdited)="columnElementEdited.emit()" (moveTaskToColumn)="moveTaskToColumn.emit({ taskId: $event, destinationColumnId: column.id })">
+	</app-task-list>
 	<div class="column-buttons">
-		<button type="button"
-			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'edit']">
+		<button type="button" [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'edit']">
 			Edit
 		</button>
 		<button type="button" (click)="onRemoveColumn(column.id)">Delete</button>

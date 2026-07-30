@@ -1,0 +1,12 @@
+.task-list {
+	background: lightskyblue;
+	display: flex;
+	flex-direction: column;
+}
+
+.task-element-list {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	overflow-y: auto;
+}

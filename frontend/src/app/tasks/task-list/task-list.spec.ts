@@ -1,13 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskList } from './task-list';
-import { Task, TaskService } from '../../services/tasks/task-service';
-import { Column, ColumnService } from '../../services/columns/column-service';
+import { Task } from '../../services/tasks/task-service';
+import { ColumnService } from '../../services/columns/column-service';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { TaskElement } from '../task-element/task-element';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
 	selector: 'app-task-element',
@@ -20,16 +21,8 @@ class TaskElementStub {
 	boardId = input.required<number>();
 	columnId = input.required<number>();
 
-	isFirst = input<boolean>();
-	isLast = input<boolean>();
-	isInFirstColumn = input<boolean>();
-	isInLastColumn = input<boolean>();
-
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();
-	moveUp = output<number>();
-	moveDown = output<number>();
-	moveTaskToColumn = output<'left' | 'right'>();
 }
 
 describe('TaskList', () => {
@@ -38,7 +31,6 @@ describe('TaskList', () => {
 	let html: HTMLElement;
 
 	const columnServiceMock = { changeTaskOrder: vi.fn() };
-	const taskServiceMock = { moveTask: vi.fn() };
 
 	const activatedRouteMock = {
 		snapshot: {
@@ -86,7 +78,6 @@ describe('TaskList', () => {
 			imports: [TaskList],
 			providers: [
 				{ provide: ColumnService, useValue: columnServiceMock },
-				{ provide: TaskService, useValue: taskServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock },
 			]
 		}).overrideComponent(TaskList, {
@@ -119,55 +110,55 @@ describe('TaskList', () => {
 		expect(html.textContent).toContain('No tasks yet!');
 	});
 
-	it('should change task order when task is moved up and emit taskListEdited', async () => {
-		const expectedOrder = [
-			{ id: 2, order: 0 },
-			{ id: 1, order: 1 },
-		];
+	it('should emit task moveTaskToColumn with task.Id when task was dragged from another column', async () => {
+		const previousContainer = {};
+		const destinationContainer = {};
 
-		columnServiceMock.changeTaskOrder.mockReturnValue(of({}));
-
-		await createComponent(true, taskList);
-
-		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
-
-		component.onMoveUp(2);
-
-		expect(columnServiceMock.changeTaskOrder).toHaveBeenCalledWith(1, { taskOrder: expectedOrder });
-		expect(emitSpy).toHaveBeenCalled();
-		expect(component.error()).toBeNull();
-	});
-
-	it('should change task order when task is moved down and emit taskListEdited', async () => {
-		const expectedOrder = [
-			{ id: 2, order: 0 },
-			{ id: 1, order: 1 },
-		];
-
-		columnServiceMock.changeTaskOrder.mockReturnValue(of({}));
+		const dropTaskEvent = {
+			item: { data: taskList[1] },
+			previousContainer,
+			container: destinationContainer,
+			previousIndex: 1,
+			currentIndex: 0
+		} as CdkDragDrop<Task[]>;
 
 		await createComponent(true, taskList);
-
-		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
-
-		component.onMoveDown(1);
-
-		expect(columnServiceMock.changeTaskOrder).toHaveBeenCalledWith(1, { taskOrder: expectedOrder });
-		expect(emitSpy).toHaveBeenCalled();
-		expect(component.error()).toBeNull();
-	});
-
-	it('should emit moveTaskToColumn with taskId when TaskElement emits moveTaskToColumn', async () => {
-		await createComponent(true, taskList);
-
-		const children = fixture.debugElement.queryAll(By.directive(TaskElementStub));
-		const secondTask = children[1].componentInstance as TaskElementStub;
 
 		const emitSpy = vi.spyOn(component.moveTaskToColumn, 'emit');
 
-		secondTask.moveTaskToColumn.emit('right');
+		component.onMoveTask(dropTaskEvent);
 
-		expect(emitSpy).toHaveBeenCalledWith({ taskId: 2, direction: 'right' });
+		expect(emitSpy).toHaveBeenCalledWith(taskList[1].id);
+		expect(component.error()).toBeNull();
+	});
+
+	it('should change task order when task was dragged inside the task list to a different position in same column and emit taskListEdited', async () => {
+		const container = {};
+
+		const dropTaskEvent = {
+			item: { data: taskList[1] },
+			previousContainer: container,
+			container: container,
+			previousIndex: 1,
+			currentIndex: 0
+		} as CdkDragDrop<Task[]>;
+
+		const expectedOrder = [
+			{ id: 2, order: 0 },
+			{ id: 1, order: 1 }
+		];
+
+		columnServiceMock.changeTaskOrder.mockReturnValue(of({}));
+
+		await createComponent(true, taskList);
+
+		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
+
+		component.onMoveTask(dropTaskEvent);
+
+		expect(columnServiceMock.changeTaskOrder).toHaveBeenCalledWith(columnId, { taskOrder: expectedOrder });
+		expect(emitSpy).toHaveBeenCalled();
+		expect(component.error()).toBeNull();
 	});
 
 	it('should emit taskListEdited when TaskElement emits taskDeleted', async () => {

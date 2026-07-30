@@ -1,0 +1,6 @@
+.comment-element {
+	background: lightblue;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}

@@ -5,10 +5,11 @@ import { ColumnElement } from "../column-element/column-element";
 import { BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TaskService } from "../../services/tasks/task-service";
+import { CdkDropListGroup } from "@angular/cdk/drag-drop";
 
 @Component({
 	selector: 'app-column-list',
-	imports: [RouterLink, ColumnElement],
+	imports: [RouterLink, ColumnElement, CdkDropListGroup],
 	templateUrl: './column-list.html',
 	styleUrl: './column-list.css',
 })
@@ -71,21 +72,9 @@ export class ColumnList {
 		});
 	}
 
-	onMoveTaskToColumn(columnId: number, event: { taskId: number; direction: 'left' | 'right' }) {
-		const columns = this.columnList();
-
-		const currentIndex = columns.findIndex(column => column.id === columnId);
-		if (currentIndex === -1) return;
-
-		const destinationIndex = event.direction === 'left'
-			? currentIndex - 1
-			: currentIndex + 1;
-
-		if (destinationIndex < 0 || destinationIndex >= columns.length) return;
-
-		const destinationColumn = columns[destinationIndex];
-
-		this.taskService.moveTask(event.taskId, destinationColumn.id).subscribe({
+	onMoveTaskToColumn(event: { taskId: number; destinationColumnId: number; }) {
+		const { taskId, destinationColumnId } = event;
+		this.taskService.moveTask(taskId, destinationColumnId).subscribe({
 			next: () => {
 				this.columnListEdited.emit();
 				this.error.set(null);

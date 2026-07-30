@@ -1,4 +1,4 @@
-<div class="board-element">
+<div class="board-details">
 	@if (board.isLoading()) {
 	<div class="loading">Loading...</div>
 	} @else if (board.error()) {
@@ -6,8 +6,8 @@
 	} @else {
 	@if (board.value(); as board) {
 	<h2 class="board-name">Name: {{board.name}}</h2>
-	<app-column-list [columnList]="board.columns" [projectId]="projectId" [boardId]="boardId"
-		(columnListEdited)="onColumnListEdited()"></app-column-list>
+	<app-column-list [columnList]="board.columns" [projectId]="projectId" [boardId]="boardId" (columnListEdited)="onColumnListEdited()">
+	</app-column-list>
 	}
 	}
 	<button type="button" [routerLink]="['/projects', projectId]">Go back</button>

@@ -20,11 +20,8 @@ class TaskListStub {
 	boardId = input.required<number>();
 	columnId = input.required<number>();
 
-	isInFirstColumn = input<boolean>();
-	isInLastColumn = input<boolean>();
-
 	taskListEdited = output<void>();
-	moveTaskToColumn = output<{ taskId: number; direction: 'left' | 'right' }>();
+	moveTaskToColumn = output<number>();
 }
 
 describe('ColumnElement', () => {
@@ -166,12 +163,12 @@ describe('ColumnElement', () => {
 	});
 
 
-	it('should remove column and emit columnDeleted when "Delete" button is clicked', async () => {
+	it('should remove column and emit columnElementEdited when "Delete" button is clicked', async () => {
 		columnServiceMock.deleteColumn.mockReturnValue(of({}));
 
 		await createComponent();
 
-		const emitSpy = vi.spyOn(component.columnDeleted, 'emit');
+		const emitSpy = vi.spyOn(component.columnElementEdited, 'emit');
 
 		const deletColumnButton = Array
 			.from(html.querySelectorAll('button'))
@@ -187,21 +184,21 @@ describe('ColumnElement', () => {
 		expect(emitSpy).toHaveBeenCalled();
 	});
 
-	it('should emit columnTasksEdited when TaskList emits taskListEdited', async () => {
+	it('should emit columnElementEdited when TaskList emits taskListEdited', async () => {
 		await createComponent();
 
 		const taskList = fixture.debugElement
 			.query(By.directive(TaskListStub))
 			.componentInstance as TaskListStub;
 
-		const emitSpy = vi.spyOn(component.columnTasksEdited, 'emit');
+		const emitSpy = vi.spyOn(component.columnElementEdited, 'emit');
 
 		taskList.taskListEdited.emit();
 
 		expect(emitSpy).toHaveBeenCalledOnce();
 	});
 
-	it('should emit moveTaskToColumn when TaskList emits moveTaskToColumn', async () => {
+	it('should emit moveTaskToColumn with destination column id when TaskList emits moveTaskToColumn', async () => {
 		await createComponent();
 
 		const taskList = fixture.debugElement
@@ -210,8 +207,8 @@ describe('ColumnElement', () => {
 
 		const emitSpy = vi.spyOn(component.moveTaskToColumn, 'emit');
 
-		taskList.moveTaskToColumn.emit({ taskId: 1, direction: 'left' });
+		taskList.moveTaskToColumn.emit(5);
 
-		expect(emitSpy).toHaveBeenCalledWith({ taskId: 1, direction: 'left' });
+		expect(emitSpy).toHaveBeenCalledWith({ taskId: 5, destinationColumnId: 1 });
 	});
 });

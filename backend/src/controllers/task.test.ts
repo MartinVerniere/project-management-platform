@@ -12,7 +12,8 @@ describe('Task API', () => {
 
 	describe('when a task exists in the database', () => {
 		let authToken: string;
-		let taskId: number;
+		let taskAId: number;
+		let taskBId: number;
 		let columnBId: number;
 		let columnCId: number;
 
@@ -40,8 +41,12 @@ describe('Task API', () => {
 			columnCId = columnC.id;
 
 			//Create task
-			const task = await createTask(authToken, columnA.id, 'Task A', 'This is task A');
-			taskId = task.id;
+			const taskA = await createTask(authToken, columnA.id, 'Task A', 'This is task A');
+			taskAId = taskA.id;
+			const taskB = await createTask(authToken, columnA.id, 'Task B', 'This is task B');
+			taskBId = taskB.id;
+			const taskC = await createTask(authToken, columnB.id, 'Task B', 'This is task C');
+			
 		});
 
 		describe('and project MEMBER is logged in', () => {
@@ -53,7 +58,7 @@ describe('Task API', () => {
 			describe('on get task', () => {
 				it('gets task by id', async () => {
 					const response = await request(app)
-						.get(`/api/tasks/${taskId}`)
+						.get(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer ${authToken}`);
 
 					expect(response.status).toBe(200);
@@ -80,7 +85,7 @@ describe('Task API', () => {
 
 				it('returns 401 if token is invalid', async () => {
 					const response = await request(app)
-						.get(`/api/tasks/${taskId}`)
+						.get(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer INVALID_TOKEN`);
 
 					expect(response.status).toBe(401);
@@ -89,7 +94,7 @@ describe('Task API', () => {
 
 				it('returns 401 if token is missing', async () => {
 					const response = await request(app)
-						.get(`/api/tasks/${taskId}`);
+						.get(`/api/tasks/${taskAId}`);
 
 					expect(response.status).toBe(401);
 					expect(response.body.error.message).toBe("Authentication token is missing.");
@@ -99,7 +104,7 @@ describe('Task API', () => {
 			describe('on update task', () => {
 				it('updates task', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}`)
+						.put(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
@@ -109,7 +114,7 @@ describe('Task API', () => {
 
 				it('returns 400 if missing field title in request', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}`)
+						.put(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ description: 'This is task A - UPDATED' });
 
@@ -119,7 +124,7 @@ describe('Task API', () => {
 
 				it('returns 400 if task title is not a string', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}`)
+						.put(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ title: 5, description: 'This is task A - UPDATED' });
 
@@ -129,7 +134,7 @@ describe('Task API', () => {
 
 				it('returns 400 if task title is an empty string', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}`)
+						.put(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ title: '', description: 'This is task A - UPDATED' });
 
@@ -159,7 +164,7 @@ describe('Task API', () => {
 
 				it('returns 401 if token is invalid', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}`)
+						.put(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer INVALID_TOKEN`)
 						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
@@ -169,7 +174,7 @@ describe('Task API', () => {
 
 				it('returns 401 if token is missing', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}`)
+						.put(`/api/tasks/${taskAId}`)
 						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
 					expect(response.status).toBe(401);
@@ -180,7 +185,7 @@ describe('Task API', () => {
 			describe('on add comment to task', () => {
 				it('adds comment', async () => {
 					const response = await request(app)
-						.post(`/api/tasks/${taskId}/comments`)
+						.post(`/api/tasks/${taskAId}/comments`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ content: 'This is a comment!' });
 
@@ -190,7 +195,7 @@ describe('Task API', () => {
 
 				it('returns 400 if missing field content in request', async () => {
 					const response = await request(app)
-						.post(`/api/tasks/${taskId}/comments`)
+						.post(`/api/tasks/${taskAId}/comments`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({});
 
@@ -200,7 +205,7 @@ describe('Task API', () => {
 
 				it('returns 400 if comment content is not a string', async () => {
 					const response = await request(app)
-						.post(`/api/tasks/${taskId}/comments`)
+						.post(`/api/tasks/${taskAId}/comments`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ content: 5 });
 
@@ -210,7 +215,7 @@ describe('Task API', () => {
 
 				it('returns 400 if comment content is an empty string', async () => {
 					const response = await request(app)
-						.post(`/api/tasks/${taskId}/comments`)
+						.post(`/api/tasks/${taskAId}/comments`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ content: '' });
 
@@ -240,7 +245,7 @@ describe('Task API', () => {
 
 				it('returns 401 if token is invalid', async () => {
 					const response = await request(app)
-						.post(`/api/tasks/${taskId}/comments`)
+						.post(`/api/tasks/${taskAId}/comments`)
 						.set('Authorization', `Bearer INVALID_TOKEN`)
 						.send({ content: 'This is a comment!' });
 
@@ -250,7 +255,7 @@ describe('Task API', () => {
 
 				it('returns 401 if token is missing', async () => {
 					const response = await request(app)
-						.post(`/api/tasks/${taskId}/comments`)
+						.post(`/api/tasks/${taskAId}/comments`)
 						.send({ content: 'This is a comment!' });
 
 					expect(response.status).toBe(401);
@@ -261,7 +266,7 @@ describe('Task API', () => {
 			describe('on move task to another column', () => {
 				it('moves task', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}/column`)
+						.put(`/api/tasks/${taskAId}/column`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ columnId: columnBId });
 
@@ -271,7 +276,7 @@ describe('Task API', () => {
 
 				it('returns 400 if missing field column id in request', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}/column`)
+						.put(`/api/tasks/${taskAId}/column`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({});
 
@@ -281,7 +286,7 @@ describe('Task API', () => {
 
 				it('returns 400 if invalid column id', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}/column`)
+						.put(`/api/tasks/${taskAId}/column`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ columnId: INVALID_ID });
 
@@ -291,7 +296,7 @@ describe('Task API', () => {
 
 				it('returns 404 if destination column not found', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}/column`)
+						.put(`/api/tasks/${taskAId}/column`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ columnId: NOT_FOUND_ID });
 
@@ -301,12 +306,22 @@ describe('Task API', () => {
 
 				it('returns 409 if destination column belongs to a different board', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}/column`)
+						.put(`/api/tasks/${taskAId}/column`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ columnId: columnCId });
 
 					expect(response.status).toBe(409);
 					expect(response.body.error.message).toBe("Can't move a task to a column of a different board.");
+				});
+
+				it('returns 409 if destination column already has a task with the same title', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskBId}/column`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ columnId: columnBId });
+
+					expect(response.status).toBe(409);
+					expect(response.body.error.message).toBe("A task with this title already exists in the destination column.");
 				});
 
 				it('returns 400 if invalid task', async () => {
@@ -331,7 +346,7 @@ describe('Task API', () => {
 
 				it('returns 401 if token is invalid', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}/column`)
+						.put(`/api/tasks/${taskAId}/column`)
 						.set('Authorization', `Bearer INVALID_TOKEN`)
 						.send({ columnId: columnBId });
 
@@ -341,7 +356,7 @@ describe('Task API', () => {
 
 				it('returns 401 if token is missing', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}/column`)
+						.put(`/api/tasks/${taskAId}/column`)
 						.send({ columnId: columnBId });
 
 					expect(response.status).toBe(401);
@@ -352,7 +367,7 @@ describe('Task API', () => {
 			describe('on delete task', () => {
 				it('deletes task', async () => {
 					const response = await request(app)
-						.delete(`/api/tasks/${taskId}`)
+						.delete(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer ${authToken}`);
 
 					expect(response.status).toBe(204);
@@ -375,7 +390,7 @@ describe('Task API', () => {
 				});
 				it('returns 401 if token is invalid', async () => {
 					const response = await request(app)
-						.delete(`/api/tasks/${taskId}`)
+						.delete(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer INVALID_TOKEN`);
 
 					expect(response.status).toBe(401);
@@ -383,7 +398,7 @@ describe('Task API', () => {
 				});
 				it('returns 401 if token is missing', async () => {
 					const response = await request(app)
-						.delete(`/api/tasks/${taskId}`);
+						.delete(`/api/tasks/${taskAId}`);
 
 					expect(response.status).toBe(401);
 					expect(response.body.error.message).toBe("Authentication token is missing.");
@@ -401,7 +416,7 @@ describe('Task API', () => {
 			describe('on get task', () => {
 				it('returns 403 if user is not a member of the project that contains the task', async () => {
 					const response = await request(app)
-						.get(`/api/tasks/${taskId}`)
+						.get(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer ${authToken}`);
 
 					expect(response.status).toBe(403);
@@ -412,7 +427,7 @@ describe('Task API', () => {
 			describe('on update task', () => {
 				it('returns 403 if user is not a member of the project that contains the task', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}`)
+						.put(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ title: 'Updated task A', description: 'This is task A - UPDATED' });
 
@@ -424,7 +439,7 @@ describe('Task API', () => {
 			describe('on add comment to task', () => {
 				it('returns 403 if user is not a member of the project that contains the task', async () => {
 					const response = await request(app)
-						.post(`/api/tasks/${taskId}/comments`)
+						.post(`/api/tasks/${taskAId}/comments`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ content: 'This is an updated comment!' });
 
@@ -436,7 +451,7 @@ describe('Task API', () => {
 			describe('on move task to another column', () => {
 				it('returns 403 if user is not a member of the project that contains the task', async () => {
 					const response = await request(app)
-						.put(`/api/tasks/${taskId}/column`)
+						.put(`/api/tasks/${taskAId}/column`)
 						.set('Authorization', `Bearer ${authToken}`)
 						.send({ columnId: columnBId });
 
@@ -448,7 +463,7 @@ describe('Task API', () => {
 			describe('on delete task', () => {
 				it('returns 403 if user is not a member of the project that contains the task', async () => {
 					const response = await request(app)
-						.delete(`/api/tasks/${taskId}`)
+						.delete(`/api/tasks/${taskAId}`)
 						.set('Authorization', `Bearer ${authToken}`);
 
 					expect(response.status).toBe(403);
