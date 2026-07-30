@@ -192,9 +192,9 @@ describe('ColumnList', () => {
 		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
 		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
-		const firstColumn = children[0].componentInstance as ColumnElementStub;
+		const secondColumn = children[1].componentInstance as ColumnElementStub;
 
-		firstColumn.moveTaskToColumn.emit({ taskId: 1, destinationColumnId: 2 });
+		secondColumn.moveTaskToColumn.emit({ taskId: 1, destinationColumnId: 2 });
 
 		expect(taskServiceMock.moveTask).toHaveBeenCalledWith(1, 2);
 		expect(emitSpy).not.toHaveBeenCalled();
