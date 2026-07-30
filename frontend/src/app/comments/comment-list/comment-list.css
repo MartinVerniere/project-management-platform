@@ -1,0 +1,12 @@
+.comment-list {
+	background: lightgreen;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.comment-element-list {
+	display: flex;
+	gap: 100px;
+	overflow-x: auto;
+}

@@ -1,6 +1,12 @@
+.column-list {
+	background: lightgoldenrodyellow;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
 .column-element-list {
 	display: flex;
 	gap: 100px;
-	align-items: flex-start;
 	overflow-x: auto;
 }

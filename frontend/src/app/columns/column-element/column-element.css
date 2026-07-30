@@ -1,0 +1,6 @@
+.column-element {
+	background: lightgray;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
