@@ -6,5 +6,6 @@ export default defineConfig({
 		environment: 'node',
 		clearMocks: true,
 		fileParallelism: false,
+        hookTimeout: 30000, //Got error "Error: Hook timed out in 10000ms." in github actions backend test step (in task.test.ts file)
 	},
 });

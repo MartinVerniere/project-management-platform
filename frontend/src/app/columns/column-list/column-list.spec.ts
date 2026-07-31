@@ -9,6 +9,7 @@ import { Component, input, output } from '@angular/core';
 import { ColumnElement } from '../column-element/column-element';
 import { By } from '@angular/platform-browser';
 import { TaskService } from '../../services/tasks/task-service';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
 	selector: 'app-column-element',
@@ -24,8 +25,6 @@ class ColumnElementStub {
 	isLast = input<boolean>();
 
 	columnElementEdited = output<void>();
-	moveLeft = output<number>();
-	moveRight = output<number>();
 	moveTaskToColumn = output<{ taskId: number; destinationColumnId: number; }>();
 }
 
@@ -123,10 +122,20 @@ describe('ColumnList', () => {
 		expect(html.textContent).toContain('No columns in this project');
 	});
 
-	it('should change column order when column is moved left and emit columnListEdited', async () => {
+	it('should change column order when column was dragged inside the column list to a different position and emit columnListEdited', async () => {
+		const container = {};
+
+		const dropColumnEvent = {
+			item: { data: { type: 'column', column: columnList[1] } },
+			previousContainer: container,
+			container: container,
+			previousIndex: 1,
+			currentIndex: 0
+		} as CdkDragDrop<Column[]>;
+
 		const expectedOrder = [
 			{ id: 2, order: 0 },
-			{ id: 1, order: 1 },
+			{ id: 1, order: 1 }
 		];
 
 		boardServiceMock.changeColumnOrder.mockReturnValue(of({}));
@@ -135,28 +144,9 @@ describe('ColumnList', () => {
 
 		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
-		component.onMoveLeft(2);
+		component.onMoveColumn(dropColumnEvent);
 
-		expect(boardServiceMock.changeColumnOrder).toHaveBeenCalledWith(1, { columnOrder: expectedOrder });
-		expect(emitSpy).toHaveBeenCalled();
-		expect(component.error()).toBeNull();
-	});
-
-	it('should change column order when column is moved right and emit columnListEdited', async () => {
-		const expectedOrder = [
-			{ id: 2, order: 0 },
-			{ id: 1, order: 1 },
-		];
-
-		boardServiceMock.changeColumnOrder.mockReturnValue(of({}));
-
-		await createComponent(true, columnList);
-
-		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
-
-		component.onMoveRight(1);
-
-		expect(boardServiceMock.changeColumnOrder).toHaveBeenCalledWith(1, { columnOrder: expectedOrder });
+		expect(boardServiceMock.changeColumnOrder).toHaveBeenCalledWith(boardId, { columnOrder: expectedOrder });
 		expect(emitSpy).toHaveBeenCalled();
 		expect(component.error()).toBeNull();
 	});

@@ -2,10 +2,6 @@
 	@if (column(); as column) {
 	<div class="column-id">Id: {{column.id}}</div>
 	<div class="column-name">Name: {{column.name}}</div>
-	<div class="column-move-buttons">
-		<button type="button" [disabled]="isFirst()" (click)="moveLeft.emit(column.id)">Move left</button>
-		<button type="button" [disabled]="isLast()" (click)="moveRight.emit(column.id)">Move right</button>
-	</div>
 	<app-task-list [taskList]="column.tasks" [projectId]="projectId()" [boardId]="boardId()" [columnId]="column.id"
 		(taskListEdited)="columnElementEdited.emit()" (moveTaskToColumn)="moveTaskToColumn.emit({ taskId: $event, destinationColumnId: column.id })">
 	</app-task-list>

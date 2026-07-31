@@ -5,11 +5,11 @@ import { ColumnElement } from "../column-element/column-element";
 import { BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TaskService } from "../../services/tasks/task-service";
-import { CdkDropListGroup } from "@angular/cdk/drag-drop";
+import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from "@angular/cdk/drag-drop";
 
 @Component({
 	selector: 'app-column-list',
-	imports: [RouterLink, ColumnElement, CdkDropListGroup],
+	imports: [RouterLink, ColumnElement, CdkDrag, CdkDropList, CdkDropListGroup],
 	templateUrl: './column-list.html',
 	styleUrl: './column-list.css',
 })
@@ -26,40 +26,17 @@ export class ColumnList {
 
 	error = signal<string | null>(null);
 
-	onMoveLeft(columnId: number) {
-		const columns = [...this.columnList()];
+	onMoveColumn(event: CdkDragDrop<Column[]>) {
+		// Case 1: Didnt move column
+		if (event.previousIndex === event.currentIndex) return;
 
-		const index = columns.findIndex(c => c.id === columnId);
-		if (index <= 0) return;
+		// Case 2: Moved column inside current column list
+		const columns = [... this.columnList()];
+		moveItemInArray(columns, event.previousIndex, event.currentIndex);
 
-		[columns[index], columns[index - 1]] = [columns[index - 1], columns[index]]; //Swap columns position
+		const newColumnOrder = columns.map((column, index) => ({ id: column.id, order: index }));
 
-		const reorderedColumns = columns.map((column, index) => ({ id: column.id, order: index }));
-
-		this.boardService.changeColumnOrder(this.boardId(), { columnOrder: reorderedColumns }).subscribe({
-			next: () => {
-				this.columnListEdited.emit();
-				this.error.set(null);
-			},
-			error: (response: HttpErrorResponse) => {
-				const errorObject = response.error.error;
-				console.log(errorObject);
-				this.error.set(errorObject.message);
-			}
-		});
-	}
-
-	onMoveRight(columnId: number) {
-		const columns = [...this.columnList()];
-
-		const index = columns.findIndex(c => c.id === columnId);
-		if (index >= columns.length - 1) return;
-
-		[columns[index], columns[index + 1]] = [columns[index + 1], columns[index]]; //Swap columns position
-
-		const reorderedColumns = columns.map((column, index) => ({ id: column.id, order: index }));
-
-		this.boardService.changeColumnOrder(this.boardId(), { columnOrder: reorderedColumns }).subscribe({
+		this.boardService.changeColumnOrder(this.boardId(), { columnOrder: newColumnOrder }).subscribe({
 			next: () => {
 				this.columnListEdited.emit();
 				this.error.set(null);
@@ -85,4 +62,8 @@ export class ColumnList {
 			}
 		});
 	}
+
+	onlyColumnsPredicate = (drag: CdkDrag) => {
+		return drag.data?.type === 'column';
+	};
 }

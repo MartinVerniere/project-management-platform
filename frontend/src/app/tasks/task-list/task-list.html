@@ -1,10 +1,10 @@
 @if (taskList(); as taskList){
-<div cdkDropList [cdkDropListData]="taskList" (cdkDropListDropped)="onMoveTask($event)">
+<div cdkDropList [cdkDropListData]="taskList" (cdkDropListDropped)="onMoveTask($event)" [cdkDropListEnterPredicate]="onlyTasksPredicate">
 	<div class="task-list">
 		<h3 class="task-title"> Tasks </h3>
 		<div class="task-element-list">
 			@for (task of taskList; track task.id; let i = $index) {
-			<div cdkDrag [cdkDragData]="task">
+			<div cdkDrag [cdkDragData]="{ type: 'task', task: task }">
 				<app-task-element [task]="task" [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()"
 					(taskDeleted)="taskListEdited.emit()" (taskCommentsEdited)="taskListEdited.emit()">
 				</app-task-element>
