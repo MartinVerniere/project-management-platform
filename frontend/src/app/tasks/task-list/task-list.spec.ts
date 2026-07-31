@@ -115,7 +115,7 @@ describe('TaskList', () => {
 		const destinationContainer = {};
 
 		const dropTaskEvent = {
-			item: { data: taskList[1] },
+			item: { data: { type: 'task', task: taskList[1] } },
 			previousContainer,
 			container: destinationContainer,
 			previousIndex: 1,
@@ -136,7 +136,7 @@ describe('TaskList', () => {
 		const container = {};
 
 		const dropTaskEvent = {
-			item: { data: taskList[1] },
+			item: { data: { type: 'task', task: taskList[1] } },
 			previousContainer: container,
 			container: container,
 			previousIndex: 1,

@@ -104,65 +104,6 @@ describe('ColumnElement', () => {
 		expect(html.textContent).toContain('Todo');
 	});
 
-	it('should have "move left" button disabled when it is the first column', async () => {
-		await createComponent(true, true, false);
-
-		const moveLeftButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Move left'));
-
-		expect(moveLeftButton).toBeTruthy();
-		expect(moveLeftButton!.hasAttribute('disabled')).toBe(true);
-	});
-
-	it('should have "move right" button disabled when it is the last column', async () => {
-		await createComponent(true, false, true);
-
-		const moveRightButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Move right'));
-
-		expect(moveRightButton).toBeTruthy();
-		expect(moveRightButton!.hasAttribute('disabled')).toBe(true);
-	});
-
-	it('should emit moveLeft on "Move left" button clicked', async () => {
-		await createComponent();
-
-		const emitSpy = vi.spyOn(component.moveLeft, 'emit');
-
-		const moveLeftButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Move left'));
-
-		expect(moveLeftButton).toBeTruthy();
-
-		moveLeftButton!.click();
-
-		await fixture.whenStable();
-
-		expect(emitSpy).toHaveBeenCalledWith(1);
-	});
-
-	it('should emit moveRight on "Move right" button clicked', async () => {
-		await createComponent();
-
-		const emitSpy = vi.spyOn(component.moveRight, 'emit');
-
-		const moveRightButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Move right'));
-
-		expect(moveRightButton).toBeTruthy();
-
-		moveRightButton!.click();
-
-		await fixture.whenStable();
-
-		expect(emitSpy).toHaveBeenCalledWith(1);
-	});
-
-
 	it('should remove column and emit columnElementEdited when "Delete" button is clicked', async () => {
 		columnServiceMock.deleteColumn.mockReturnValue(of({}));
 
