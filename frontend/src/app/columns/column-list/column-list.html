@@ -1,11 +1,15 @@
-<div class="column-list" cdkDropListGroup>
-	<h3 class="column-title">Columns</h3>
-	<div class="column-element-list">
-		@for (column of columnList(); track column.id; let i = $index) {
-		<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()" [isFirst]="i === 0"
-			[isLast]="i === columnList().length - 1" (moveLeft)="onMoveLeft($event)" (moveRight)="onMoveRight($event)"
-			(columnElementEdited)="columnListEdited.emit()" (moveTaskToColumn)="onMoveTaskToColumn($event)">
-		</app-column-element>
+@if (columnList(); as columnList){
+<div class="column-list" cdkDropList [cdkDropListData]="columnList" (cdkDropListDropped)="onMoveColumn($event)"
+	[cdkDropListEnterPredicate]="onlyColumnsPredicate" cdkDropListOrientation="horizontal">
+	<h3 class=" column-title">Columns</h3>
+	<div class="column-element-list" cdkDropListGroup>
+		@for (column of columnList; track column.id; let i = $index) {
+		<div cdkDrag [cdkDragData]="{ type: 'column', column: column }">
+			<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()" [isFirst]="i === 0"
+				[isLast]="i === columnList.length - 1" (columnElementEdited)="columnListEdited.emit()"
+				(moveTaskToColumn)="onMoveTaskToColumn($event)">
+			</app-column-element>
+		</div>
 		} @empty {
 		<div class="column-list-empty">No columns in this project</div>
 		}
@@ -14,3 +18,4 @@
 		Create new column
 	</button>
 </div>
+}

@@ -26,7 +26,7 @@ export class TaskList {
 	error = signal<string | null>(null);
 
 	onMoveTask(event: CdkDragDrop<Task[]>) {
-		const task = event.item.data as Task;
+		const task = event.item.data.task as Task;
 
 		// Case 1: Moved to different column
 		if (event.previousContainer !== event.container) {
@@ -54,5 +54,9 @@ export class TaskList {
 				this.error.set(errorObject.message);
 			}
 		});
-	}
+	};
+
+	onlyTasksPredicate = (drag: CdkDrag) => {
+		return drag.data?.type === 'task';
+	};
 }

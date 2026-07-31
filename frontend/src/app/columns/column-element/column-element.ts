@@ -22,8 +22,6 @@ export class ColumnElement {
 	isLast = input<boolean>();
 
 	columnElementEdited = output<void>();
-	moveLeft = output<number>();
-	moveRight = output<number>();
 	moveTaskToColumn = output<{ taskId: number; destinationColumnId: number; }>();
 
 	error = signal<string | null>(null);
