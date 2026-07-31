@@ -1,19 +1,31 @@
-import type { JwtPayload } from 'jsonwebtoken';
 import type { Board, BoardColumn, Comment, Project, ProjectMember, Task, User } from '../generated/prisma/client.ts';
+import type { TokenPayload } from '../utils/middleware.ts';
 
 declare global {
 	namespace Express {
 		interface Request {
 			user: User;
-			decodedToken: JwtPayload;
+			decodedToken: TokenPayload;
 			project?: Project & {
 				members: ProjectMember[];
 			};
 			projectMember?: ProjectMember;
 			board?: Board;
-			boardColumn?: BoardColumn;
-			task?: Task;
-			comment?: Comment;
+			boardColumn?: BoardColumn & {
+				board: Board;
+			};
+			task?: Task & {
+				column: BoardColumn & {
+					board: Board;
+				};
+			};
+			comment?: Comment & {
+				task: Task & {
+					column: BoardColumn & {
+						board: Board;
+					};
+				};
+			};
 		}
 	}
 }
