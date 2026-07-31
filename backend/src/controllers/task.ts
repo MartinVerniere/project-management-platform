@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { ApiError, requireTaskMember, taskExtractor, tokenExtractor, userExtractor } from "../utils/middleware.js";
+import { ApiError, requireTaskAdmin, requireTaskMember, taskExtractor, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
 
 const taskRouter = Router();
@@ -129,6 +129,53 @@ taskRouter.put('/:id/column',
 
 			return updatedTask;
 		});
+
+		return response.status(200).json(updatedTask);
+	}
+);
+
+taskRouter.put('/:id/assignee',
+	tokenExtractor,
+	userExtractor,
+	taskExtractor,
+	requireTaskMember,
+	requireTaskAdmin,
+	async (request: Request, response: Response) => {
+		const task = request.task!;
+		const { userId } = request.body;
+
+		if (!userId) throw new ApiError(400, "USER_ID_REQUIRED", "User ID is required.");
+		if (!Number.isInteger(userId)) throw new ApiError(400, "INVALID_USER_ID", "Invalid user id.");
+
+		const userExists = await prisma.user.findUnique({ where: { id: userId } });
+		if (!userExists) throw new ApiError(404, "USER_NOT_FOUND", "User to assign task not found.");
+
+		const userIsMember = await prisma.projectMember.findUnique({
+			where: {
+				projectId_userId: {
+					projectId: task.column.board.projectId,
+					userId: userId
+				}
+			}
+		});
+		if (!userIsMember) throw new ApiError(409, "USER_NOT_MEMBER", "User can't be assigned to a task of a project he is not a member of.");
+
+		const updatedTask = await prisma.task.update({ where: { id: task.id }, data: { assigneeId: userId } });
+
+		return response.status(200).json(updatedTask);
+	}
+);
+
+taskRouter.delete('/:id/assignee',
+	tokenExtractor,
+	userExtractor,
+	taskExtractor,
+	requireTaskMember,
+	requireTaskAdmin,
+	async (request: Request, response: Response) => {
+		const task = request.task!;
+
+		const updatedTask = await prisma.task.update({ where: { id: task.id }, data: { assigneeId: null } });
 
 		return response.status(200).json(updatedTask);
 	}
