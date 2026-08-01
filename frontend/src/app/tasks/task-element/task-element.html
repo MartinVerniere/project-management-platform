@@ -13,6 +13,7 @@
 			<option value="{{member.user.id}}">{{member.user.username}}</option>
 			}
 		</select>
+		<button type="button" (click)="onSetAssignee()">Set</button>
 		<button type="button" (click)="onCancelSetAssignee()">Cancel</button>
 	</div>
 	} @else {
