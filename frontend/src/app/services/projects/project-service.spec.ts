@@ -1,54 +1,55 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { ProjectService } from './project-service';
+import { ProjectMember, ProjectService } from './project-service';
+
+const memberA: ProjectMember = {
+	id: 1,
+	role: 'ADMIN',
+
+	user: {
+		id: 1,
+		username: 'john',
+		email: 'john@email.com',
+	},
+};
+
+const memberB: ProjectMember = {
+	id: 2,
+	role: 'MEMBER',
+
+	user: {
+		id: 2,
+		username: 'alice',
+		email: 'alice@email.com',
+	},
+};
+
+const memberC: ProjectMember = {
+	id: 3,
+	role: 'ADMIN',
+
+	user: {
+		id: 2,
+		username: 'alice',
+		email: 'alice@email.com',
+	},
+}
 
 const projectA = {
 	id: 1,
 	name: 'Project A',
 	key: 'PRA',
 	description: 'Project A',
-	members: [
-		{
-			id: 1,
-			role: 'ADMIN',
-
-			user: {
-				id: 1,
-				username: 'john',
-				email: 'john@email.com',
-			},
-		},
-		{
-			id: 2,
-			role: 'MEMBER',
-
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@email.com',
-			},
-		}
-	],
-}
+	members: [memberA, memberB],
+};
 
 const projectB = {
 	id: 2,
 	name: 'Project B',
 	key: 'PRB',
 	description: 'Project B',
-	members: [
-		{
-			id: 3,
-			role: 'ADMIN',
-
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@email.com',
-			},
-		}
-	],
+	members: [memberC],
 }
 
 describe('ProjectService', () => {
@@ -125,6 +126,18 @@ describe('ProjectService', () => {
 		expect(request.request.method).toBe('DELETE');
 
 		request.flush({});
+	});
+
+	it('should get project members', () => {
+		const expectedResponse = [memberA, memberB];
+
+		service.getMembers(projectA.id).subscribe(members => { expect(members).toEqual(expectedResponse); });
+
+		const request = httpMock.expectOne(`http://localhost:3000/api/projects/${projectA.id}/members`);
+
+		expect(request.request.method).toBe('GET');
+
+		request.flush(expectedResponse);
 	});
 
 	it('should add member to project', () => {

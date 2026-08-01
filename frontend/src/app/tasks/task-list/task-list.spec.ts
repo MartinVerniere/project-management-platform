@@ -23,6 +23,7 @@ class TaskElementStub {
 
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();
+	taskAssigneeEdited = output<void>();
 }
 
 describe('TaskList', () => {
@@ -185,6 +186,20 @@ describe('TaskList', () => {
 		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
 
 		child.taskCommentsEdited.emit();
+
+		expect(emitSpy).toHaveBeenCalled();
+	});
+
+	it('should emit taskListEdited when TaskElement emits taskAssigneeEdited', async () => {
+		await createComponent(true, taskList);
+
+		const child = fixture.debugElement
+			.query(By.directive(TaskElementStub))
+			.componentInstance as TaskElementStub;
+
+		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
+
+		child.taskAssigneeEdited.emit();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});
