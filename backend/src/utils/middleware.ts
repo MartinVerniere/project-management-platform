@@ -195,6 +195,13 @@ export const boardExtractor = async (
 										}
 									}
 								}
+							},
+							assignee: {
+								select: {
+									id: true,
+									username: true,
+									email: true
+								}
 							}
 						},
 					}
@@ -318,6 +325,13 @@ export const taskExtractor = async (
 					board: true,
 				},
 			},
+			assignee: {
+				select: {
+					id: true,
+					username: true,
+					email: true
+				}
+			}
 		},
 	});
 	if (!task) throw new ApiError(404, "TASK_NOT_FOUND", "Task not found.");

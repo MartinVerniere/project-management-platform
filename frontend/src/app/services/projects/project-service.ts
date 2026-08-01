@@ -48,6 +48,10 @@ export class ProjectService {
 		return this.http.delete<Project>(`${API_URL}/${projectId}`,)
 	}
 
+	getMembers(projectId: number): Observable<ProjectMember[]> {
+		return this.http.get<ProjectMember[]>(`${API_URL}/${projectId}/members`);
+	}
+
 	addMember(projectId: number, userId: number): Observable<void> {
 		return this.http.post<void>(`${API_URL}/${projectId}/members`, { userId: userId });
 	}
