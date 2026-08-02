@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { TaskModel } from '../../tasks/task-form/task-form';
 import { Comment } from '../comments/comment-service';
 import { CommentModel } from '../../comments/comment-form/comment-form';
+import { User } from '../users/user-service';
 
 const API_URL = 'http://localhost:3000/api/tasks';
 
@@ -11,6 +12,7 @@ export interface Task {
 	id: number,
 	title: string,
 	description?: string,
+	assignee?: User,
 	comments: Comment[]
 }
 
@@ -32,6 +34,14 @@ export class TaskService {
 
 	moveTask(taskId: number, destinationColumnId: number): Observable<Task> {
 		return this.http.put<Task>(`${API_URL}/${taskId}/column`, { columnId: destinationColumnId });
+	}
+
+	assignTask(taskId: number, userId: number): Observable<Task> {
+		return this.http.put<Task>(`${API_URL}/${taskId}/assignee`, { userId });
+	}
+
+	unassignTask(taskId: number): Observable<Task> {
+		return this.http.delete<Task>(`${API_URL}/${taskId}/assignee`);
 	}
 
 	addComment(taskId: number, request: CommentModel): Observable<Comment> {

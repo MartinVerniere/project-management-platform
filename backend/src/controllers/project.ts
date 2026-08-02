@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from 'express';
-import { ApiError, projectExtractor, requireProjectAdminRole, requireProjectMember, tokenExtractor, userExtractor } from '../utils/middleware.js';
+import { ApiError, projectExtractor, requireProjectAdmin, requireProjectMember, tokenExtractor, userExtractor } from '../utils/middleware.js';
 import { prisma } from '../prisma.js';
 import { ProjectRole } from '../generated/prisma/client.js';
 
@@ -76,7 +76,7 @@ projectRouter.post('/', tokenExtractor, userExtractor, async (request: Request, 
 	return response.status(201).json(newProject);
 });
 
-projectRouter.post('/:id/members', tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdminRole, async (request: Request, response: Response) => {
+projectRouter.post('/:id/members', tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdmin, async (request: Request, response: Response) => {
 	const memberUserId = Number(request.body.userId);
 	const project = request.project!;
 
@@ -99,7 +99,7 @@ projectRouter.post('/:id/members', tokenExtractor, userExtractor, projectExtract
 	return response.status(201).json(newMember);
 });
 
-projectRouter.delete('/:id/members/:userId', tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdminRole, async (request: Request, response: Response) => {
+projectRouter.delete('/:id/members/:userId', tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdmin, async (request: Request, response: Response) => {
 	const memberUserId = Number(request.params.userId);
 	if (Number.isNaN(memberUserId)) throw new ApiError(400, "INVALID_MEMBER_ID", "Invalid member id.");
 
@@ -114,7 +114,7 @@ projectRouter.delete('/:id/members/:userId', tokenExtractor, userExtractor, proj
 	return response.status(200).send();
 });
 
-projectRouter.put('/:id', tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdminRole, async (request: Request, response: Response) => {
+projectRouter.put('/:id', tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdmin, async (request: Request, response: Response) => {
 	const { name, description } = request.body;
 	const project = request.project!;
 
@@ -133,7 +133,7 @@ projectRouter.put('/:id', tokenExtractor, userExtractor, projectExtractor, requi
 	return response.status(200).json(updatedProject);
 });
 
-projectRouter.delete('/:id', tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdminRole, async (request: Request, response: Response) => {
+projectRouter.delete('/:id', tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdmin, async (request: Request, response: Response) => {
 	const project = request.project!;
 
 	await prisma.project.delete({ where: { id: project.id } })
@@ -148,7 +148,7 @@ projectRouter.get("/:id/boards", tokenExtractor, userExtractor, projectExtractor
 	return response.status(200).json(boards);
 });
 
-projectRouter.post("/:id/boards", tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdminRole, async (request: Request, response: Response) => {
+projectRouter.post("/:id/boards", tokenExtractor, userExtractor, projectExtractor, requireProjectMember, requireProjectAdmin, async (request: Request, response: Response) => {
 	const project = request.project!;
 
 	const { name } = request.body;

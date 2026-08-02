@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { ApiError, boardExtractor, requireBoardProjectAdminRole, requireBoardProjectMember, tokenExtractor, userExtractor } from "../utils/middleware.js";
+import { ApiError, boardExtractor, requireBoardAdmin, requireBoardMember, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
 
 const boardRouter = Router();
@@ -8,7 +8,7 @@ boardRouter.get("/:id",
 	tokenExtractor,
 	userExtractor,
 	boardExtractor,
-	requireBoardProjectMember,
+	requireBoardMember,
 	async (request: Request, response: Response) => {
 		const board = request.board!;
 
@@ -20,8 +20,8 @@ boardRouter.put("/:id",
 	tokenExtractor,
 	userExtractor,
 	boardExtractor,
-	requireBoardProjectMember,
-	requireBoardProjectAdminRole,
+	requireBoardMember,
+	requireBoardAdmin,
 	async (request: Request, response: Response) => {
 		const board = request.board!;
 		const { name } = request.body;
@@ -43,8 +43,8 @@ boardRouter.post("/:id/columns",
 	tokenExtractor,
 	userExtractor,
 	boardExtractor,
-	requireBoardProjectMember,
-	requireBoardProjectAdminRole,
+	requireBoardMember,
+	requireBoardAdmin,
 	async (request: Request, response: Response) => {
 		const board = request.board!;
 		const { name } = request.body;
@@ -71,8 +71,8 @@ boardRouter.put("/:id/columns/order",
 	tokenExtractor,
 	userExtractor,
 	boardExtractor,
-	requireBoardProjectMember,
-	requireBoardProjectAdminRole,
+	requireBoardMember,
+	requireBoardAdmin,
 	async (request: Request, response: Response) => {
 		const board = request.board!;
 		const { columnOrder } = request.body;
@@ -135,8 +135,8 @@ boardRouter.delete("/:id",
 	tokenExtractor,
 	userExtractor,
 	boardExtractor,
-	requireBoardProjectMember,
-	requireBoardProjectAdminRole,
+	requireBoardMember,
+	requireBoardAdmin,
 	async (request: Request, response: Response) => {
 		const board = request.board!;
 

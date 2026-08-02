@@ -4,6 +4,31 @@
 	@if (task.description) {
 	<div class="task-description">{{task.description}}</div>
 	}
+	@if (assigneeFormEnabled()){
+	<div class="task-assignee">
+		<label class="form-label" for="assignee"> Assigned to: </label>
+		<select id="assignee" class="form-input" (change)="onAssigneeChanged($event)">
+			<option value="null">None</option>
+			@for (member of memberList(); track member.user.id) {
+			<option value="{{member.user.id}}">{{member.user.username}}</option>
+			}
+		</select>
+		<button type="button" (click)="onSetAssignee()">Set</button>
+		<button type="button" (click)="onCancelSetAssignee()">Cancel</button>
+	</div>
+	} @else {
+	<div class="task-assignee">
+		<label class="form-label" for="assignee"> Assigned to: </label>
+		<div class="form-input">
+			@if (task.assignee) {
+			{{task.assignee.username}}
+			} @else {
+			None
+			}
+		</div>
+		<button type="button" (click)="onEnableSetAssignee()">Change</button>
+	</div>
+	}
 	<app-comment-list [taskId]="task.id" [commentList]="task.comments" (commentListEdited)="taskCommentsEdited.emit()">
 	</app-comment-list>
 	<div class="column-buttons">

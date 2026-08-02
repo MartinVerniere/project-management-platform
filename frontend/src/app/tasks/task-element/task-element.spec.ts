@@ -3,10 +3,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TaskElement } from './task-element';
 import { Task, TaskService } from '../../services/tasks/task-service';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { CommentList } from '../../comments/comment-list/comment-list';
 import { By } from '@angular/platform-browser';
+import { ProjectService } from '../../services/projects/project-service';
 
 @Component({
 	selector: 'app-comment-list',
@@ -37,7 +38,12 @@ describe('TaskElement', () => {
 		}
 	};
 
-	let taskServiceMock = { deleteTask: vi.fn() };
+	let taskServiceMock = {
+		deleteTask: vi.fn(),
+		assignTask: vi.fn(),
+		unassignTask: vi.fn()
+	};
+	let projectServiceMock = { getMembers: vi.fn().mockReturnValue(of([]))};
 
 	const task: Task = {
 		id: 1,
@@ -92,6 +98,7 @@ describe('TaskElement', () => {
 			imports: [TaskElement],
 			providers: [
 				{ provide: TaskService, useValue: taskServiceMock },
+				{ provide: ProjectService, useValue: projectServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock }
 			]
 		}).overrideComponent(TaskElement, {
@@ -126,13 +133,13 @@ describe('TaskElement', () => {
 
 		const emitSpy = vi.spyOn(component.taskDeleted, 'emit');
 
-		const deletColumnButton = Array
+		const deleteColumnButton = Array
 			.from(html.querySelectorAll('button'))
 			.find(button => button.textContent?.includes('Delete'));
 
-		expect(deletColumnButton).toBeTruthy();
+		expect(deleteColumnButton).toBeTruthy();
 
-		deletColumnButton!.click();
+		deleteColumnButton!.click();
 
 		await fixture.whenStable();
 
@@ -140,7 +147,125 @@ describe('TaskElement', () => {
 		expect(emitSpy).toHaveBeenCalled();
 	});
 
-	it('should emit taskCommentsEdited CommentList emits commentListEdited', async () => {
+	it('should enable assignee form when changing assignee', async () => {
+		projectServiceMock.getMembers.mockReturnValue(of([]));
+
+		await createComponent();
+
+		const enableAssigneeFormButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Change'));
+
+		expect(enableAssigneeFormButton).toBeTruthy();
+
+		enableAssigneeFormButton!.click();
+
+		await fixture.whenStable();
+
+		expect(component.assigneeFormEnabled()).toBe(true);
+	});
+
+	it('should set selected assignee when a member is selected', async () => {	
+		await createComponent();
+
+		const event = { target: { value: '2' } } as unknown as Event;
+
+		component.onAssigneeChanged(event);
+
+		expect(component.selectedAssigneeId()).toBe(2);
+	});
+
+	it('should set selected assignee to null when none is selected', async () => {
+		await createComponent();
+
+		const event = { target: { value: 'null' } } as unknown as Event;
+
+		component.onAssigneeChanged(event);
+
+		expect(component.selectedAssigneeId()).toBeNull();
+	});
+
+	it('should assign task to selected user, emit taskAssigneeEdited and hide form when request succeeds', async () => {
+		taskServiceMock.assignTask.mockReturnValue(of({}));
+
+		await createComponent();
+
+		component.selectedAssigneeId.set(2);
+
+		const emitSpy = vi.spyOn(component.taskAssigneeEdited, 'emit');
+
+		component.onSetAssignee();
+
+		expect(taskServiceMock.assignTask).toHaveBeenCalledWith(1, 2);
+		expect(emitSpy).toHaveBeenCalled();
+		expect(component.assigneeFormEnabled()).toBe(false);
+		expect(component.selectedAssigneeId()).toBeNull();
+		expect(component.error()).toBeNull();
+	});
+
+	it('should unassign task, emit taskAssigneeEdited and hide form when no assignee is selected', async () => {
+		taskServiceMock.unassignTask.mockReturnValue(of({}));
+
+		await createComponent();
+
+		component.selectedAssigneeId.set(null);
+
+		const emitSpy = vi.spyOn(component.taskAssigneeEdited, 'emit');
+
+		component.onSetAssignee();
+
+		expect(taskServiceMock.unassignTask).toHaveBeenCalledWith(1);
+		expect(emitSpy).toHaveBeenCalled();
+		expect(component.assigneeFormEnabled()).toBe(false);
+		expect(component.error()).toBeNull();
+	});
+
+	it('should not emit taskAssigneeEdited and set error when request fails', async () => {
+		taskServiceMock.assignTask.mockReturnValue(throwError(() => ({
+			error: {
+				error: {
+					code: 'ERROR_MESSAGE',
+					message: 'Error message'
+				}
+			}
+		})));
+
+		await createComponent();
+
+		component.selectedAssigneeId.set(2);
+
+		const emitSpy = vi.spyOn(component.taskAssigneeEdited, 'emit');
+
+		component.onSetAssignee();
+
+		expect(taskServiceMock.assignTask).toHaveBeenCalledWith(1, 2);
+		expect(emitSpy).not.toHaveBeenCalled();
+		expect(component.error()).not.toBeNull();
+	});
+
+	it('should disable assignee form and clear selected assignee when form cancelled', async () => {
+		await createComponent();
+
+		component.selectedAssigneeId.set(2);
+		component.assigneeFormEnabled.set(true);
+
+		await fixture.whenStable();
+
+		const cancelAssigneeFormButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Cancel'));
+
+		expect(cancelAssigneeFormButton).toBeTruthy();
+
+		cancelAssigneeFormButton!.click();
+
+		await fixture.whenStable();
+
+		expect(component.assigneeFormEnabled()).toBe(false);
+		expect(component.selectedAssigneeId()).toBeNull();
+	});
+
+	it('should emit taskCommentsEdited when CommentList emits commentListEdited', async () => {
 		await createComponent();
 
 		const child = fixture.debugElement

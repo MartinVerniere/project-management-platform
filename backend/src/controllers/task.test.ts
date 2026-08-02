@@ -3,7 +3,7 @@ import request from 'supertest';
 
 import { app } from '../app.js';
 import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
-import { createBoard, createColumn, createProject, createTask, loginUser, registerUser } from '../helpers/test.js';
+import { addMember, createBoard, createColumn, createProject, createTask, loginUser, registerUser } from '../helpers/test.js';
 
 describe('Task API', () => {
 	beforeEach(async () => {
@@ -12,6 +12,8 @@ describe('Task API', () => {
 
 	describe('when a task exists in the database', () => {
 		let authToken: string;
+		let aliceId: number;
+		let martinId: number;
 		let taskAId: number;
 		let taskBId: number;
 		let columnBId: number;
@@ -21,6 +23,9 @@ describe('Task API', () => {
 			//Create users
 			const john = await registerUser('john', 'john@test.com', 'password123');
 			const alice = await registerUser('alice', 'alice@test.com', 'password123');
+			aliceId = alice.id;
+			const martin = await registerUser('martin', 'martin@test.com', 'password123');
+			martinId = martin.id;
 
 			//Login
 			const login = await loginUser('john', 'password123');
@@ -28,6 +33,9 @@ describe('Task API', () => {
 
 			//Create project
 			const project = await createProject(authToken, 'Test 1', 'TEST1', 'test desc');
+
+			//Add member to project
+			const member = await addMember(authToken, project.id, alice.id);
 
 			//Create boards
 			const boardA = await createBoard(authToken, project.id, 'Board A');
@@ -46,12 +54,155 @@ describe('Task API', () => {
 			const taskB = await createTask(authToken, columnA.id, 'Task B', 'This is task B');
 			taskBId = taskB.id;
 			const taskC = await createTask(authToken, columnB.id, 'Task B', 'This is task C');
-			
+		});
+
+		describe('and project ADMIN is logged in', () => {
+			beforeEach(async () => {
+				const admin = await loginUser('john', 'password123');
+				authToken = admin.token;
+			});
+
+			describe('on assign user to task', () => {
+				it('assigns user to task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ userId: aliceId });
+
+					expect(response.status).toBe(200);
+					expect(response.body.assigneeId).toBe(aliceId);
+				});
+
+				it('returns 400 if user id is not part of request', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({});
+
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("User ID is required.");
+				});
+
+				it('returns 400 if invalid user id', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ userId: INVALID_ID });
+
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Invalid user id.");
+				});
+
+				it('returns 404 if user not found', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ userId: NOT_FOUND_ID });
+
+					expect(response.status).toBe(404);
+					expect(response.body.error.message).toBe("User to assign task not found.");
+				});
+
+				it('returns 409 if user is not member of project that contains the task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ userId: martinId });
+
+					expect(response.status).toBe(409);
+					expect(response.body.error.message).toBe("User can't be assigned to a task of a project he is not a member of.");
+				});
+
+				it('returns 400 if invalid task id', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${INVALID_ID}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ userId: aliceId });
+
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Invalid task id.");
+				});
+
+				it('returns 404 if task not found', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${NOT_FOUND_ID}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ userId: aliceId });
+
+					expect(response.status).toBe(404);
+					expect(response.body.error.message).toBe("Task not found.");
+				});
+
+				it('returns 401 if token is invalid', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer INVALID_TOKEN`)
+						.send({ userId: aliceId });
+
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is invalid.");
+				});
+
+				it('returns 401 if token is missing', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.send({ userId: aliceId });
+
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is missing.");
+				});
+			});
+
+			describe('on remove assigned user from task', () => {
+				it('removes user assigned to task', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`);
+
+					expect(response.status).toBe(200);
+					expect(response.body.assigneeId).toBe(null);
+				});
+
+				it('returns 400 if invalid task id', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${INVALID_ID}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`);
+
+					expect(response.status).toBe(400);
+					expect(response.body.error.message).toBe("Invalid task id.");
+				});
+
+				it('returns 404 if task not found', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${NOT_FOUND_ID}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`);
+
+					expect(response.status).toBe(404);
+					expect(response.body.error.message).toBe("Task not found.");
+				});
+
+				it('returns 401 if token is invalid', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer INVALID_TOKEN`);
+
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is invalid.");
+				});
+
+				it('returns 401 if token is missing', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskAId}/assignee`);
+
+					expect(response.status).toBe(401);
+					expect(response.body.error.message).toBe("Authentication token is missing.");
+				});
+			});
 		});
 
 		describe('and project MEMBER is logged in', () => {
 			beforeEach(async () => {
-				const member = await loginUser('john', 'password123');
+				const member = await loginUser('alice', 'password123');
 				authToken = member.token;
 			});
 
@@ -364,6 +515,29 @@ describe('Task API', () => {
 				});
 			});
 
+			describe('on asign user to task', () => {
+				it('returns 403 if user is not an admin of the project that contains the task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ userId: aliceId });
+
+					expect(response.status).toBe(403);
+					expect(response.body.error.message).toBe("You must be a project admin to perform this action.");
+				});
+			});
+
+			describe('on remove asigned user from task', () => {
+				it('returns 403 if user is not an admin of the project that contains the task', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`);
+
+					expect(response.status).toBe(403);
+					expect(response.body.error.message).toBe("You must be a project admin to perform this action.");
+				});
+			});
+
 			describe('on delete task', () => {
 				it('deletes task', async () => {
 					const response = await request(app)
@@ -408,7 +582,7 @@ describe('Task API', () => {
 
 		describe('and non-MEMBER is logged in', () => {
 			beforeEach(async () => {
-				const nonMember = await loginUser('alice', 'password123');
+				const nonMember = await loginUser('martin', 'password123');
 
 				authToken = nonMember.token;
 			});
@@ -460,6 +634,29 @@ describe('Task API', () => {
 				});
 			});
 
+			describe('on assign user to task', () => {
+				it('returns 403 if user is not a member of the project that contains the task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ userId: aliceId });
+
+					expect(response.status).toBe(403);
+					expect(response.body.error.message).toBe("You do not have access to this project.");
+				});
+			});
+
+			describe('on remove assigned user from task', () => {
+				it('returns 403 if user is not a member of the project that contains the task', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`);
+
+					expect(response.status).toBe(403);
+					expect(response.body.error.message).toBe("You do not have access to this project.");
+				});
+			});
+
 			describe('on delete task', () => {
 				it('returns 403 if user is not a member of the project that contains the task', async () => {
 					const response = await request(app)
@@ -481,6 +678,8 @@ describe('Task API', () => {
 		beforeEach(async () => {
 			//Create users
 			const john = await registerUser('john', 'john@test.com', 'password123');
+			const alice = await registerUser('alice', 'alice@test.com', 'password123');
+			const martin = await registerUser('martin', 'martin@test.com', 'password123');
 
 			//Login
 			const login = await loginUser('john', 'password123');
@@ -488,6 +687,10 @@ describe('Task API', () => {
 
 			//Create project
 			const project = await createProject(authToken, 'Test 1', 'TEST1', 'test desc');
+
+
+			//Add member to project
+			const member = await addMember(authToken, project.id, alice.id);
 
 			//Create board
 			const board = await createBoard(authToken, project.id, 'Board A');
@@ -504,7 +707,7 @@ describe('Task API', () => {
 
 		describe('and project MEMBER is logged in', () => {
 			beforeEach(async () => {
-				const member = await loginUser('john', 'password123');
+				const member = await loginUser('alice', 'password123');
 				authToken = member.token;
 			});
 

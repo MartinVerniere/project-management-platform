@@ -89,6 +89,28 @@ describe('TaskService', () => {
 		request.flush({});
 	});
 
+	it('should assign user to task', () => {
+		const userId = 1;
+		service.assignTask(taskA.id, userId).subscribe();
+
+		const request = httpMock.expectOne(`http://localhost:3000/api/tasks/${taskA.id}/assignee`);
+
+		expect(request.request.method).toBe('PUT');
+		expect(request.request.body).toEqual({ userId: userId });
+
+		request.flush({});
+	});
+
+	it('should remove assigned user from task', () => {
+		service.unassignTask(taskA.id).subscribe();
+
+		const request = httpMock.expectOne(`http://localhost:3000/api/tasks/${taskA.id}/assignee`);
+
+		expect(request.request.method).toBe('DELETE');
+
+		request.flush({});
+	});
+
 	it('should add comment to task', () => {
 		const newComment: Comment = {
 			id: 1,
@@ -107,4 +129,4 @@ describe('TaskService', () => {
 
 		request.flush({});
 	});
-});
+}); 
