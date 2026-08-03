@@ -2,7 +2,7 @@
 	@if (column(); as column) {
 	<div class="column-id">Id: {{column.id}}</div>
 	<div class="column-name">Name: {{column.name}}</div>
-	<app-task-list [taskList]="column.tasks" [projectId]="projectId()" [boardId]="boardId()" [columnId]="column.id"
+	<app-task-list [taskList]="column.tasks" [projectId]="projectId()" [boardId]="boardId()" [columnId]="column.id" [memberList]="memberList()" [filtersActive]="filtersActive()"
 		(taskListEdited)="columnElementEdited.emit()" (moveTaskToColumn)="moveTaskToColumn.emit({ taskId: $event, destinationColumnId: column.id })">
 	</app-task-list>
 	<div class="column-buttons">

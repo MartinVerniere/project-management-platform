@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from "@angular/core";
+import { Component, computed, inject, input, output, resource, signal } from "@angular/core";
 import { RouterLink, ActivatedRoute } from "@angular/router";
 import { Column } from "../../services/columns/column-service";
 import { ColumnElement } from "../column-element/column-element";
@@ -6,6 +6,8 @@ import { BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TaskService } from "../../services/tasks/task-service";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from "@angular/cdk/drag-drop";
+import { firstValueFrom } from "rxjs";
+import { ProjectService } from "../../services/projects/project-service";
 
 @Component({
 	selector: 'app-column-list',
@@ -15,6 +17,7 @@ import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } 
 })
 export class ColumnList {
 	route = inject(ActivatedRoute);
+	projectService = inject(ProjectService);
 	boardService = inject(BoardService);
 	taskService = inject(TaskService);
 
@@ -24,7 +27,31 @@ export class ColumnList {
 
 	columnListEdited = output<void>();
 
+	members = resource({ loader: () => firstValueFrom(this.projectService.getMembers(this.projectId())) });
+
+	searchTerm = signal('');
+	selectedAssigneeId = signal<number | null>(null);
 	error = signal<string | null>(null);
+
+	memberList = computed(() => { return this.members.value() ?? [] });
+	filtersActive = computed(() => this.searchTerm().trim() !== '' || this.selectedAssigneeId() !== null);
+
+	filteredColumnList = computed(() => {
+		const search = this.searchTerm().trim().toLowerCase();
+		const assigneeId = this.selectedAssigneeId();
+
+		return this.columnList().map(column => ({
+			...column,
+			tasks: column.tasks.filter(task => {
+				const matchesSearch = task.title.toLowerCase().includes(search);
+				const matchesAssignee = assigneeId === null
+					? true
+					: task.assignee?.id === assigneeId;
+
+				return matchesSearch && matchesAssignee;
+			})
+		}));
+	});
 
 	onMoveColumn(event: CdkDragDrop<Column[]>) {
 		// Case 1: Didnt move column
@@ -66,4 +93,19 @@ export class ColumnList {
 	onlyColumnsPredicate = (drag: CdkDrag) => {
 		return drag.data?.type === 'column';
 	};
+
+	onSearchChange(event: Event) {
+		const input = event.target as HTMLInputElement;
+		this.searchTerm.set(input.value);
+	}
+
+	onAssigneeChange(event: Event) {
+		const select = event.target as HTMLSelectElement;
+		this.selectedAssigneeId.set(select.value === '' ? null : Number(select.value));
+	}
+
+	clearFilters() {
+		this.searchTerm.set('');
+		this.selectedAssigneeId.set(null);
+	}
 }

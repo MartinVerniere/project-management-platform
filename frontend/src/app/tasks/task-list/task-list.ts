@@ -5,6 +5,7 @@ import { TaskElement } from '../task-element/task-element';
 import { ColumnService } from '../../services/columns/column-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ProjectMember } from '../../services/projects/project-service';
 
 @Component({
 	selector: 'app-task-list',
@@ -19,6 +20,8 @@ export class TaskList {
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
+	memberList = input.required<ProjectMember[]>();
+	filtersActive = input.required<boolean>();
 
 	taskListEdited = output<void>();
 	moveTaskToColumn = output<number>();
@@ -26,6 +29,8 @@ export class TaskList {
 	error = signal<string | null>(null);
 
 	onMoveTask(event: CdkDragDrop<Task[]>) {
+		if (this.filtersActive()) return;
+
 		const task = event.item.data.task as Task;
 
 		// Case 1: Moved to different column
@@ -56,7 +61,7 @@ export class TaskList {
 		});
 	};
 
-	onlyTasksPredicate = (drag: CdkDrag) => {
-		return drag.data?.type === 'task';
+	enabledDragAndDropPredicate = (drag: CdkDrag) => {
+		return drag.data?.type === 'task' && !this.filtersActive();
 	};
 }

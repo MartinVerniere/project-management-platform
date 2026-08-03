@@ -9,6 +9,7 @@ import { Component, input, output } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { TaskElement } from '../task-element/task-element';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { ProjectMember } from '../../services/projects/project-service';
 
 @Component({
 	selector: 'app-task-element',
@@ -20,6 +21,7 @@ class TaskElementStub {
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
+	memberList = input.required<ProjectMember[]>();
 
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();
@@ -54,7 +56,37 @@ describe('TaskList', () => {
 	const boardId = 1;
 	const columnId = 1;
 
-	async function createComponent(shouldAwait: boolean = true, taskList: Task[] = []) {
+	const memberList: ProjectMember[] = [
+		{
+			id: 1,
+			role: 'ADMIN',
+			user: {
+				id: 1,
+				username: 'john',
+				email: 'john@example.com'
+			}
+		},
+		{
+			id: 2,
+			role: 'MEMBER',
+			user: {
+				id: 3,
+				username: 'martin',
+				email: 'martin@example.com'
+			}
+		},
+		{
+			id: 3,
+			role: 'MEMBER',
+			user: {
+				id: 2,
+				username: 'alice',
+				email: 'alice@example.com'
+			}
+		}
+	];
+
+	async function createComponent(shouldAwait: boolean = true, taskList: Task[] = [], filtersActive: boolean = false) {
 		fixture = TestBed.createComponent(TaskList);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -63,7 +95,9 @@ describe('TaskList', () => {
 		fixture.componentRef.setInput('projectId', projectId);
 		fixture.componentRef.setInput('boardId', boardId);
 		fixture.componentRef.setInput('columnId', columnId);
-
+		fixture.componentRef.setInput('memberList', memberList);
+		fixture.componentRef.setInput('filtersActive', filtersActive);
+		
 		fixture.detectChanges();
 
 		if (shouldAwait) {
@@ -159,6 +193,52 @@ describe('TaskList', () => {
 
 		expect(columnServiceMock.changeTaskOrder).toHaveBeenCalledWith(columnId, { taskOrder: expectedOrder });
 		expect(emitSpy).toHaveBeenCalled();
+		expect(component.error()).toBeNull();
+	});
+
+	it('should NOT change task order when task was dragged inside the task list and filtering is active', async () => {
+		const container = {};
+
+		const dropTaskEvent = {
+			item: { data: { type: 'task', task: taskList[1] } },
+			previousContainer: container,
+			container: container,
+			previousIndex: 1,
+			currentIndex: 0
+		} as CdkDragDrop<Task[]>;
+
+		columnServiceMock.changeTaskOrder.mockReturnValue(of({}));
+
+		await createComponent(true, taskList, true);
+
+		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
+
+		component.onMoveTask(dropTaskEvent);
+
+		expect(columnServiceMock.changeTaskOrder).not.toHaveBeenCalled();
+		expect(emitSpy).not.toHaveBeenCalled();
+		expect(component.error()).toBeNull();
+	});
+
+	it('should NOT emit task moveTaskToColumn with task.Id when task was dragged from another column and filtering is active', async () => {
+		const previousContainer = {};
+		const destinationContainer = {};
+
+		const dropTaskEvent = {
+			item: { data: { type: 'task', task: taskList[1] } },
+			previousContainer,
+			container: destinationContainer,
+			previousIndex: 1,
+			currentIndex: 0
+		} as CdkDragDrop<Task[]>;
+
+		await createComponent(true, taskList, true);
+
+		const emitSpy = vi.spyOn(component.moveTaskToColumn, 'emit');
+
+		component.onMoveTask(dropTaskEvent);
+
+		expect(emitSpy).not.toHaveBeenCalled();
 		expect(component.error()).toBeNull();
 	});
 

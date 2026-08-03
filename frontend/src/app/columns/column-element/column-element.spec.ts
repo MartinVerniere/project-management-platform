@@ -8,6 +8,7 @@ import { Component, output, input } from '@angular/core';
 import { Task } from '../../services/tasks/task-service';
 import { TaskList } from '../../tasks/task-list/task-list';
 import { By } from '@angular/platform-browser';
+import { ProjectMember } from '../../services/projects/project-service';
 
 @Component({
 	selector: 'app-task-list',
@@ -19,6 +20,8 @@ class TaskListStub {
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
+	memberList = input.required<ProjectMember[]>();
+	filtersActive = input.required<boolean>();
 
 	taskListEdited = output<void>();
 	moveTaskToColumn = output<number>();
@@ -53,7 +56,37 @@ describe('ColumnElement', () => {
 	const projectId = 1;
 	const boardId = 1;
 
-	async function createComponent(shouldAwait: boolean = true, isFirst = false, isLast = false) {
+	const memberList: ProjectMember[] = [
+		{
+			id: 1,
+			role: 'ADMIN',
+			user: {
+				id: 1,
+				username: 'john',
+				email: 'john@example.com'
+			}
+		},
+		{
+			id: 2,
+			role: 'MEMBER',
+			user: {
+				id: 3,
+				username: 'martin',
+				email: 'martin@example.com'
+			}
+		},
+		{
+			id: 3,
+			role: 'MEMBER',
+			user: {
+				id: 2,
+				username: 'alice',
+				email: 'alice@example.com'
+			}
+		}
+	];
+
+	async function createComponent(shouldAwait: boolean = true, isFirst = false, isLast = false, filtersActive = false) {
 		fixture = TestBed.createComponent(ColumnElement);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -63,7 +96,9 @@ describe('ColumnElement', () => {
 		fixture.componentRef.setInput('boardId', boardId);
 		fixture.componentRef.setInput('isFirst', isFirst);
 		fixture.componentRef.setInput('isLast', isLast);
-
+		fixture.componentRef.setInput('memberList', memberList);
+		fixture.componentRef.setInput('filtersActive', filtersActive);
+		
 		fixture.detectChanges();
 
 		if (shouldAwait) {

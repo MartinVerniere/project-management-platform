@@ -7,7 +7,7 @@ import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { CommentList } from '../../comments/comment-list/comment-list';
 import { By } from '@angular/platform-browser';
-import { ProjectService } from '../../services/projects/project-service';
+import { ProjectMember } from '../../services/projects/project-service';
 
 @Component({
 	selector: 'app-comment-list',
@@ -43,7 +43,6 @@ describe('TaskElement', () => {
 		assignTask: vi.fn(),
 		unassignTask: vi.fn()
 	};
-	let projectServiceMock = { getMembers: vi.fn().mockReturnValue(of([]))};
 
 	const task: Task = {
 		id: 1,
@@ -73,6 +72,36 @@ describe('TaskElement', () => {
 	const boardId = 1;
 	const columnId = 1;
 
+	const memberList: ProjectMember[] = [
+		{
+			id: 1,
+			role: 'ADMIN',
+			user: {
+				id: 1,
+				username: 'john',
+				email: 'john@example.com'
+			}
+		},
+		{
+			id: 2,
+			role: 'MEMBER',
+			user: {
+				id: 3,
+				username: 'martin',
+				email: 'martin@example.com'
+			}
+		},
+		{
+			id: 3,
+			role: 'MEMBER',
+			user: {
+				id: 2,
+				username: 'alice',
+				email: 'alice@example.com'
+			}
+		}
+	];
+
 	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(TaskElement);
 		component = fixture.componentInstance;
@@ -82,6 +111,7 @@ describe('TaskElement', () => {
 		fixture.componentRef.setInput('projectId', projectId);
 		fixture.componentRef.setInput('boardId', boardId);
 		fixture.componentRef.setInput('columnId', columnId);
+		fixture.componentRef.setInput('memberList', memberList);
 
 		fixture.detectChanges();
 
@@ -98,7 +128,6 @@ describe('TaskElement', () => {
 			imports: [TaskElement],
 			providers: [
 				{ provide: TaskService, useValue: taskServiceMock },
-				{ provide: ProjectService, useValue: projectServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock }
 			]
 		}).overrideComponent(TaskElement, {
@@ -148,8 +177,6 @@ describe('TaskElement', () => {
 	});
 
 	it('should enable assignee form when changing assignee', async () => {
-		projectServiceMock.getMembers.mockReturnValue(of([]));
-
 		await createComponent();
 
 		const enableAssigneeFormButton = Array
@@ -165,7 +192,7 @@ describe('TaskElement', () => {
 		expect(component.assigneeFormEnabled()).toBe(true);
 	});
 
-	it('should set selected assignee when a member is selected', async () => {	
+	it('should set selected assignee when a member is selected', async () => {
 		await createComponent();
 
 		const event = { target: { value: '2' } } as unknown as Event;
