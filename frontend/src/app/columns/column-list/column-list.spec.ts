@@ -10,6 +10,7 @@ import { ColumnElement } from '../column-element/column-element';
 import { By } from '@angular/platform-browser';
 import { TaskService } from '../../services/tasks/task-service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { ProjectMember, ProjectService } from '../../services/projects/project-service';
 
 @Component({
 	selector: 'app-column-element',
@@ -20,6 +21,8 @@ class ColumnElementStub {
 	column = input.required<Column>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
+	memberList = input.required<ProjectMember[]>();
+	filtersActive = input.required<boolean>();
 
 	isFirst = input<boolean>();
 	isLast = input<boolean>();
@@ -35,6 +38,7 @@ describe('ColumnList', () => {
 
 	const boardServiceMock = { changeColumnOrder: vi.fn() };
 	const taskServiceMock = { moveTask: vi.fn() };
+	const projectServiceMock = { getMembers: vi.fn().mockReturnValue(of([])) };
 
 	const activatedRouteMock = {
 		snapshot: {
@@ -91,6 +95,7 @@ describe('ColumnList', () => {
 				{ provide: BoardService, useValue: boardServiceMock },
 				{ provide: TaskService, useValue: taskServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock },
+				{ provide: ProjectService, useValue: projectServiceMock }
 			]
 		}).overrideComponent(ColumnList, {
 			remove: {
@@ -108,6 +113,14 @@ describe('ColumnList', () => {
 		expect(component).toBeTruthy();
 	});
 
+	it('should fetch project members', async () => {
+		projectServiceMock.getMembers.mockReturnValue(of([]));
+
+		await createComponent(true, columnList);
+
+		expect(projectServiceMock.getMembers).toHaveBeenCalledWith(projectId);
+	});
+
 	it('should render columns', async () => {
 		await createComponent(true, columnList);
 
@@ -120,6 +133,118 @@ describe('ColumnList', () => {
 		await createComponent(true);
 
 		expect(html.textContent).toContain('No columns in this project');
+	});
+
+	it('should update searchTerm when search input changes', async () => {
+		await createComponent(true, columnList);
+
+		const event = { target: { value: 'search term' } } as unknown as Event;
+		component.onSearchChange(event);
+
+		expect(component.searchTerm()).toBe('search term');
+	});
+
+	it('should filter tasks by search term', async () => {
+		await createComponent(true, [
+			{
+				id: 1,
+				name: 'Todo',
+				tasks: [
+					{ id: 1, title: 'Login', comments: [] },
+					{ id: 2, title: 'Dashboard', comments: [] }
+				]
+			}
+		]);
+
+		component.searchTerm.set('log');
+
+		expect(component.filteredColumnList()[0].tasks).toHaveLength(1);
+		expect(component.filteredColumnList()[0].tasks[0].title).toBe('Login');
+	});
+
+	it('should filter tasks by assignee', async () => {
+		await createComponent(true, [
+			{
+				id: 1,
+				name: 'Todo',
+				tasks: [
+					{
+						id: 1,
+						title: 'Login',
+						assignee: {
+							id: 1, 
+							username: 'john',
+							email: 'john@example.com'
+						},
+						comments: []
+					},
+					{
+						id: 2,
+						title: 'Dashboard',
+						assignee: {
+							id: 2, 
+							username: 'mary',
+							email: 'mary@example.com'
+						},
+						comments: []
+					}
+				]
+			}
+		]);
+
+		component.selectedAssigneeId.set(2);
+
+		expect(component.filteredColumnList()[0].tasks).toHaveLength(1);
+		expect(component.filteredColumnList()[0].tasks[0].title).toBe('Dashboard');
+	});
+
+	it('should set filtersActive to true when searchTerm is set', async () => {
+		await createComponent(true, columnList);
+
+		component.searchTerm.set('abc');
+		expect(component.filtersActive()).toBe(true);
+	});
+
+	it('should set filtersActive to true when selectedAssigneeId is set', async () => {
+		await createComponent(true, columnList);
+
+		component.selectedAssigneeId.set(2);
+		expect(component.filtersActive()).toBe(true);
+	});
+
+	it('should update selectedAssigneeId when assignee changes', async () => {
+		await createComponent(true, columnList);
+
+		const event = { target: { value: '2' } } as unknown as Event;
+		component.onAssigneeChange(event);
+
+		expect(component.selectedAssigneeId()).toBe(2);
+	});
+
+	it('should set selectedAssigneeId to null when assignee value is empty', async () => {
+		await createComponent(true, columnList);
+
+		component.selectedAssigneeId.set(2);
+
+		const event = { target: { value: '' } } as unknown as Event;
+		component.onAssigneeChange(event);
+
+		expect(component.selectedAssigneeId()).toBeNull();
+	});
+
+	it('should clear filters when "Clear filters" is selected', async () => {
+		await createComponent(true, columnList);
+
+		const event = { target: { value: 'search term' } } as unknown as Event;
+		component.onSearchChange(event);
+
+		const secondEvent = { target: { value: '2' } } as unknown as Event;
+		component.onAssigneeChange(secondEvent);
+
+		component.clearFilters();
+
+		expect(component.selectedAssigneeId()).toBeNull();
+		expect(component.searchTerm()).toBe('');
 	});
 
 	it('should change column order when column was dragged inside the column list to a different position and emit columnListEdited', async () => {
