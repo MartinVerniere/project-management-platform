@@ -3,6 +3,7 @@ import { Component, inject, input, output, signal } from "@angular/core";
 import { RouterLink, Router } from "@angular/router";
 import { ColumnService, Column } from "../../services/columns/column-service";
 import { TaskList } from "../../tasks/task-list/task-list";
+import { ProjectMember } from "../../services/projects/project-service";
 
 @Component({
 	selector: 'app-column-element',
@@ -17,6 +18,8 @@ export class ColumnElement {
 	column = input.required<Column>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
+	memberList = input.required<ProjectMember[]>();
+	filtersActive = input.required<boolean>();
 
 	isFirst = input<boolean>();
 	isLast = input<boolean>();

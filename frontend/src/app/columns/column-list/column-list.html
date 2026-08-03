@@ -2,11 +2,29 @@
 <div class="column-list" cdkDropList [cdkDropListData]="columnList" (cdkDropListDropped)="onMoveColumn($event)"
 	[cdkDropListEnterPredicate]="onlyColumnsPredicate" cdkDropListOrientation="horizontal">
 	<h3 class=" column-title">Columns</h3>
+	<div class="column-list-filters">
+		<div class="task-name-filter">
+			<label for="search">Search:</label>
+			<input type="text" placeholder="Search tasks..." (input)="onSearchChange($event)">
+		</div>
+		<select (change)="onAssigneeChange($event)">
+			<option value="">All assignees</option>
+
+			@for (member of memberList(); track member.id) {
+			<option [value]="member.user.id">
+				{{ member.user.username }}
+			</option>
+			}
+		</select>
+		<button type="button" (click)="clearFilters()">
+			Clear filters
+		</button>
+	</div>
 	<div class="column-element-list" cdkDropListGroup>
-		@for (column of columnList; track column.id; let i = $index) {
+		@for (column of filteredColumnList(); track column.id; let i = $index) {
 		<div cdkDrag [cdkDragData]="{ type: 'column', column: column }">
 			<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()" [isFirst]="i === 0"
-				[isLast]="i === columnList.length - 1" (columnElementEdited)="columnListEdited.emit()"
+				[isLast]="i === columnList.length - 1" [memberList]="memberList()" [filtersActive]="filtersActive()" (columnElementEdited)="columnListEdited.emit()"
 				(moveTaskToColumn)="onMoveTaskToColumn($event)">
 			</app-column-element>
 		</div>

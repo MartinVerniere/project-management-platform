@@ -3,8 +3,7 @@ import { Task, TaskService } from '../../services/tasks/task-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { CommentList } from '../../comments/comment-list/comment-list';
-import { ProjectService } from '../../services/projects/project-service';
-import { firstValueFrom } from 'rxjs';
+import { ProjectMember } from '../../services/projects/project-service';
 
 @Component({
 	selector: 'app-task-element',
@@ -14,19 +13,16 @@ import { firstValueFrom } from 'rxjs';
 })
 export class TaskElement {
 	taskService = inject(TaskService);
-	projectService = inject(ProjectService);
 
 	task = input.required<Task>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
+	memberList = input.required<ProjectMember[]>();
 
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();
 	taskAssigneeEdited = output<void>();
-
-	members = resource({ loader: () => firstValueFrom(this.projectService.getMembers(this.projectId())) });
-	memberList = computed(() => { return this.members.value() ?? [] });
 
 	selectedAssigneeId = signal<number | null>(null);
 	assigneeFormEnabled = signal<boolean>(false);
