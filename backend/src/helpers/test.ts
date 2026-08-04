@@ -1,25 +1,7 @@
 import request from 'supertest';
 import { app } from "../app.js";
-import type { ProjectRole } from '../generated/prisma/enums.js';
 import type { LoginResponse, UserResponse } from '../models/user.js';
-
-export interface ProjectResponse {
-	id: number;
-	name: string;
-	key: string;
-	description: string | null;
-}
-
-export interface ProjectMemberResponse {
-	id: number;
-	projectId: number;
-	userId: number;
-	role: ProjectRole;
-}
-
-export interface ProjectMemberWithUserResponse extends ProjectMemberResponse {
-	user: UserResponse;
-}
+import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
 
 export interface BoardResponse {
 	id: number;

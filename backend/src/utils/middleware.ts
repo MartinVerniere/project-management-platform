@@ -3,6 +3,8 @@ import type { Request, Response, NextFunction } from 'express';
 import { SECRET } from './config.js';
 import { prisma } from '../prisma.js';
 import { ProjectRole, type User } from '../generated/prisma/client.js';
+import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
+import type { UserResponse } from '../models/user.js';
 
 export interface TokenPayload {
 	id: number;
@@ -87,7 +89,7 @@ export const userExtractor = async (
 ): Promise<void> => {
 	const userId: number = request.decodedToken.id;
 
-	const user: User | null = await prisma.user.findUnique({ where: { id: userId } });
+	const user: UserResponse | null = await prisma.user.findUnique({ where: { id: userId } });
 	if (!user) throw new ApiError(404, "USER_NOT_FOUND", "User not found.");
 
 	request.user = user;
@@ -105,7 +107,7 @@ export const projectExtractor = async (
 	const projectId = Number(request.params.id);
 	if (!Number.isInteger(projectId)) throw new ApiError(400, "INVALID_PROJECT_ID", "Invalid project id.");
 
-	const project = await prisma.project.findUnique({
+	const project: ProjectResponse | null = await prisma.project.findUnique({
 		where: { id: projectId },
 		include: {
 			members: {
@@ -133,10 +135,10 @@ export const requireProjectMember = async (
 	_response: Response,
 	next: NextFunction
 ): Promise<void> => {
-	const userId = request.user.id;
+	const userId = Number(request.user.id);
 	const project = request.project!;
 
-	const membership = project.members.find(member => member.userId === userId);
+	const membership = project.members.find(member => member.user.id === userId);
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
 	request.projectMember = membership;
@@ -221,16 +223,25 @@ export const requireBoardMember = async (
 	_response: Response,
 	next: NextFunction
 ): Promise<void> => {
-	const userId = request.user.id;
+	const userId = Number(request.user.id);
 	const board = request.board!;
 
-	const membership = await prisma.projectMember.findUnique({
+	const membership: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
 		where: {
 			projectId_userId: {
 				projectId: board.projectId,
 				userId: userId,
-			},
+			}
 		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					username: true,
+					email: true
+				}
+			}
+		}
 	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
@@ -278,16 +289,25 @@ export const requireColumnMember = async (
 	_response: Response,
 	next: NextFunction
 ): Promise<void> => {
-	const userId = request.user.id;
+	const userId = Number(request.user.id);
 	const boardColumn = request.boardColumn!;
 
-	const membership = await prisma.projectMember.findUnique({
+	const membership: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
 		where: {
 			projectId_userId: {
 				projectId: boardColumn.board.projectId,
-				userId,
-			},
+				userId: userId,
+			}
 		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					username: true,
+					email: true
+				}
+			}
+		}
 	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
@@ -346,16 +366,25 @@ export const requireTaskMember = async (
 	_response: Response,
 	next: NextFunction
 ): Promise<void> => {
-	const userId = request.user.id;
+	const userId = Number(request.user.id);
 	const task = request.task!;
 
-	const membership = await prisma.projectMember.findUnique({
+	const membership: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
 		where: {
 			projectId_userId: {
 				projectId: task.column.board.projectId,
 				userId: userId,
 			}
 		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					username: true,
+					email: true
+				}
+			}
+		}
 	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
