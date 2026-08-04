@@ -5,6 +5,7 @@ import { prisma } from '../prisma.js';
 import { ProjectRole, type User } from '../generated/prisma/client.js';
 import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
 import type { UserResponse } from '../models/user.js';
+import type { BoardResponse } from '../models/board.js';
 
 export interface TokenPayload {
 	id: number;
@@ -167,7 +168,7 @@ export const boardExtractor = async (
 	const boardId = Number(request.params.id);
 	if (!Number.isInteger(boardId)) throw new ApiError(400, "INVALID_BOARD_ID", "Invalid board id.");
 
-	const board = await prisma.board.findUnique({
+	const board: BoardResponse | null = await prisma.board.findUnique({
 		where: { id: boardId },
 		include: {
 			columns: {

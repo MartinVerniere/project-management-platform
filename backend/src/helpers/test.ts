@@ -2,12 +2,7 @@ import request from 'supertest';
 import { app } from "../app.js";
 import type { LoginResponse, UserResponse } from '../models/user.js';
 import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
-
-export interface BoardResponse {
-	id: number;
-	name: string;
-	projectId: number;
-}
+import type { BoardResponse } from '../models/board.js';
 
 export interface ColumnResponse {
 	id: number;

@@ -1,6 +1,8 @@
 import { Router, type Request, type Response } from "express";
 import { ApiError, boardExtractor, requireBoardAdmin, requireBoardMember, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
+import type { BoardResponse } from "../models/board.js";
+import type { Board } from "../generated/prisma/client.js";
 
 const boardRouter = Router();
 
@@ -30,10 +32,10 @@ boardRouter.put("/:id",
 		if (typeof name !== "string") throw new ApiError(400, "BOARD_NAME_INVALID", "Board name must be a string.");
 		if (name.trim() === "") throw new ApiError(400, "BOARD_NAME_REQUIRED", "Board name is required.");
 
-		const boardExists = await prisma.board.findUnique({ where: { projectId_name: { projectId: board.projectId, name } } });
+		const boardExists: Board | null = await prisma.board.findUnique({ where: { projectId_name: { projectId: board.projectId, name } } });
 		if (boardExists) throw new ApiError(409, "BOARD_EXISTS", "A board with this name already exists in the project.");
 
-		const updatedBoard = await prisma.board.update({ where: { id: board.id }, data: { name } });
+		const updatedBoard: BoardResponse = await prisma.board.update({ where: { id: board.id }, data: { name } });
 
 		return response.status(200).json(updatedBoard);
 	}
@@ -113,7 +115,7 @@ boardRouter.put("/:id/columns/order",
 			),
 		]);
 
-		const updatedBoard = await prisma.board.findUnique({
+		const updatedBoard: BoardResponse | null = await prisma.board.findUnique({
 			where: { id: board.id },
 			include: {
 				columns: {

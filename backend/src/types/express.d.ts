@@ -1,5 +1,7 @@
 import type { Board, BoardColumn, Comment, Project, ProjectMember, Task, User } from '../generated/prisma/client.ts';
 import type { ProjectResponse, ProjectMemberResponse } from '../models/project.ts';
+import type { UserResponse } from '../models/user.ts';
+import type { BoardResponse } from '../models/board.ts';
 import type { TokenPayload } from '../utils/middleware.ts';
 
 declare global {
@@ -9,7 +11,7 @@ declare global {
 			decodedToken: TokenPayload;
 			project?: ProjectResponse;
 			projectMember?: ProjectMemberResponse;
-			board?: Board;
+			board?: BoardResponse;
 			boardColumn?: BoardColumn & {
 				board: Board;
 			};

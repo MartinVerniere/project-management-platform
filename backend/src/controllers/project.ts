@@ -4,6 +4,7 @@ import { prisma } from '../prisma.js';
 import { ProjectRole, type Project, type ProjectMember } from '../generated/prisma/client.js';
 import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
 import type { UserResponse } from '../models/user.js';
+import type { BoardResponse } from '../models/board.js';
 
 const projectRouter = Router();
 
@@ -189,7 +190,7 @@ projectRouter.delete('/:id', tokenExtractor, userExtractor, projectExtractor, re
 
 projectRouter.get("/:id/boards", tokenExtractor, userExtractor, projectExtractor, requireProjectMember, async (request: Request, response: Response) => {
 	const project = request.project!;
-	const boards = await prisma.board.findMany({ where: { projectId: project.id, } });
+	const boards: BoardResponse[] = await prisma.board.findMany({ where: { projectId: project.id, } });
 
 	return response.status(200).json(boards);
 });
@@ -203,10 +204,10 @@ projectRouter.post("/:id/boards", tokenExtractor, userExtractor, projectExtracto
 	if (typeof name !== "string") throw new ApiError(400, "BOARD_NAME_INVALID", "Board name must be a string.");
 	if (name.trim() === "") throw new ApiError(400, "BOARD_NAME_REQUIRED", "Board name is required.");
 
-	const boardExists = await prisma.board.findUnique({ where: { projectId_name: { projectId: project.id, name } } });
+	const boardExists: BoardResponse | null = await prisma.board.findUnique({ where: { projectId_name: { projectId: project.id, name } } });
 	if (boardExists) throw new ApiError(409, "BOARD_EXISTS", "A board with this name already exists in the project.");
 
-	const newBoard = await prisma.board.create({ data: { name: name, projectId: project.id } });
+	const newBoard: BoardResponse = await prisma.board.create({ data: { name: name, projectId: project.id } });
 
 	return response.status(201).json(newBoard);
 });
