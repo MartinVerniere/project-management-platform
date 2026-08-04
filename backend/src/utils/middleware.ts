@@ -2,11 +2,13 @@ import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
 import { SECRET } from './config.js';
 import { prisma } from '../prisma.js';
-import { ProjectRole, type User } from '../generated/prisma/client.js';
+import { ProjectRole } from '../generated/prisma/client.js';
 import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
 import type { UserResponse } from '../models/user.js';
 import type { BoardResponse } from '../models/board.js';
 import type { ColumnWithBoardResponse } from '../models/column.js';
+import type { TaskWithColumnAndAssigneeResponse } from '../models/task.js';
+import type { CommentWithTaskResponse } from '../models/comment.js';
 
 export interface TokenPayload {
 	id: number;
@@ -113,15 +115,7 @@ export const projectExtractor = async (
 		where: { id: projectId },
 		include: {
 			members: {
-				include: {
-					user: {
-						select: {
-							id: true,
-							username: true,
-							email: true
-						}
-					}
-				}
+				include: { user: true }
 			}
 		}
 	});
@@ -235,15 +229,7 @@ export const requireBoardMember = async (
 				userId: userId,
 			}
 		},
-		include: {
-			user: {
-				select: {
-					id: true,
-					username: true,
-					email: true
-				}
-			}
-		}
+		include: { user: true }
 	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
@@ -275,9 +261,7 @@ export const columnExtractor = async (
 
 	const boardColumn: ColumnWithBoardResponse | null = await prisma.boardColumn.findUnique({
 		where: { id: columnId },
-		include: {
-			board: true,
-		},
+		include: { board: true },
 	});
 	if (!boardColumn) throw new ApiError(404, "BOARD_COLUMN_NOT_FOUND", "Column not found.");
 
@@ -301,15 +285,7 @@ export const requireColumnMember = async (
 				userId: userId,
 			}
 		},
-		include: {
-			user: {
-				select: {
-					id: true,
-					username: true,
-					email: true
-				}
-			}
-		}
+		include: { user: true }
 	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
@@ -339,21 +315,13 @@ export const taskExtractor = async (
 	const taskId = Number(request.params.id);
 	if (!Number.isInteger(taskId)) throw new ApiError(400, "INVALID_TASK_ID", "Invalid task id.");
 
-	const task = await prisma.task.findUnique({
+	const task: TaskWithColumnAndAssigneeResponse | null = await prisma.task.findUnique({
 		where: { id: taskId },
 		include: {
 			column: {
-				include: {
-					board: true,
-				},
+				include: { board: true },
 			},
-			assignee: {
-				select: {
-					id: true,
-					username: true,
-					email: true
-				}
-			}
+			assignee: true
 		},
 	});
 	if (!task) throw new ApiError(404, "TASK_NOT_FOUND", "Task not found.");
@@ -369,7 +337,7 @@ export const requireTaskMember = async (
 	next: NextFunction
 ): Promise<void> => {
 	const userId = Number(request.user.id);
-	const task = request.task!;
+	const task = request.task!
 
 	const membership: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
 		where: {
@@ -378,15 +346,7 @@ export const requireTaskMember = async (
 				userId: userId,
 			}
 		},
-		include: {
-			user: {
-				select: {
-					id: true,
-					username: true,
-					email: true
-				}
-			}
-		}
+		include: { user: true }
 	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
@@ -416,16 +376,15 @@ export const commentExtractor = async (
 	const commentId = Number(request.params.id);
 	if (!Number.isInteger(commentId)) throw new ApiError(400, "INVALID_COMMENT_ID", "Invalid comment id.");
 
-	const comment = await prisma.comment.findUnique({
+	const comment: CommentWithTaskResponse | null = await prisma.comment.findUnique({
 		where: { id: commentId },
 		include: {
 			task: {
 				include: {
 					column: {
-						include: {
-							board: true,
-						},
+						include: { board: true, },
 					},
+					assignee: true,
 				},
 			},
 		},

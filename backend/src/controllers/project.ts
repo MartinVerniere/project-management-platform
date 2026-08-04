@@ -49,13 +49,7 @@ projectRouter.get('/:id/members', tokenExtractor, userExtractor, projectExtracto
 			projectId: project.id
 		},
 		include: {
-			user: {
-				select: {
-					id: true,
-					username: true,
-					email: true
-				}
-			}
+			user: true
 		}
 	});
 
@@ -120,13 +114,7 @@ projectRouter.post('/:id/members', tokenExtractor, userExtractor, projectExtract
 			role: ProjectRole.MEMBER
 		},
 		include: {
-			user: {
-				select: {
-					id: true,
-					username: true,
-					email: true
-				}
-			}
+			user: true
 		}
 	});
 

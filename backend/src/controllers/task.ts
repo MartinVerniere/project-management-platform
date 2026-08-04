@@ -1,6 +1,11 @@
 import { Router, type Request, type Response } from "express";
 import { ApiError, requireTaskAdmin, requireTaskMember, taskExtractor, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
+import type { TaskResponse } from "../models/task.js";
+import type { ColumnResponse } from "../models/column.js";
+import type { BoardColumn } from "../generated/prisma/client.js";
+import type { UserResponse } from "../models/user.js";
+import type { ProjectMemberResponse } from "../models/project.js";
 
 const taskRouter = Router();
 
@@ -29,8 +34,8 @@ taskRouter.put('/:id',
 		if (typeof title !== "string") throw new ApiError(400, "TASK_TITLE_INVALID", "Task title must be a string.");
 		if (title.trim() === "") throw new ApiError(400, "TASK_TITLE_REQUIRED", "Task title is required.");
 
-		const taskExists = await prisma.task.findUnique({
-			where: { columnId_title: { columnId: task.columnId, title } }
+		const taskExists: TaskResponse | null = await prisma.task.findUnique({
+			where: { columnId_title: { columnId: task.column.id, title } }
 		});
 		if (taskExists) throw new ApiError(409, "TASK_EXISTS", "A task with this title already exists in the column.");
 
@@ -75,23 +80,25 @@ taskRouter.put('/:id/column',
 		const task = request.task!;
 		const { columnId } = request.body;
 
-		const originColumn = await prisma.boardColumn.findUnique({ where: { id: task.columnId } });
+		const originColumn: BoardColumn | null = await prisma.boardColumn.findUnique({ where: { id: task.column.id } });
 		if (!originColumn) throw new ApiError(404, "ORIGIN_COLUMN_NOT_FOUND", "Origin column not found.");
 
 		if (!columnId) throw new ApiError(400, "COLUMN_ID_REQUIRED", "Column id is required.");
 		if (!Number.isInteger(columnId)) throw new ApiError(400, "INVALID_COLUMN_ID", "Invalid column id.");
 
 		// If already in column, just return
-		if (task.columnId === columnId) return response.status(200).json(task);
+		if (task.column.id === columnId) return response.status(200).json(task);
 
 		const destinationColumn = await prisma.boardColumn.findUnique({
 			where: { id: columnId },
-			include: { tasks: true }
+			include: {
+				tasks: true
+			}
 		});
 		if (!destinationColumn) throw new ApiError(404, "DESTINATION_COLUMN_NOT_FOUND", "Destination column not found.");
 		if (originColumn.boardId !== destinationColumn.boardId) throw new ApiError(409, "INVALID_TASK_MOVE", "Can't move a task to a column of a different board.");
 
-		const taskTitleExists = await prisma.task.findUnique({
+		const taskTitleExists: TaskResponse | null = await prisma.task.findUnique({
 			where: {
 				columnId_title: {
 					columnId: destinationColumn.id,
@@ -104,9 +111,9 @@ taskRouter.put('/:id/column',
 
 		const destinationTaskCount = destinationColumn.tasks.length;
 
-		const updatedTask = await prisma.$transaction(async (transaction) => {
+		const updatedTask: TaskResponse = await prisma.$transaction(async (transaction) => {
 			// Move task to destination column (append at the end)
-			const updatedTask = await transaction.task.update({
+			const updatedTask: TaskResponse = await transaction.task.update({
 				where: { id: task.id },
 				data: {
 					columnId: destinationColumn.id,
@@ -115,7 +122,7 @@ taskRouter.put('/:id/column',
 			});
 
 			// Reorder old column
-			const remainingTasks = await transaction.task.findMany({
+			const remainingTasks: TaskResponse[] = await transaction.task.findMany({
 				where: { columnId: originColumn.id },
 				orderBy: { order: "asc" },
 			});
@@ -147,20 +154,23 @@ taskRouter.put('/:id/assignee',
 		if (!userId) throw new ApiError(400, "USER_ID_REQUIRED", "User ID is required.");
 		if (!Number.isInteger(userId)) throw new ApiError(400, "INVALID_USER_ID", "Invalid user id.");
 
-		const userExists = await prisma.user.findUnique({ where: { id: userId } });
+		const userExists: UserResponse | null = await prisma.user.findUnique({ where: { id: userId } });
 		if (!userExists) throw new ApiError(404, "USER_NOT_FOUND", "User to assign task not found.");
 
-		const userIsMember = await prisma.projectMember.findUnique({
+		const userIsMember: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
 			where: {
 				projectId_userId: {
 					projectId: task.column.board.projectId,
 					userId: userId
 				}
+			},
+			include: {
+				user: true
 			}
 		});
 		if (!userIsMember) throw new ApiError(409, "USER_NOT_MEMBER", "User can't be assigned to a task of a project he is not a member of.");
 
-		const updatedTask = await prisma.task.update({ where: { id: task.id }, data: { assigneeId: userId } });
+		const updatedTask: TaskResponse = await prisma.task.update({ where: { id: task.id }, data: { assigneeId: userId } });
 
 		return response.status(200).json(updatedTask);
 	}
@@ -175,7 +185,7 @@ taskRouter.delete('/:id/assignee',
 	async (request: Request, response: Response) => {
 		const task = request.task!;
 
-		const updatedTask = await prisma.task.update({ where: { id: task.id }, data: { assigneeId: null } });
+		const updatedTask: TaskResponse = await prisma.task.update({ where: { id: task.id }, data: { assigneeId: null } });
 
 		return response.status(200).json(updatedTask);
 	}
@@ -192,8 +202,8 @@ taskRouter.delete('/:id',
 		await prisma.task.delete({ where: { id: task.id } });
 
 		// Reset order values
-		const remainingTasks = await prisma.task.findMany({
-			where: { columnId: task.columnId },
+		const remainingTasks: TaskResponse[] = await prisma.task.findMany({
+			where: { columnId: task.column.id },
 			orderBy: { order: "asc" },
 		});
 

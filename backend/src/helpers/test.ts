@@ -4,21 +4,8 @@ import type { LoginResponse, UserResponse } from '../models/user.js';
 import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
 import type { BoardResponse } from '../models/board.js';
 import type { ColumnResponse } from '../models/column.js';
-
-export interface TaskResponse {
-	id: number;
-	title: string;
-	description: string | null;
-	columnId: number;
-	order: number;
-}
-
-export interface CommentResponse {
-	id: number;
-	content: string;
-	taskId: number;
-	userId: number;
-}
+import type { TaskResponse } from '../models/task.js';
+import type { CommentResponse } from '../models/comment.js';
 
 export const registerUser = async (username: string, email: string, password: string): Promise<UserResponse> => {
 	const response = await request(app)

@@ -2,6 +2,7 @@ import { Router, type Request, type Response } from "express";
 import { tokenExtractor, userExtractor, columnExtractor, requireColumnMember, ApiError, requireColumnAdmin } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
 import type { ColumnResponse } from "../models/column.js";
+import type { TaskResponse } from "../models/task.js";
 
 const boardColumnRouter = Router();
 
@@ -62,13 +63,13 @@ boardColumnRouter.post('/:id/tasks',
 		if (typeof title !== "string") throw new ApiError(400, "TASK_TITLE_INVALID", "Task title must be a string.");
 		if (title.trim() === "") throw new ApiError(400, "TASK_TITLE_REQUIRED", "Task title is required.");
 
-		const taskExists = await prisma.task.findUnique({ where: { columnId_title: { columnId: column.id, title } } })
+		const taskExists: TaskResponse | null = await prisma.task.findUnique({ where: { columnId_title: { columnId: column.id, title } } })
 		if (taskExists) throw new ApiError(409, "TASK_EXISTS", "A task with this title already exists in the column.");
 
-		const allTasks = await prisma.task.findMany({ where: { columnId: column.id } })!;
+		const allTasks: TaskResponse[] = await prisma.task.findMany({ where: { columnId: column.id } })!;
 		const order = allTasks.length;
 
-		const createdTask = await prisma.task.create({ data: { title, description, columnId: column.id, order: order } });
+		const createdTask: TaskResponse = await prisma.task.create({ data: { title, description, columnId: column.id, order: order } });
 
 		return response.status(201).json(createdTask);
 	}
@@ -86,7 +87,7 @@ boardColumnRouter.put('/:id/tasks/order',
 		if (!taskOrder) throw new ApiError(400, "TASK_ORDER_REQUIRED", "Task order is required.");
 		if (!Array.isArray(taskOrder)) throw new ApiError(400, "INVALID_TASK_ORDER", "Task order must be an array.");
 
-		const tasks = await prisma.task.findMany({ where: { columnId: column.id }, select: { id: true } });
+		const tasks: TaskResponse[] = await prisma.task.findMany({ where: { columnId: column.id } });
 		const tasksIds = new Set(tasks.map(task => task.id));
 
 		if (taskOrder.length !== tasks.length) throw new ApiError(400, "INVALID_TASK_ORDER", "Every task must be included.")
