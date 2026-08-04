@@ -1,12 +1,11 @@
 import { Router, type Request, type Response } from 'express';
 import { ApiError, tokenExtractor, userExtractor } from '../utils/middleware.js';
 import { prisma } from '../prisma.js';
-import type { UserResponse } from '../models/user.js';
 
 const userRouter = Router();
 
 userRouter.get('/', tokenExtractor, userExtractor, async (request: Request, response: Response) => {
-	const users: UserResponse[] = await prisma.user.findMany({
+	const users = await prisma.user.findMany({
 		select: {
 			id: true,
 			username: true,
@@ -22,7 +21,7 @@ userRouter.get('/:id', tokenExtractor, userExtractor, async (request: Request, r
 
 	if (!Number.isInteger(userId)) throw new ApiError(400, "INVALID_USER_ID", "Invalid user id.");
 
-	const user: UserResponse | null = await prisma.user.findUnique({ 
+	const user = await prisma.user.findUnique({ 
 		where: { id: userId },
 		select: {
 			id: true,

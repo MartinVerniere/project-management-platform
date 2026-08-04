@@ -2,7 +2,6 @@ import { Router, type Request, type Response } from "express";
 import { tokenExtractor, userExtractor, columnExtractor, requireColumnMember, ApiError, requireColumnAdmin } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
 import type { ColumnResponse } from "../models/column.js";
-import type { TaskResponse } from "../models/task.js";
 
 const boardColumnRouter = Router();
 
@@ -39,12 +38,21 @@ boardColumnRouter.put('/:id',
 		if (typeof name !== "string") throw new ApiError(400, "BOARD_COLUMN_NAME_INVALID", "Column name must be a string.");
 		if (name.trim() === "") throw new ApiError(400, "BOARD_COLUMN_NAME_REQUIRED", "Column name is required.");
 
-		const boardColumnExists: ColumnResponse | null = await prisma.boardColumn.findUnique({
+		const boardColumnExists = await prisma.boardColumn.findUnique({
 			where: { boardId_name: { boardId: boardColumn.board.id, name } }
 		});
 		if (boardColumnExists) throw new ApiError(409, "BOARD_COLUMN_EXISTS", "A column with this name already exists in the board.");
 
-		const updatedBoardColumn: ColumnResponse = await prisma.boardColumn.update({ where: { id: boardColumn.id }, data: { name } });
+		const updatedBoardColumn = await prisma.boardColumn.update({
+			where: { id: boardColumn.id },
+			data: { name },
+			select: {
+				id: true,
+				name: true,
+				boardId: true,
+				order: true,
+			}
+		});
 
 		return response.status(200).json(updatedBoardColumn);
 	}
@@ -63,13 +71,22 @@ boardColumnRouter.post('/:id/tasks',
 		if (typeof title !== "string") throw new ApiError(400, "TASK_TITLE_INVALID", "Task title must be a string.");
 		if (title.trim() === "") throw new ApiError(400, "TASK_TITLE_REQUIRED", "Task title is required.");
 
-		const taskExists: TaskResponse | null = await prisma.task.findUnique({ where: { columnId_title: { columnId: column.id, title } } })
+		const taskExists = await prisma.task.findUnique({ where: { columnId_title: { columnId: column.id, title } } })
 		if (taskExists) throw new ApiError(409, "TASK_EXISTS", "A task with this title already exists in the column.");
 
-		const allTasks: TaskResponse[] = await prisma.task.findMany({ where: { columnId: column.id } })!;
+		const allTasks = await prisma.task.findMany({ where: { columnId: column.id } });
 		const order = allTasks.length;
 
-		const createdTask: TaskResponse = await prisma.task.create({ data: { title, description, columnId: column.id, order: order } });
+		const createdTask = await prisma.task.create({
+			data: { title, description, columnId: column.id, order: order },
+			select: {
+				id: true,
+				title: true,
+				description: true,
+				columnId: true,
+				order: true,
+			}
+		});
 
 		return response.status(201).json(createdTask);
 	}
@@ -87,7 +104,7 @@ boardColumnRouter.put('/:id/tasks/order',
 		if (!taskOrder) throw new ApiError(400, "TASK_ORDER_REQUIRED", "Task order is required.");
 		if (!Array.isArray(taskOrder)) throw new ApiError(400, "INVALID_TASK_ORDER", "Task order must be an array.");
 
-		const tasks: TaskResponse[] = await prisma.task.findMany({ where: { columnId: column.id } });
+		const tasks = await prisma.task.findMany({ where: { columnId: column.id } });
 		const tasksIds = new Set(tasks.map(task => task.id));
 
 		if (taskOrder.length !== tasks.length) throw new ApiError(400, "INVALID_TASK_ORDER", "Every task must be included.")
@@ -118,14 +135,16 @@ boardColumnRouter.put('/:id/tasks/order',
 			),
 		]);
 
-		const updatedBoardColumn: ColumnResponse | null = await prisma.boardColumn.findUnique({
+		const updatedBoardColumn = await prisma.boardColumn.findUnique({
 			where: { id: column.id },
-			include: {
+			select: {
+				id: true,
+				name: true,
+				boardId: true,
+				order: true,
 				tasks: {
-					orderBy: {
-						order: "asc"
-					}
-				}
+					orderBy: { order: "asc" }
+				},
 			}
 		});
 
@@ -145,7 +164,7 @@ boardColumnRouter.delete('/:id',
 		await prisma.boardColumn.delete({ where: { id: boardColumn.id } });
 
 		// Reset order values
-		const remainingColumns: ColumnResponse[] = await prisma.boardColumn.findMany({
+		const remainingColumns = await prisma.boardColumn.findMany({
 			where: { boardId: boardColumn.board.id },
 			orderBy: { order: "asc" },
 		});

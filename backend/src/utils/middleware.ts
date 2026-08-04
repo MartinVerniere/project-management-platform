@@ -3,12 +3,6 @@ import type { Request, Response, NextFunction } from 'express';
 import { SECRET } from './config.js';
 import { prisma } from '../prisma.js';
 import { ProjectRole } from '../generated/prisma/client.js';
-import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
-import type { UserResponse } from '../models/user.js';
-import type { BoardResponse } from '../models/board.js';
-import type { ColumnWithBoardResponse } from '../models/column.js';
-import type { TaskWithColumnAndAssigneeResponse } from '../models/task.js';
-import type { CommentWithTaskResponse } from '../models/comment.js';
 
 export interface TokenPayload {
 	id: number;
@@ -93,7 +87,14 @@ export const userExtractor = async (
 ): Promise<void> => {
 	const userId: number = request.decodedToken.id;
 
-	const user: UserResponse | null = await prisma.user.findUnique({ where: { id: userId } });
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: {
+			id: true,
+			username: true,
+			email: true
+		}
+	});
 	if (!user) throw new ApiError(404, "USER_NOT_FOUND", "User not found.");
 
 	request.user = user;
@@ -111,7 +112,7 @@ export const projectExtractor = async (
 	const projectId = Number(request.params.id);
 	if (!Number.isInteger(projectId)) throw new ApiError(400, "INVALID_PROJECT_ID", "Invalid project id.");
 
-	const project: ProjectResponse | null = await prisma.project.findUnique({
+	const project = await prisma.project.findUnique({
 		where: { id: projectId },
 		include: {
 			members: {
@@ -163,47 +164,20 @@ export const boardExtractor = async (
 	const boardId = Number(request.params.id);
 	if (!Number.isInteger(boardId)) throw new ApiError(400, "INVALID_BOARD_ID", "Invalid board id.");
 
-	const board: BoardResponse | null = await prisma.board.findUnique({
+	const board = await prisma.board.findUnique({
 		where: { id: boardId },
 		include: {
 			columns: {
 				orderBy: { order: "asc" },
-				select: {
-					id: true,
-					name: true,
-					order: true,
-					boardId: true,
+				include: {
 					tasks: {
 						orderBy: { order: "asc" },
-						select: {
-							id: true,
-							title: true,
-							description: true,
-							order: true,
-							columnId: true,
-							comments: {
-								orderBy: { createdAt: "asc" },
-								select: {
-									id: true,
-									content: true,
-									user: {
-										select: {
-											id: true,
-											username: true
-										}
-									}
-								}
-							},
-							assignee: {
-								select: {
-									id: true,
-									username: true,
-									email: true
-								}
-							}
-						},
+						include: {
+							comments: true,
+							assignee: true
+						}
 					}
-				},
+				}
 			}
 		},
 	});
@@ -222,7 +196,7 @@ export const requireBoardMember = async (
 	const userId = Number(request.user.id);
 	const board = request.board!;
 
-	const membership: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
+	const membership = await prisma.projectMember.findUnique({
 		where: {
 			projectId_userId: {
 				projectId: board.projectId,
@@ -259,7 +233,7 @@ export const columnExtractor = async (
 	const columnId = Number(request.params.id);
 	if (!Number.isInteger(columnId)) throw new ApiError(400, "INVALID_BOARD_COLUMN_ID", "Invalid column id.");
 
-	const boardColumn: ColumnWithBoardResponse | null = await prisma.boardColumn.findUnique({
+	const boardColumn = await prisma.boardColumn.findUnique({
 		where: { id: columnId },
 		include: { board: true },
 	});
@@ -278,7 +252,7 @@ export const requireColumnMember = async (
 	const userId = Number(request.user.id);
 	const boardColumn = request.boardColumn!;
 
-	const membership: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
+	const membership = await prisma.projectMember.findUnique({
 		where: {
 			projectId_userId: {
 				projectId: boardColumn.board.projectId,
@@ -315,7 +289,7 @@ export const taskExtractor = async (
 	const taskId = Number(request.params.id);
 	if (!Number.isInteger(taskId)) throw new ApiError(400, "INVALID_TASK_ID", "Invalid task id.");
 
-	const task: TaskWithColumnAndAssigneeResponse | null = await prisma.task.findUnique({
+	const task = await prisma.task.findUnique({
 		where: { id: taskId },
 		include: {
 			column: {
@@ -339,7 +313,7 @@ export const requireTaskMember = async (
 	const userId = Number(request.user.id);
 	const task = request.task!
 
-	const membership: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
+	const membership = await prisma.projectMember.findUnique({
 		where: {
 			projectId_userId: {
 				projectId: task.column.board.projectId,
@@ -376,7 +350,7 @@ export const commentExtractor = async (
 	const commentId = Number(request.params.id);
 	if (!Number.isInteger(commentId)) throw new ApiError(400, "INVALID_COMMENT_ID", "Invalid comment id.");
 
-	const comment: CommentWithTaskResponse | null = await prisma.comment.findUnique({
+	const comment = await prisma.comment.findUnique({
 		where: { id: commentId },
 		include: {
 			task: {
@@ -406,7 +380,7 @@ export const requireCommentEditor = async (
 
 	const isCommentAuthor = comment.userId === userId;
 
-	const membership: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
+	const membership = await prisma.projectMember.findUnique({
 		where: {
 			projectId_userId: {
 				projectId: comment.task.column.board.projectId,

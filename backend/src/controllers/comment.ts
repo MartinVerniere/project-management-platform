@@ -12,7 +12,14 @@ commentRouter.get('/:id',
 	async (request: Request, response: Response) => {
 		const comment = request.comment!;
 
-		return response.status(200).json(comment);
+		const responseComment: CommentResponse = {
+			id: comment.id,
+			content: comment.content,
+			taskId: comment.task.id,
+			userId: comment.userId
+		}
+
+		return response.status(200).json(responseComment);
 	}
 );
 
@@ -29,7 +36,17 @@ commentRouter.put('/:id',
 		if (typeof content !== "string") throw new ApiError(400, "COMMENT_INVALID", "Comment must be a string.");
 		if (content.trim() === "") throw new ApiError(400, "COMMENT_REQUIRED", "Comment is required.");
 
-		const updatedComment: CommentResponse = await prisma.comment.update({ where: { id: comment.id }, data: { content } });
+		const updatedComment = await prisma.comment.update({ 
+			where: { id: comment.id }, 
+			data: { content },
+			select: {
+				id: true,
+				content: true,
+				taskId: true,
+				userId: true
+			}
+		});
+
 		return response.status(200).json(updatedComment);
 	}
 );
