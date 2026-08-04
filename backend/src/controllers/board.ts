@@ -3,6 +3,7 @@ import { ApiError, boardExtractor, requireBoardAdmin, requireBoardMember, tokenE
 import { prisma } from "../prisma.js";
 import type { BoardResponse } from "../models/board.js";
 import type { Board } from "../generated/prisma/client.js";
+import type { ColumnResponse } from "../models/column.js";
 
 const boardRouter = Router();
 
@@ -55,17 +56,17 @@ boardRouter.post("/:id/columns",
 		if (typeof name !== "string") throw new ApiError(400, "BOARD_COLUMN_NAME_INVALID", "Column name must be a string.");
 		if (name.trim() === "") throw new ApiError(400, "BOARD_COLUMN_NAME_REQUIRED", "Column name is required.");
 
-		const boardColumnExists = await prisma.boardColumn.findUnique({
+		const columnExists: ColumnResponse | null = await prisma.boardColumn.findUnique({
 			where: { boardId_name: { boardId: board.id, name } }
 		});
-		if (boardColumnExists) throw new ApiError(409, "BOARD_COLUMN_EXISTS", "A column with this name already exists in the board.");
+		if (columnExists) throw new ApiError(409, "BOARD_COLUMN_EXISTS", "A column with this name already exists in the board.");
 
-		const allBoardColumns = await prisma.boardColumn.findMany({ where: { boardId: board.id } })!;
+		const allBoardColumns: ColumnResponse[] = await prisma.boardColumn.findMany({ where: { boardId: board.id } })!;
 		const order = allBoardColumns.length; // Place it at end of board column list
 
-		const createdBoardColumn = await prisma.boardColumn.create({ data: { name, boardId: board.id, order: order } });
+		const newColumn: ColumnResponse = await prisma.boardColumn.create({ data: { name, boardId: board.id, order: order } });
 
-		return response.status(201).json(createdBoardColumn);
+		return response.status(201).json(newColumn);
 	}
 );
 
@@ -82,8 +83,8 @@ boardRouter.put("/:id/columns/order",
 		if (!columnOrder) throw new ApiError(400, "COLUMN_ORDER_REQUIRED", "Column order is required.");
 		if (!Array.isArray(columnOrder)) throw new ApiError(400, "INVALID_COLUMN_ORDER", "Column order must be an array.");
 
-		const boardColumns = await prisma.boardColumn.findMany({ where: { boardId: board.id }, select: { id: true } });
-		const boardColumnIds = new Set(boardColumns.map(c => c.id));
+		const boardColumns: ColumnResponse[] = await prisma.boardColumn.findMany({ where: { boardId: board.id } });
+		const boardColumnIds = new Set(boardColumns.map(column => column.id));
 
 		if (columnOrder.length !== boardColumns.length) throw new ApiError(400, "INVALID_COLUMN_ORDER", "Every board column must be included.");
 

@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { tokenExtractor, userExtractor, columnExtractor, requireColumnMember, ApiError, requireColumnAdmin } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
+import type { ColumnResponse } from "../models/column.js";
 
 const boardColumnRouter = Router();
 
@@ -12,7 +13,14 @@ boardColumnRouter.get('/:id',
 	async (request: Request, response: Response) => {
 		const boardColumn = request.boardColumn!;
 
-		return response.status(200).json(boardColumn);
+		const columnResponse: ColumnResponse = {
+			id: boardColumn.id,
+			name: boardColumn.name,
+			boardId: boardColumn.board.id,
+			order: boardColumn.order
+		};
+
+		return response.status(200).json(columnResponse);
 	}
 );
 
@@ -30,12 +38,12 @@ boardColumnRouter.put('/:id',
 		if (typeof name !== "string") throw new ApiError(400, "BOARD_COLUMN_NAME_INVALID", "Column name must be a string.");
 		if (name.trim() === "") throw new ApiError(400, "BOARD_COLUMN_NAME_REQUIRED", "Column name is required.");
 
-		const boardColumnExists = await prisma.boardColumn.findUnique({
-			where: { boardId_name: { boardId: boardColumn.boardId, name } }
+		const boardColumnExists: ColumnResponse | null = await prisma.boardColumn.findUnique({
+			where: { boardId_name: { boardId: boardColumn.board.id, name } }
 		});
 		if (boardColumnExists) throw new ApiError(409, "BOARD_COLUMN_EXISTS", "A column with this name already exists in the board.");
 
-		const updatedBoardColumn = await prisma.boardColumn.update({ where: { id: boardColumn.id }, data: { name } });
+		const updatedBoardColumn: ColumnResponse = await prisma.boardColumn.update({ where: { id: boardColumn.id }, data: { name } });
 
 		return response.status(200).json(updatedBoardColumn);
 	}
@@ -109,7 +117,7 @@ boardColumnRouter.put('/:id/tasks/order',
 			),
 		]);
 
-		const updatedBoardColumn = await prisma.boardColumn.findUnique({
+		const updatedBoardColumn: ColumnResponse | null = await prisma.boardColumn.findUnique({
 			where: { id: column.id },
 			include: {
 				tasks: {
@@ -136,8 +144,8 @@ boardColumnRouter.delete('/:id',
 		await prisma.boardColumn.delete({ where: { id: boardColumn.id } });
 
 		// Reset order values
-		const remainingColumns = await prisma.boardColumn.findMany({
-			where: { boardId: boardColumn.boardId },
+		const remainingColumns: ColumnResponse[] = await prisma.boardColumn.findMany({
+			where: { boardId: boardColumn.board.id },
 			orderBy: { order: "asc" },
 		});
 

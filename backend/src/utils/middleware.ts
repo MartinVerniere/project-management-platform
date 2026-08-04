@@ -6,6 +6,7 @@ import { ProjectRole, type User } from '../generated/prisma/client.js';
 import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
 import type { UserResponse } from '../models/user.js';
 import type { BoardResponse } from '../models/board.js';
+import type { ColumnWithBoardResponse } from '../models/column.js';
 
 export interface TokenPayload {
 	id: number;
@@ -272,7 +273,7 @@ export const columnExtractor = async (
 	const columnId = Number(request.params.id);
 	if (!Number.isInteger(columnId)) throw new ApiError(400, "INVALID_BOARD_COLUMN_ID", "Invalid column id.");
 
-	const boardColumn = await prisma.boardColumn.findUnique({
+	const boardColumn: ColumnWithBoardResponse | null = await prisma.boardColumn.findUnique({
 		where: { id: columnId },
 		include: {
 			board: true,

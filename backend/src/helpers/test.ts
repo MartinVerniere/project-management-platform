@@ -3,13 +3,7 @@ import { app } from "../app.js";
 import type { LoginResponse, UserResponse } from '../models/user.js';
 import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
 import type { BoardResponse } from '../models/board.js';
-
-export interface ColumnResponse {
-	id: number;
-	name: string;
-	boardId: number;
-	order: number;
-}
+import type { ColumnResponse } from '../models/column.js';
 
 export interface TaskResponse {
 	id: number;

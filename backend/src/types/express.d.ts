@@ -2,6 +2,7 @@ import type { Board, BoardColumn, Comment, Project, ProjectMember, Task, User } 
 import type { ProjectResponse, ProjectMemberResponse } from '../models/project.ts';
 import type { UserResponse } from '../models/user.ts';
 import type { BoardResponse } from '../models/board.ts';
+import type { ColumnResponse, ColumnWithBoardResponse } from '../models/column.ts';
 import type { TokenPayload } from '../utils/middleware.ts';
 
 declare global {
@@ -12,9 +13,7 @@ declare global {
 			project?: ProjectResponse;
 			projectMember?: ProjectMemberResponse;
 			board?: BoardResponse;
-			boardColumn?: BoardColumn & {
-				board: Board;
-			};
+			boardColumn?: ColumnWithBoardResponse;
 			task?: Task & {
 				column: BoardColumn & {
 					board: Board;
