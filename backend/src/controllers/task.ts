@@ -3,9 +3,6 @@ import { ApiError, requireTaskAdmin, requireTaskMember, taskExtractor, tokenExtr
 import { prisma } from "../prisma.js";
 import type { TaskResponse } from "../models/task.js";
 import type { BoardColumn } from "../generated/prisma/client.js";
-import type { UserResponse } from "../models/user.js";
-import type { ProjectMemberResponse } from "../models/project.js";
-import type { CommentResponse } from "../models/comment.js";
 
 const taskRouter = Router();
 
@@ -187,10 +184,10 @@ taskRouter.put('/:id/assignee',
 		if (!userId) throw new ApiError(400, "USER_ID_REQUIRED", "User ID is required.");
 		if (!Number.isInteger(userId)) throw new ApiError(400, "INVALID_USER_ID", "Invalid user id.");
 
-		const userExists: UserResponse | null = await prisma.user.findUnique({ where: { id: userId } });
+		const userExists = await prisma.user.findUnique({ where: { id: userId } });
 		if (!userExists) throw new ApiError(404, "USER_NOT_FOUND", "User to assign task not found.");
 
-		const userIsMember: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
+		const userIsMember = await prisma.projectMember.findUnique({
 			where: {
 				projectId_userId: {
 					projectId: task.column.board.projectId,

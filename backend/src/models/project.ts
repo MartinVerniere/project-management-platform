@@ -6,7 +6,6 @@ export interface ProjectResponse {
 	name: string;
 	key: string;
 	description: string | null;
-	members: ProjectMemberResponse[];
 }
 
 export interface ProjectMemberResponse {

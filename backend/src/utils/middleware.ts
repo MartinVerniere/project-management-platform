@@ -114,10 +114,11 @@ export const projectExtractor = async (
 
 	const project = await prisma.project.findUnique({
 		where: { id: projectId },
-		include: {
-			members: {
-				include: { user: true }
-			}
+		select: {
+			id: true,
+			key: true,
+			name: true,
+			description: true,
 		}
 	});
 	if (!project) throw new ApiError(404, "PROJECT_NOT_FOUND", "Project not found.");
@@ -135,7 +136,10 @@ export const requireProjectMember = async (
 	const userId = Number(request.user.id);
 	const project = request.project!;
 
-	const membership = project.members.find(member => member.user.id === userId);
+	const membership = await prisma.projectMember.findUnique({
+		where: { projectId_userId: { projectId: project.id, userId: userId } },
+		include: { user: true }
+	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
 	request.projectMember = membership;
