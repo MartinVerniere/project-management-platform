@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { ApiError, commentExtractor, requireCommentEditor, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
+import type { CommentResponse } from "../models/comment.js";
 
 const commentRouter = Router();
 
@@ -28,7 +29,7 @@ commentRouter.put('/:id',
 		if (typeof content !== "string") throw new ApiError(400, "COMMENT_INVALID", "Comment must be a string.");
 		if (content.trim() === "") throw new ApiError(400, "COMMENT_REQUIRED", "Comment is required.");
 
-		const updatedComment = await prisma.comment.update({ where: { id: comment.id }, data: { content } });
+		const updatedComment: CommentResponse = await prisma.comment.update({ where: { id: comment.id }, data: { content } });
 		return response.status(200).json(updatedComment);
 	}
 );

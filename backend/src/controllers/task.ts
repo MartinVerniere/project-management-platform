@@ -2,10 +2,10 @@ import { Router, type Request, type Response } from "express";
 import { ApiError, requireTaskAdmin, requireTaskMember, taskExtractor, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
 import type { TaskResponse } from "../models/task.js";
-import type { ColumnResponse } from "../models/column.js";
 import type { BoardColumn } from "../generated/prisma/client.js";
 import type { UserResponse } from "../models/user.js";
 import type { ProjectMemberResponse } from "../models/project.js";
+import type { CommentResponse } from "../models/comment.js";
 
 const taskRouter = Router();
 
@@ -59,7 +59,7 @@ taskRouter.post('/:id/comments',
 		if (typeof content !== "string") throw new ApiError(400, "COMMENT_INVALID", "Comment must be a string.");
 		if (content.trim() === "") throw new ApiError(400, "COMMENT_REQUIRED", "Comment is required.");
 
-		const newComment = await prisma.comment.create({
+		const newComment: CommentResponse = await prisma.comment.create({
 			data: {
 				content: content.trim(),
 				taskId: task.id,

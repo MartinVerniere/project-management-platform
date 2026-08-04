@@ -382,7 +382,7 @@ export const commentExtractor = async (
 			task: {
 				include: {
 					column: {
-						include: { board: true, },
+						include: { board: true },
 					},
 					assignee: true,
 				},
@@ -406,13 +406,14 @@ export const requireCommentEditor = async (
 
 	const isCommentAuthor = comment.userId === userId;
 
-	const membership = await prisma.projectMember.findUnique({
+	const membership: ProjectMemberResponse | null = await prisma.projectMember.findUnique({
 		where: {
 			projectId_userId: {
 				projectId: comment.task.column.board.projectId,
 				userId,
 			},
 		},
+		include: { user: true }
 	});
 
 	const isCommentAdmin = membership?.role === ProjectRole.ADMIN;
