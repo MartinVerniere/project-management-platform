@@ -170,20 +170,48 @@ export const boardExtractor = async (
 
 	const board = await prisma.board.findUnique({
 		where: { id: boardId },
-		include: {
+		select: {
+			id: true,
+			name: true,
+			projectId: true,
 			columns: {
 				orderBy: { order: "asc" },
-				include: {
+				select: {
+					id: true,
+					name: true,
+					order: true,
 					tasks: {
 						orderBy: { order: "asc" },
-						include: {
-							comments: true,
-							assignee: true
+						select: {
+							id: true,
+							title: true,
+							description: true,
+							order: true,
+							assignee: {
+								select: {
+									id: true,
+									username: true,
+									email: true
+								}
+							},
+							comments: {
+								select: {
+									id: true,
+									content: true,
+									user: {
+										select: {
+											id: true,
+											username: true,
+											email: true
+										}
+									}
+								}
+							}
 						}
 					}
 				}
 			}
-		},
+		}
 	});
 	if (!board) throw new ApiError(404, "BOARD_NOT_FOUND", "Board not found.");
 

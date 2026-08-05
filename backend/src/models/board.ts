@@ -1,3 +1,4 @@
+import type { UserResponse } from "./user.js";
 
 export interface BoardResponse {
 	id: number;
@@ -18,19 +19,11 @@ export interface FullBoardResponse {
 			title: string;
 			description: string | null;
 			order: number;
-			assignee: {
-				id: number;
-				username: string;
-				email: string;
-			} | null;
+			assignee: UserResponse | null;
 			comments: {
 				id: number;
 				content: string;
-				user: {
-					id: number;
-					username: string;
-					email: string;
-				};
+				user: UserResponse;
 			}[];
 		}[];
 	}[];
