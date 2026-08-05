@@ -73,7 +73,9 @@ projectRouter.post('/', tokenExtractor, userExtractor, async (request: Request, 
 				projectId: project.id,
 				role: ProjectRole.ADMIN
 			},
-			include: {
+			select: {
+				id: true,
+				role: true,
 				user: {
 					select: {
 						id: true,
@@ -120,13 +122,11 @@ projectRouter.post('/:id/members', tokenExtractor, userExtractor, projectExtract
 		select: {
 			id: true,
 			role: true,
-			select: {
-				user: {
-					select: {
-						id: true,
-						username: true,
-						email: true
-					}
+			user: {
+				select: {
+					id: true,
+					username: true,
+					email: true
 				}
 			}
 		}
@@ -205,13 +205,13 @@ projectRouter.post("/:id/boards", tokenExtractor, userExtractor, projectExtracto
 	const boardExists = await prisma.board.findUnique({ where: { projectId_name: { projectId: project.id, name } } });
 	if (boardExists) throw new ApiError(409, "BOARD_EXISTS", "A board with this name already exists in the project.");
 
-	const newBoard = await prisma.board.create({ 
+	const newBoard = await prisma.board.create({
 		data: { name: name, projectId: project.id },
 		select: {
 			id: true,
-			nam: true,
+			name: true,
 			projectId: true
-		} 
+		}
 	});
 
 	return response.status(201).json(newBoard);

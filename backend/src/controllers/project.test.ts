@@ -227,7 +227,7 @@ describe('Project API', () => {
 							.send({ userId: martinId })
 
 						expect(response.status).toBe(201);
-						expect(response.body.userId).toBe(martinId);
+						expect(response.body.user.id).toBe(martinId);
 					});
 
 					it('returns 400 when invalid project id', async () => {
