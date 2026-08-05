@@ -15,7 +15,7 @@ projectRouter.get('/', tokenExtractor, userExtractor, async (request: Request, r
 			id: true,
 			name: true,
 			key: true,
-			description: true
+			description: true,
 		}
 	});
 
@@ -148,7 +148,18 @@ projectRouter.delete('/:id/members/:userId', tokenExtractor, userExtractor, proj
 	if (!existingMembership) throw new ApiError(404, "PROJECT_MEMBER_NOT_FOUND", "User is not a member of this project.");
 	if (existingMembership.user.id === request.user.id) throw new ApiError(400, "CANNOT_REMOVE_SELF", "You cannot remove yourself from the project.");
 
-	await prisma.projectMember.delete({ where: { id: existingMembership.id } });
+	await prisma.$transaction([
+		// Set null to all tasks in project with that user as an assignee
+		prisma.task.updateMany({
+			where: {
+				column: { board: { projectId: project.id } },
+				assigneeId: memberUserId
+			},
+			data: { assigneeId: null }
+		}),
+
+		prisma.projectMember.delete({ where: { id: existingMembership.id } })
+	]);
 
 	return response.status(200).send();
 });
