@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, input, output, signal } from "@angular/core";
 import { RouterLink, Router } from "@angular/router";
-import { ColumnService, Column } from "../../services/columns/column-service";
 import { TaskList } from "../../tasks/task-list/task-list";
 import { ProjectMemberResponse } from "../../models/project";
+import { ColumnService } from "../../services/columns/column-service";
+import { ColumnResponse } from "../../models/column";
 
 @Component({
 	selector: 'app-column-element',
@@ -15,7 +16,7 @@ export class ColumnElement {
 	router = inject(Router);
 	columnService = inject(ColumnService);
 
-	column = input.required<Column>();
+	column = input.required<ColumnResponse>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();

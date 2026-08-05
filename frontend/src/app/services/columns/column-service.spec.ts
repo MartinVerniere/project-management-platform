@@ -1,17 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { Column, ColumnService, TaskOrderRequest } from './column-service';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TaskModel } from '../../tasks/task-form/task-form';
 import { Task } from '../tasks/task-service';
+import { ColumnService } from './column-service';
+import { ColumnResponse, TaskOrderRequest } from '../../models/column';
 
-const columnA: Column = {
+const columnA: ColumnResponse = {
 	id: 1,
 	name: "ToDo",
 	tasks: []
 }
 
-const columnB: Column = {
+const columnB: ColumnResponse = {
 	id: 2,
 	name: "Finished",
 	tasks: []

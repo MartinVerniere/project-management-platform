@@ -1,9 +1,9 @@
-import { Column } from "../services/columns/column-service"
+import { ColumnResponse } from "./column";
 
 export interface BoardResponse {
 	id: number,
 	name: string,
-	columns: Column[]
+	columns: ColumnResponse[]
 }
 
 interface ColumnOrderElement {

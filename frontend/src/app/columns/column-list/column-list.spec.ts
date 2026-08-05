@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColumnList } from './column-list';
 import { BoardService } from '../../services/boards/board-service';
 import { ActivatedRoute } from '@angular/router';
-import { Column } from '../../services/columns/column-service';
 import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { ColumnElement } from '../column-element/column-element';
@@ -12,6 +11,7 @@ import { TaskService } from '../../services/tasks/task-service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ProjectService } from '../../services/projects/project-service';
 import { ProjectMemberResponse } from '../../models/project';
+import { ColumnResponse } from '../../models/column';
 
 @Component({
 	selector: 'app-column-element',
@@ -19,7 +19,7 @@ import { ProjectMemberResponse } from '../../models/project';
 	template: '',
 })
 class ColumnElementStub {
-	column = input.required<Column>();
+	column = input.required<ColumnResponse>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();
@@ -53,7 +53,7 @@ describe('ColumnList', () => {
 		}
 	};
 
-	const columnList: Column[] = [
+	const columnList: ColumnResponse[] = [
 		{
 			id: 1, name: "Column A",
 			tasks: [
@@ -70,7 +70,7 @@ describe('ColumnList', () => {
 	const projectId = 1;
 	const boardId = 1;
 
-	async function createComponent(shouldAwait: boolean = true, columnList: Column[] = []) {
+	async function createComponent(shouldAwait: boolean = true, columnList: ColumnResponse[] = []) {
 		fixture = TestBed.createComponent(ColumnList);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -257,7 +257,7 @@ describe('ColumnList', () => {
 			container: container,
 			previousIndex: 1,
 			currentIndex: 0
-		} as CdkDragDrop<Column[]>;
+		} as CdkDragDrop<ColumnResponse[]>;
 
 		const expectedOrder = [
 			{ id: 2, order: 0 },

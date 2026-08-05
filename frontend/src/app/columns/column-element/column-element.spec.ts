@@ -2,13 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ColumnElement } from './column-element';
 import { ActivatedRoute } from '@angular/router';
-import { Column, ColumnService } from '../../services/columns/column-service';
 import { of } from 'rxjs';
 import { Component, output, input } from '@angular/core';
 import { Task } from '../../services/tasks/task-service';
 import { TaskList } from '../../tasks/task-list/task-list';
 import { By } from '@angular/platform-browser';
 import { ProjectMemberResponse } from '../../models/project';
+import { ColumnResponse } from '../../models/column';
+import { ColumnService } from '../../services/columns/column-service';
 
 @Component({
 	selector: 'app-task-list',
@@ -47,7 +48,7 @@ describe('ColumnElement', () => {
 
 	let columnServiceMock = { deleteColumn: vi.fn() };
 
-	const column: Column = {
+	const column: ColumnResponse = {
 		id: 1,
 		name: 'Todo',
 		tasks: []
