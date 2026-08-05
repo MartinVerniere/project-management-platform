@@ -119,6 +119,13 @@ export const projectExtractor = async (
 			key: true,
 			name: true,
 			description: true,
+			boards: {
+				select: {
+					id: true,
+					name: true,
+					projectId: true
+				} 
+			}
 		}
 	});
 	if (!project) throw new ApiError(404, "PROJECT_NOT_FOUND", "Project not found.");
