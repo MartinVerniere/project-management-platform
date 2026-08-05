@@ -9,7 +9,7 @@ import { Component, input, output } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { TaskElement } from '../task-element/task-element';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ProjectMember } from '../../services/projects/project-service';
+import { ProjectMemberResponse } from '../../models/project';
 
 @Component({
 	selector: 'app-task-element',
@@ -21,7 +21,7 @@ class TaskElementStub {
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
-	memberList = input.required<ProjectMember[]>();
+	memberList = input.required<ProjectMemberResponse[]>();
 
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();
@@ -56,7 +56,7 @@ describe('TaskList', () => {
 	const boardId = 1;
 	const columnId = 1;
 
-	const memberList: ProjectMember[] = [
+	const memberList: ProjectMemberResponse[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

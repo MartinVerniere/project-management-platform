@@ -1,59 +1,42 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProjectModel } from '../../projects/project-form/project-form';
 import { Board } from '../boards/board-service';
 import { BoardModel } from '../../boards/board-form/board-form';
+import { AddMemberResponse, CreateProjectRequest, CreateProjectResponse, ProjectDetailsResponse, ProjectMemberResponse, ProjectResponse, UpdateProjectRequest, UpdateProjectResponse } from '../../models/project';
 
 const API_URL = 'http://localhost:3000/api/projects';
-
-export interface Project {
-	id: number;
-	name: string;
-	key: string;
-	description: string | null;
-	members: ProjectMember[]
-}
-
-export interface ProjectMember {
-	id: number;
-	role: 'ADMIN' | 'MEMBER';
-
-	user: {
-		id: number;
-		username: string;
-		email: string;
-	};
-}
 
 @Service()
 export class ProjectService {
 	private http = inject(HttpClient);
 
-	getProjects(): Observable<Project[]> {
-		return this.http.get<Project[]>(`${API_URL}`);
+	getProjects(): Observable<ProjectResponse[]> {
+		return this.http.get<ProjectResponse[]>(`${API_URL}`);
 	}
 
-	getProject(projectId: number): Observable<Project> {
-		return this.http.get<Project>(`${API_URL}/${projectId}`);
+	getProject(projectId: number): Observable<ProjectDetailsResponse> {
+		return this.http.get<ProjectDetailsResponse>(`${API_URL}/${projectId}`);
 	}
 
-	createProject(request: ProjectModel): Observable<Project> {
-		return this.http.post<Project>(`${API_URL}`, request);
+	createProject(request: CreateProjectRequest): Observable<CreateProjectResponse> {
+		return this.http.post<CreateProjectResponse>(`${API_URL}`, request);
 	}
 
-	updateProject(projectId: number, request: ProjectModel): void { }
-
-	deleteProject(projectId: number): Observable<Project> {
-		return this.http.delete<Project>(`${API_URL}/${projectId}`,)
+	updateProject(projectId: number, request: UpdateProjectRequest): Observable<UpdateProjectResponse> {
+		return this.http.put<UpdateProjectResponse>(`${API_URL}/${projectId}`, request);
 	}
 
-	getMembers(projectId: number): Observable<ProjectMember[]> {
-		return this.http.get<ProjectMember[]>(`${API_URL}/${projectId}/members`);
+	deleteProject(projectId: number): Observable<void> {
+		return this.http.delete<void>(`${API_URL}/${projectId}`,)
 	}
 
-	addMember(projectId: number, userId: number): Observable<void> {
-		return this.http.post<void>(`${API_URL}/${projectId}/members`, { userId: userId });
+	getMembers(projectId: number): Observable<ProjectMemberResponse[]> {
+		return this.http.get<ProjectMemberResponse[]>(`${API_URL}/${projectId}/members`);
+	}
+
+	addMember(projectId: number, userId: number): Observable<AddMemberResponse> {
+		return this.http.post<AddMemberResponse>(`${API_URL}/${projectId}/members`, { userId: userId });
 	}
 
 	removeMember(projectId: number, userId: number): Observable<void> {

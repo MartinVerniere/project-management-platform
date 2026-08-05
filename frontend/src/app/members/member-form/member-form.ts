@@ -2,8 +2,9 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, input, output, resource, computed, signal } from "@angular/core";
 import { FormField, form, required, submit } from "@angular/forms/signals";
 import { firstValueFrom } from "rxjs";
-import { ProjectService, ProjectMember } from "../../services/projects/project-service";
+import { ProjectService } from "../../services/projects/project-service";
 import { UserService } from "../../services/users/user-service";
+import { ProjectMemberResponse } from "../../models/project";
 
 export interface MemberModel {
 	userId: string;
@@ -21,7 +22,7 @@ export class MemberForm {
 	userService = inject(UserService);
 
 	projectId = input.required<number>();
-	memberList = input.required<ProjectMember[]>();
+	memberList = input.required<ProjectMemberResponse[]>();
 
 	memberAdded = output<void>();
 	canceledMemberAdd = output<void>();

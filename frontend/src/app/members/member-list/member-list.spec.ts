@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MemberList } from './member-list';
-import { ProjectMember } from '../../services/projects/project-service';
 import { Component, input, output } from '@angular/core';
 import { MemberElement } from '../member-element/member-element';
 import { By } from '@angular/platform-browser';
 import { MemberForm } from '../member-form/member-form';
+import { ProjectMemberResponse } from '../../models/project';
 
 @Component({
 	selector: 'app-member-element',
@@ -13,7 +13,7 @@ import { MemberForm } from '../member-form/member-form';
 })
 class MemberElementStub {
 	projectId = input.required<number>();
-	member = input.required<ProjectMember>();
+	member = input.required<ProjectMemberResponse>();
 
 	memberRemoved = output<void>();
 }
@@ -25,7 +25,7 @@ class MemberElementStub {
 })
 class MemberFormStub {
 	projectId = input.required<number>();
-	memberList = input.required<ProjectMember[]>();
+	memberList = input.required<ProjectMemberResponse[]>();
 
 	memberAdded = output<void>();
 	canceledMemberAdd = output<void>();
@@ -35,7 +35,7 @@ describe('MemberList', () => {
 	let fixture: ComponentFixture<MemberList>;
 	let component: MemberList;
 
-	const memberList: ProjectMember[] = [
+	const memberList: ProjectMemberResponse[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

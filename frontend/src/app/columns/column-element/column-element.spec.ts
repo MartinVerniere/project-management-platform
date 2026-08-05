@@ -8,7 +8,7 @@ import { Component, output, input } from '@angular/core';
 import { Task } from '../../services/tasks/task-service';
 import { TaskList } from '../../tasks/task-list/task-list';
 import { By } from '@angular/platform-browser';
-import { ProjectMember } from '../../services/projects/project-service';
+import { ProjectMemberResponse } from '../../models/project';
 
 @Component({
 	selector: 'app-task-list',
@@ -20,7 +20,7 @@ class TaskListStub {
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
-	memberList = input.required<ProjectMember[]>();
+	memberList = input.required<ProjectMemberResponse[]>();
 	filtersActive = input.required<boolean>();
 
 	taskListEdited = output<void>();
@@ -56,7 +56,7 @@ describe('ColumnElement', () => {
 	const projectId = 1;
 	const boardId = 1;
 
-	const memberList: ProjectMember[] = [
+	const memberList: ProjectMemberResponse[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

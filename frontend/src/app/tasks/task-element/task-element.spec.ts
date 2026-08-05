@@ -7,7 +7,7 @@ import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { CommentList } from '../../comments/comment-list/comment-list';
 import { By } from '@angular/platform-browser';
-import { ProjectMember } from '../../services/projects/project-service';
+import { ProjectMemberResponse } from '../../models/project';
 
 @Component({
 	selector: 'app-comment-list',
@@ -72,7 +72,7 @@ describe('TaskElement', () => {
 	const boardId = 1;
 	const columnId = 1;
 
-	const memberList: ProjectMember[] = [
+	const memberList: ProjectMemberResponse[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

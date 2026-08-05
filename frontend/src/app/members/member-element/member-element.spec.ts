@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MemberElement } from './member-element';
-import { ProjectMember, ProjectService } from '../../services/projects/project-service';
+import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
+import { ProjectMemberResponse } from '../../models/project';
 
 describe('MemberElement', () => {
 	let fixture: ComponentFixture<MemberElement>;
@@ -11,7 +12,7 @@ describe('MemberElement', () => {
 
 	let projectServiceMock = { removeMember: vi.fn() };
 
-	const member: ProjectMember = {
+	const member: ProjectMemberResponse = {
 		id: 1,
 		role: 'MEMBER',
 

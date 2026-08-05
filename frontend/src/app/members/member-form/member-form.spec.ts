@@ -2,8 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MemberForm } from './member-form';
 import { of, throwError } from 'rxjs';
-import { ProjectMember, ProjectService } from '../../services/projects/project-service';
+import { ProjectService } from '../../services/projects/project-service';
 import { UserService } from '../../services/users/user-service';
+import { ProjectMemberResponse } from '../../models/project';
 
 describe('MemberForm', () => {
 	let fixture: ComponentFixture<MemberForm>;
@@ -12,7 +13,7 @@ describe('MemberForm', () => {
 	const projectServiceMock = { addMember: vi.fn() };
 	const userServiceMock = { getUsers: vi.fn() };
 
-	const memberList: ProjectMember[] = [
+	const memberList: ProjectMemberResponse[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

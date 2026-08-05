@@ -10,7 +10,8 @@ import { ColumnElement } from '../column-element/column-element';
 import { By } from '@angular/platform-browser';
 import { TaskService } from '../../services/tasks/task-service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ProjectMember, ProjectService } from '../../services/projects/project-service';
+import { ProjectService } from '../../services/projects/project-service';
+import { ProjectMemberResponse } from '../../models/project';
 
 @Component({
 	selector: 'app-column-element',
@@ -21,7 +22,7 @@ class ColumnElementStub {
 	column = input.required<Column>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
-	memberList = input.required<ProjectMember[]>();
+	memberList = input.required<ProjectMemberResponse[]>();
 	filtersActive = input.required<boolean>();
 
 	isFirst = input<boolean>();

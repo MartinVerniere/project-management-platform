@@ -4,6 +4,7 @@ import { ProjectDetails } from './project-details';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
 import { NEVER, of, throwError } from 'rxjs';
+import { ProjectDetailsResponse } from '../../models/project';
 
 describe('ProjectDetails', () => {
 	let fixture: ComponentFixture<ProjectDetails>;
@@ -20,21 +21,12 @@ describe('ProjectDetails', () => {
 		}
 	}
 
-	const project = {
+	const project: ProjectDetailsResponse = {
 		id: 1,
 		name: 'Project A',
 		key: 'PRA',
 		description: 'Description',
-		members: [
-			{
-				id: 1,
-				role: 'ADMIN',
-				user: {
-					id: 10,
-					username: 'john'
-				}
-			}
-		]
+		boards: []
 	};
 
 	async function createComponent(shouldAwait: boolean = true) {

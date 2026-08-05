@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, input, output, signal } from '@angular/core';
-import { ProjectMember, ProjectService } from '../../services/projects/project-service';
+import { ProjectService } from '../../services/projects/project-service';
+import { ProjectMemberResponse } from '../../models/project';
 
 @Component({
 	selector: 'app-member-element',
@@ -12,7 +13,7 @@ export class MemberElement {
 	projectService = inject(ProjectService);
 
 	projectId = input.required<number>();
-	member = input.required<ProjectMember>();
+	member = input.required<ProjectMemberResponse>();
 
 	memberRemoved = output<void>();
 

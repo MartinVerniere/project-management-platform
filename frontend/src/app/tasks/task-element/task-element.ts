@@ -3,7 +3,7 @@ import { Task, TaskService } from '../../services/tasks/task-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { CommentList } from '../../comments/comment-list/comment-list';
-import { ProjectMember } from '../../services/projects/project-service';
+import { ProjectMemberResponse } from '../../models/project';
 
 @Component({
 	selector: 'app-task-element',
@@ -18,7 +18,7 @@ export class TaskElement {
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
-	memberList = input.required<ProjectMember[]>();
+	memberList = input.required<ProjectMemberResponse[]>();
 
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();
