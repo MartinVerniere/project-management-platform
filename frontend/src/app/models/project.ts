@@ -1,4 +1,4 @@
-import { Board } from "../services/boards/board-service";
+import { BoardResponse } from "./board";
 import { UserResponse } from "./user";
 
 export interface CreateProjectRequest {
@@ -14,10 +14,11 @@ export interface ProjectResponse {
     name: string;
     key: string;
     description: string | null;
+	members: ProjectMemberResponse[];
 }
 
 export interface ProjectDetailsResponse extends ProjectResponse {
-	boards: Board[];
+	boards: BoardResponse[];
 }
 
 export type CreateProjectResponse = ProjectResponse;

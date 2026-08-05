@@ -26,7 +26,8 @@ describe('ProjectDetails', () => {
 		name: 'Project A',
 		key: 'PRA',
 		description: 'Description',
-		boards: []
+		boards: [],
+		members: []
 	};
 
 	async function createComponent(shouldAwait: boolean = true) {
