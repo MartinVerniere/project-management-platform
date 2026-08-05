@@ -1,9 +1,9 @@
-import { Task } from "../services/tasks/task-service"
+import { TaskResponse } from "./task";
 
 export interface ColumnResponse {
 	id: number,
 	name: string,
-	tasks: Task[]
+	tasks: TaskResponse[]
 }
 
 interface TaskOrder {

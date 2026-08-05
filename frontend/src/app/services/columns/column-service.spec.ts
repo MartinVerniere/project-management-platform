@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TaskModel } from '../../tasks/task-form/task-form';
-import { Task } from '../tasks/task-service';
 import { ColumnService } from './column-service';
 import { ColumnResponse, TaskOrderRequest } from '../../models/column';
+import { TaskResponse } from '../../models/task';
 
 const columnA: ColumnResponse = {
 	id: 1,
@@ -18,7 +18,7 @@ const columnB: ColumnResponse = {
 	tasks: []
 }
 
-const taskA: Task = {
+const taskA: TaskResponse = {
 	id: 1,
 	title: 'Title A',
 	comments: []

@@ -4,12 +4,12 @@ import { ColumnElement } from './column-element';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { Component, output, input } from '@angular/core';
-import { Task } from '../../services/tasks/task-service';
 import { TaskList } from '../../tasks/task-list/task-list';
 import { By } from '@angular/platform-browser';
 import { ProjectMemberResponse } from '../../models/project';
 import { ColumnResponse } from '../../models/column';
 import { ColumnService } from '../../services/columns/column-service';
+import { TaskResponse } from '../../models/task';
 
 @Component({
 	selector: 'app-task-list',
@@ -17,7 +17,7 @@ import { ColumnService } from '../../services/columns/column-service';
 	template: '',
 })
 class TaskListStub {
-	taskList = input.required<Task[]>();
+	taskList = input.required<TaskResponse[]>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();

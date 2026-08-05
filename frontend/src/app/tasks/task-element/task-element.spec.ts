@@ -1,13 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskElement } from './task-element';
-import { Task, TaskService } from '../../services/tasks/task-service';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { CommentList } from '../../comments/comment-list/comment-list';
 import { By } from '@angular/platform-browser';
 import { ProjectMemberResponse } from '../../models/project';
+import { TaskResponse } from '../../models/task';
+import { TaskService } from '../../services/tasks/task-service';
 
 @Component({
 	selector: 'app-comment-list',
@@ -44,7 +45,7 @@ describe('TaskElement', () => {
 		unassignTask: vi.fn()
 	};
 
-	const task: Task = {
+	const task: TaskResponse = {
 		id: 1,
 		title: 'Task A',
 		description: 'Description',
