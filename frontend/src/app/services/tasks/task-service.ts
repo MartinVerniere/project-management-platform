@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { TaskModel } from '../../tasks/task-form/task-form';
 import { Comment } from '../comments/comment-service';
 import { CommentModel } from '../../comments/comment-form/comment-form';
-import { User } from '../users/user-service';
+import { UserResponse } from '../../models/user';
 
 const API_URL = 'http://localhost:3000/api/tasks';
 
@@ -12,7 +12,7 @@ export interface Task {
 	id: number,
 	title: string,
 	description?: string,
-	assignee?: User,
+	assignee?: UserResponse,
 	comments: Comment[]
 }
 
