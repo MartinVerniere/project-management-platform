@@ -1,22 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Comment, CommentAuthor, CommentService } from './comment-service';
+import { CommentService } from './comment-service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { CommentModel } from '../../comments/comment-form/comment-form';
+import { CommentAuthor, CommentResponse } from '../../models/comment';
 
 const john: CommentAuthor = {
 	id: 1,
-	username: 'john'
+	username: 'john',
+	email: 'john@test.com'
 }
 
-const commentA: Comment = {
+const commentA: CommentResponse = {
 	id: 1,
 	content: 'Comment A',
 	user: john
 }
 
-const commentB: Comment = {
+const commentB: CommentResponse = {
 	id: 2,
 	content: 'A',
 	user: john

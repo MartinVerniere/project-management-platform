@@ -1,12 +1,12 @@
 import { UserResponse } from "./user";
-import type { Comment } from "../services/comments/comment-service";
+import { CommentResponse } from "./comment";
  
 export interface TaskResponse {
 	id: number,
 	title: string,
 	description?: string,
 	assignee?: UserResponse,
-	comments: Comment[]
+	comments: CommentResponse[]
 }
 
 export interface UpdateTaskRequest {

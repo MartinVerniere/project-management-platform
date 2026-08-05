@@ -55,7 +55,8 @@ describe('TaskElement', () => {
 				content: 'Good',
 				user: {
 					id: 1,
-					username: 'john'
+					username: 'john',
+					email: 'john@test.com'
 				}
 			},
 			{
@@ -63,7 +64,8 @@ describe('TaskElement', () => {
 				content: 'Great',
 				user: {
 					id: 1,
-					username: 'john'
+					username: 'john',
+					email: 'john@test.com'
 				}
 			}
 		]

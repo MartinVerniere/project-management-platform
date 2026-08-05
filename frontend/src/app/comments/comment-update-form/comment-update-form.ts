@@ -1,8 +1,9 @@
 import { Component, effect, inject, input, output, signal } from '@angular/core';
-import { Comment, CommentService } from '../../services/comments/comment-service';
+import { CommentService } from '../../services/comments/comment-service';
 import { CommentModel } from '../comment-form/comment-form';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CommentResponse } from '../../models/comment';
 
 @Component({
 	selector: 'app-comment-update-form',
@@ -13,7 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class CommentUpdateForm {
 	commentService = inject(CommentService);
 
-	comment = input.required<Comment>();
+	comment = input.required<CommentResponse>();
 
 	commentEdited = output<void>();
 	canceledCommentEdit = output<void>();
