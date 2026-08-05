@@ -14,10 +14,11 @@ export interface ProjectResponse {
     name: string;
     key: string;
     description: string | null;
-	members: ProjectMemberResponse[];
+	
 }
 
 export interface ProjectDetailsResponse extends ProjectResponse {
+	members: ProjectMemberResponse[];
 	boards: BoardResponse[];
 }
 

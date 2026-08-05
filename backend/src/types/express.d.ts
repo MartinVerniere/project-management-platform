@@ -1,5 +1,5 @@
 import type { Board, BoardColumn, Comment, Project, ProjectMember, Task, User } from '../generated/prisma/client.ts';
-import type { ProjectMemberResponse, ProjectWithBoardsResponse } from '../models/project.ts';
+import type { ProjectMemberResponse, ProjectDetailsResponse } from '../models/project.ts';
 import type { UserResponse } from '../models/user.ts';
 import type { FullBoardResponse } from '../models/board.ts';
 import type { ColumnWithBoardResponse } from '../models/column.ts';
@@ -12,7 +12,7 @@ declare global {
 		interface Request {
 			user: UserResponse;
 			decodedToken: TokenPayload;
-			project?: ProjectWithBoardsResponse;
+			project?: ProjectDetailsResponse;
 			projectMember?: ProjectMemberResponse;
 			board?: FullBoardResponse;
 			boardColumn?: ColumnWithBoardResponse;

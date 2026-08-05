@@ -124,7 +124,20 @@ export const projectExtractor = async (
 					id: true,
 					name: true,
 					projectId: true
-				} 
+				}
+			},
+			members: {
+				select: {
+					id: true,
+					role: true,
+					user: {
+						select: {
+							id: true,
+							username: true,
+							email: true
+						}
+					}
+				}
 			}
 		}
 	});

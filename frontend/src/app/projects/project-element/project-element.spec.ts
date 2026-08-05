@@ -28,7 +28,6 @@ describe('ProjectElement', () => {
 		name: 'Project A',
 		key: 'PROA',
 		description: 'My project',
-		members: []
 	};
 
 	async function createComponent(shouldAwait: boolean = true) {

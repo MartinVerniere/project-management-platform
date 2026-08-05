@@ -43,14 +43,12 @@ describe('ProjectList', () => {
 			name: 'Project A',
 			key: 'PROA',
 			description: null,
-			members: []
 		},
 		{
 			id: 2,
 			name: 'Project B',
 			key: 'PROB',
 			description: null,
-			members: []
 		}
 	];
 

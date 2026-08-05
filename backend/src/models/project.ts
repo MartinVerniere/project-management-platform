@@ -9,11 +9,12 @@ export interface ProjectResponse {
 	description: string | null;
 }
 
-export interface ProjectWithBoardsResponse {
+export interface ProjectDetailsResponse {
 	id: number;
 	name: string;
 	key: string;
 	description: string | null;
+	members: ProjectMemberResponse[];
 	boards: BoardResponse[];
 }
 
