@@ -1,17 +1,17 @@
+@if (task(); as task) {
 <div class="task-element">
-	@if (task(); as task) {
 	<div class="task-header">
 		<h3 class="task-title">{{ task.title }}</h3>
 
-		<div class="task-actions">
-			<button type="button"
-				[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
-				Edit
-			</button>
-
-			<button type="button" (click)="onTaskDeleted(task.id)">
-				Delete
-			</button>
+		<div class="task-handle" cdkDragHandle>
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="5" cy="3" r="1.25" />
+				<circle cx="11" cy="3" r="1.25" />
+				<circle cx="5" cy="8" r="1.25" />
+				<circle cx="11" cy="8" r="1.25" />
+				<circle cx="5" cy="13" r="1.25" />
+				<circle cx="11" cy="13" r="1.25" />
+			</svg>
 		</div>
 	</div>
 
@@ -77,5 +77,16 @@
 		{{ error() }}
 	</div>
 	}
-	}
+
+	<div class="task-actions">
+		<button type="button"
+			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
+			Edit
+		</button>
+
+		<button type="button" (click)="onTaskDeleted(task.id)">
+			Delete
+		</button>
+	</div>
 </div>
+}

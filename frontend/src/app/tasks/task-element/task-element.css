@@ -3,6 +3,7 @@
 	flex-direction: column;
 	gap: 16px;
 	padding: 16px;
+	min-width: 200px;
 	border: 1px solid #ddd;
 	border-radius: 8px;
 	background: white;
@@ -56,6 +57,33 @@
 
 .task-comments {
 	margin-top: 8px;
+}
+
+.task-handle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 2px;
+	border: none;
+	background: transparent;
+
+	color: #9ca3af;
+	cursor: grab;
+
+	border-radius: 2px;
+	transition:
+		background-color .15s,
+		color .15s;
+}
+
+.task-handle:hover {
+	background: #f3f4f6;
+	color: #4b5563;
+}
+
+.task-handle:active {
+	cursor: grabbing;
 }
 
 .error {

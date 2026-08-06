@@ -5,10 +5,11 @@ import { CommentList } from '../../comments/comment-list/comment-list';
 import { ProjectMemberResponse } from '../../models/project';
 import { TaskService } from '../../services/tasks/task-service';
 import { TaskResponse } from '../../models/task';
+import { CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
 	selector: 'app-task-element',
-	imports: [RouterLink, CommentList],
+	imports: [RouterLink, CommentList, CdkDragHandle],
 	templateUrl: './task-element.html',
 	styleUrl: './task-element.css',
 })
