@@ -21,9 +21,7 @@
 					@if (taskForm.title().invalid() && taskForm.title().touched()) {
 					<div class="field-error">
 						@for (error of taskForm.title().errors(); track error.kind) {
-						<div>
-							{{ error.message }}
-						</div>
+						<div> {{ error.message }} </div>
 						}
 					</div>
 					}
