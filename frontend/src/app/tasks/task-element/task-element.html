@@ -1,43 +1,81 @@
 <div class="task-element">
 	@if (task(); as task) {
-	<div class="task-title">{{task.title}}</div>
-	@if (task.description) {
-	<div class="task-description">{{task.description}}</div>
-	}
-	@if (assigneeFormEnabled()){
-	<div class="task-assignee">
-		<label class="form-label" for="assignee"> Assigned to: </label>
-		<select id="assignee" class="form-input" (change)="onAssigneeChanged($event)">
-			<option value="null">None</option>
-			@for (member of memberList(); track member.user.id) {
-			<option value="{{member.user.id}}">{{member.user.username}}</option>
-			}
-		</select>
-		<button type="button" (click)="onSetAssignee()">Set</button>
-		<button type="button" (click)="onCancelSetAssignee()">Cancel</button>
+	<div class="task-header">
+		<h3 class="task-title">{{ task.title }}</h3>
+
+		<div class="task-actions">
+			<button type="button"
+				[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
+				Edit
+			</button>
+
+			<button type="button" (click)="onTaskDeleted(task.id)">
+				Delete
+			</button>
+		</div>
 	</div>
-	} @else {
+
+	@if (task.description) {
+	<div class="task-description">
+		{{ task.description }}
+	</div>
+	}
+
 	<div class="task-assignee">
-		<label class="form-label" for="assignee"> Assigned to: </label>
-		<div class="form-input">
-			@if (task.assignee) {
-			{{task.assignee.username}}
-			} @else {
-			None
+		<div class="task-section-header">
+			<div class="form-label">Assigned to</div>
+
+			@if (!assigneeFormEnabled()) {
+			<button type="button" (click)="onEnableSetAssignee()">
+				Change
+			</button>
 			}
 		</div>
-		<button type="button" (click)="onEnableSetAssignee()">Change</button>
+
+		@if (assigneeFormEnabled()) {
+		<div class="assignee-form">
+			<select id="assignee" class="form-input" (change)="onAssigneeChanged($event)">
+
+				<option value="null">None</option>
+
+				@for (member of memberList(); track member.user.id) {
+				<option [value]="member.user.id">
+					{{ member.user.username }}
+				</option>
+				}
+			</select>
+
+			<div class="assignee-actions">
+				<button type="button" (click)="onSetAssignee()">
+					Set
+				</button>
+
+				<button type="button" (click)="onCancelSetAssignee()">
+					Cancel
+				</button>
+			</div>
+		</div>
+		} @else {
+		<div class="task-assignee-value">
+			@if (task.assignee) {
+			{{ task.assignee.username }}
+			} @else {
+			<div>None</div>
+			}
+		</div>
+		}
+	</div>
+
+	<div class="task-comments">
+		<app-comment-list [taskId]="task.id" [commentList]="task.comments"
+			(commentListEdited)="taskCommentsEdited.emit()">
+		</app-comment-list>
+	</div>
+
+	@if (error()) {
+	<div class="error">
+		{{ error() }}
 	</div>
 	}
-	<app-comment-list [taskId]="task.id" [commentList]="task.comments" (commentListEdited)="taskCommentsEdited.emit()">
-	</app-comment-list>
-	<div class="column-buttons">
-		<button type="button"
-			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
-			Edit
-		</button>
-		<button type="button" (click)="onTaskDeleted(task.id)">Delete</button>
-	</div>
-	<div class="error"> {{ error() }}</div>
 	}
 </div>
