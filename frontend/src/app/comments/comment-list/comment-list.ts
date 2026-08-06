@@ -17,8 +17,6 @@ export class CommentList {
 
 	addCommentFormEnabled = signal<boolean>(false);
 
-	error = signal<string | null>(null);
-
 	onEnableAddComment() { this.addCommentFormEnabled.set(true); }
 	onCancelAddComment() { this.addCommentFormEnabled.set(false); }
 
