@@ -7,15 +7,6 @@
 	min-height: 0;
 }
 
-.task-drop-zone {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-
-	flex: 1;
-	min-height: 120px;
-}
-
 .task-element-list {
 	display: flex;
 	flex-direction: column;
@@ -44,5 +35,5 @@
 }
 
 .add-task-button {
-	width: 100%;
+	width: fit-content;
 }
