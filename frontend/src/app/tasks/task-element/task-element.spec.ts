@@ -1,13 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskElement } from './task-element';
-import { Task, TaskService } from '../../services/tasks/task-service';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { CommentList } from '../../comments/comment-list/comment-list';
 import { By } from '@angular/platform-browser';
-import { ProjectMember } from '../../services/projects/project-service';
+import { ProjectMemberResponse } from '../../models/project';
+import { TaskResponse } from '../../models/task';
+import { TaskService } from '../../services/tasks/task-service';
 
 @Component({
 	selector: 'app-comment-list',
@@ -44,7 +45,7 @@ describe('TaskElement', () => {
 		unassignTask: vi.fn()
 	};
 
-	const task: Task = {
+	const task: TaskResponse = {
 		id: 1,
 		title: 'Task A',
 		description: 'Description',
@@ -54,7 +55,8 @@ describe('TaskElement', () => {
 				content: 'Good',
 				user: {
 					id: 1,
-					username: 'john'
+					username: 'john',
+					email: 'john@test.com'
 				}
 			},
 			{
@@ -62,7 +64,8 @@ describe('TaskElement', () => {
 				content: 'Great',
 				user: {
 					id: 1,
-					username: 'john'
+					username: 'john',
+					email: 'john@test.com'
 				}
 			}
 		]
@@ -72,7 +75,7 @@ describe('TaskElement', () => {
 	const boardId = 1;
 	const columnId = 1;
 
-	const memberList: ProjectMember[] = [
+	const memberList: ProjectMemberResponse[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

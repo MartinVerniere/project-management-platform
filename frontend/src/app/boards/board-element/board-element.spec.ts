@@ -2,8 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BoardElement } from './board-element';
 import { ActivatedRoute } from '@angular/router';
-import { Board, BoardService } from '../../services/boards/board-service';
 import { of } from 'rxjs';
+import { BoardResponse } from '../../models/board';
+import { BoardService } from '../../services/boards/board-service';
 
 describe('BoardElement', () => {
 	let fixture: ComponentFixture<BoardElement>;
@@ -23,7 +24,7 @@ describe('BoardElement', () => {
 		}
 	};
 
-	const board: Board = {
+	const board: BoardResponse = {
 		id: 1,
 		name: 'Board A',
 		columns: [],

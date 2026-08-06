@@ -1,19 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Task, TaskService } from './task-service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { TaskModel } from '../../tasks/task-form/task-form';
-import { Comment } from '../comments/comment-service';
+import { TaskResponse } from '../../models/task';
+import { TaskService } from './task-service';
+import { CommentResponse } from '../../models/comment';
 
-const taskA: Task = {
+const taskA: TaskResponse = {
 	id: 1,
 	title: 'Title A',
 	description: 'Description',
 	comments: []
 }
 
-const taskB: Task = {
+const taskB: TaskResponse = {
 	id: 2,
 	title: 'Title B',
 	comments: []
@@ -112,12 +113,13 @@ describe('TaskService', () => {
 	});
 
 	it('should add comment to task', () => {
-		const newComment: Comment = {
+		const newComment: CommentResponse = {
 			id: 1,
 			content: 'Good work!',
 			user: {
 				id: 1,
-				username: 'john'
+				username: 'john',
+				email: 'john@test.com'
 			}
 		}
 

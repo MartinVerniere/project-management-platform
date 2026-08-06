@@ -1,6 +1,8 @@
 import { Router, type Request, type Response } from "express";
 import { ApiError, requireTaskAdmin, requireTaskMember, taskExtractor, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
+import type { TaskResponse } from "../models/task.js";
+import type { BoardColumn } from "../generated/prisma/client.js";
 
 const taskRouter = Router();
 
@@ -12,7 +14,16 @@ taskRouter.get('/:id',
 	async (request: Request, response: Response) => {
 		const task = request.task!;
 
-		return response.status(200).json(task);
+		const taskResponse: TaskResponse = {
+			id: task.id,
+			title: task.title,
+			description: task.description,
+			columnId: task.column.id,
+			order: task.order,
+			assigneeId: task.assignee?.id || null
+		};
+
+		return response.status(200).json(taskResponse);
 	}
 );
 
@@ -29,12 +40,21 @@ taskRouter.put('/:id',
 		if (typeof title !== "string") throw new ApiError(400, "TASK_TITLE_INVALID", "Task title must be a string.");
 		if (title.trim() === "") throw new ApiError(400, "TASK_TITLE_REQUIRED", "Task title is required.");
 
-		const taskExists = await prisma.task.findUnique({
-			where: { columnId_title: { columnId: task.columnId, title } }
-		});
+		const taskExists = await prisma.task.findUnique({ where: { columnId_title: { columnId: task.column.id, title } } });
 		if (taskExists) throw new ApiError(409, "TASK_EXISTS", "A task with this title already exists in the column.");
 
-		const updatedTask = await prisma.task.update({ where: { id: task.id }, data: { title, description } });
+		const updatedTask = await prisma.task.update({
+			where: { id: task.id },
+			data: { title, description },
+			select: {
+				id: true,
+				title: true,
+				description: true,
+				columnId: true,
+				order: true,
+				assigneeId: true,
+			}
+		});
 
 		return response.status(200).json(updatedTask);
 	}
@@ -59,6 +79,12 @@ taskRouter.post('/:id/comments',
 				content: content.trim(),
 				taskId: task.id,
 				userId: user.id
+			},
+			select: {
+				id: true,
+				content: true,
+				taskId: true,
+				userId: true
 			}
 		});
 
@@ -75,18 +101,20 @@ taskRouter.put('/:id/column',
 		const task = request.task!;
 		const { columnId } = request.body;
 
-		const originColumn = await prisma.boardColumn.findUnique({ where: { id: task.columnId } });
+		const originColumn: BoardColumn | null = await prisma.boardColumn.findUnique({ where: { id: task.column.id } });
 		if (!originColumn) throw new ApiError(404, "ORIGIN_COLUMN_NOT_FOUND", "Origin column not found.");
 
 		if (!columnId) throw new ApiError(400, "COLUMN_ID_REQUIRED", "Column id is required.");
 		if (!Number.isInteger(columnId)) throw new ApiError(400, "INVALID_COLUMN_ID", "Invalid column id.");
 
 		// If already in column, just return
-		if (task.columnId === columnId) return response.status(200).json(task);
+		if (task.column.id === columnId) return response.status(200).json(task);
 
 		const destinationColumn = await prisma.boardColumn.findUnique({
 			where: { id: columnId },
-			include: { tasks: true }
+			include: {
+				tasks: true
+			}
 		});
 		if (!destinationColumn) throw new ApiError(404, "DESTINATION_COLUMN_NOT_FOUND", "Destination column not found.");
 		if (originColumn.boardId !== destinationColumn.boardId) throw new ApiError(409, "INVALID_TASK_MOVE", "Can't move a task to a column of a different board.");
@@ -112,6 +140,15 @@ taskRouter.put('/:id/column',
 					columnId: destinationColumn.id,
 					order: destinationTaskCount,
 				},
+				select: {
+					id: true,
+					title: true,
+					description: true,
+					columnId: true,
+					order: true,
+					assigneeId: true,
+					comments: true,
+				}
 			});
 
 			// Reorder old column
@@ -156,11 +193,23 @@ taskRouter.put('/:id/assignee',
 					projectId: task.column.board.projectId,
 					userId: userId
 				}
-			}
+			},
+			include: { user: true }
 		});
 		if (!userIsMember) throw new ApiError(409, "USER_NOT_MEMBER", "User can't be assigned to a task of a project he is not a member of.");
 
-		const updatedTask = await prisma.task.update({ where: { id: task.id }, data: { assigneeId: userId } });
+		const updatedTask = await prisma.task.update({
+			where: { id: task.id },
+			data: { assigneeId: userId },
+			select: {
+				id: true,
+				title: true,
+				description: true,
+				columnId: true,
+				order: true,
+				assigneeId: true,
+			}
+		});
 
 		return response.status(200).json(updatedTask);
 	}
@@ -175,7 +224,18 @@ taskRouter.delete('/:id/assignee',
 	async (request: Request, response: Response) => {
 		const task = request.task!;
 
-		const updatedTask = await prisma.task.update({ where: { id: task.id }, data: { assigneeId: null } });
+		const updatedTask = await prisma.task.update({
+			where: { id: task.id },
+			data: { assigneeId: null },
+			select: {
+				id: true,
+				title: true,
+				description: true,
+				columnId: true,
+				order: true,
+				assigneeId: true,
+			}
+		});
 
 		return response.status(200).json(updatedTask);
 	}
@@ -193,7 +253,7 @@ taskRouter.delete('/:id',
 
 		// Reset order values
 		const remainingTasks = await prisma.task.findMany({
-			where: { columnId: task.columnId },
+			where: { columnId: task.column.id },
 			orderBy: { order: "asc" },
 		});
 

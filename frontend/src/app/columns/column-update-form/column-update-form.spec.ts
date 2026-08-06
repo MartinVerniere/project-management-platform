@@ -3,14 +3,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColumnUpdateForm } from './column-update-form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { Column, ColumnService } from '../../services/columns/column-service';
+import { ColumnResponse } from '../../models/column';
+import { ColumnService } from '../../services/columns/column-service';
 
 describe('ColumnUpdateForm', () => {
 	let fixture: ComponentFixture<ColumnUpdateForm>;
 	let component: ColumnUpdateForm;
 	let html: HTMLElement;
 
-	const currentColumn: Column = {
+	const currentColumn: ColumnResponse = {
 		id: 1,
 		name: "Column A",
 		tasks: []

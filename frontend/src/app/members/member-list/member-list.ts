@@ -1,7 +1,7 @@
 import { Component, input, output, signal } from "@angular/core";
-import { ProjectMember } from "../../services/projects/project-service";
 import { MemberForm } from "../member-form/member-form";
 import { MemberElement } from "../member-element/member-element";
+import { ProjectMemberResponse } from "../../models/project";
 
 @Component({
 	selector: 'app-member-list',
@@ -11,7 +11,7 @@ import { MemberElement } from "../member-element/member-element";
 })
 export class MemberList {
 	projectId = input.required<number>();
-	memberList = input.required<ProjectMember[]>();
+	memberList = input.required<ProjectMemberResponse[]>();
 
 	memberAdded = output<void>();
 	memberRemoved = output<void>();

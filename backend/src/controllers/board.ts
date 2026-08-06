@@ -30,10 +30,20 @@ boardRouter.put("/:id",
 		if (typeof name !== "string") throw new ApiError(400, "BOARD_NAME_INVALID", "Board name must be a string.");
 		if (name.trim() === "") throw new ApiError(400, "BOARD_NAME_REQUIRED", "Board name is required.");
 
-		const boardExists = await prisma.board.findUnique({ where: { projectId_name: { projectId: board.projectId, name } } });
+		const boardExists = await prisma.board.findUnique({
+			where: { projectId_name: { projectId: board.projectId, name } }
+		});
 		if (boardExists) throw new ApiError(409, "BOARD_EXISTS", "A board with this name already exists in the project.");
 
-		const updatedBoard = await prisma.board.update({ where: { id: board.id }, data: { name } });
+		const updatedBoard = await prisma.board.update({
+			where: { id: board.id },
+			data: { name },
+			select: {
+				id: true,
+				name: true,
+				projectId: true,
+			},
+		});
 
 		return response.status(200).json(updatedBoard);
 	}
@@ -53,17 +63,25 @@ boardRouter.post("/:id/columns",
 		if (typeof name !== "string") throw new ApiError(400, "BOARD_COLUMN_NAME_INVALID", "Column name must be a string.");
 		if (name.trim() === "") throw new ApiError(400, "BOARD_COLUMN_NAME_REQUIRED", "Column name is required.");
 
-		const boardColumnExists = await prisma.boardColumn.findUnique({
+		const columnExists = await prisma.boardColumn.findUnique({
 			where: { boardId_name: { boardId: board.id, name } }
 		});
-		if (boardColumnExists) throw new ApiError(409, "BOARD_COLUMN_EXISTS", "A column with this name already exists in the board.");
+		if (columnExists) throw new ApiError(409, "BOARD_COLUMN_EXISTS", "A column with this name already exists in the board.");
 
 		const allBoardColumns = await prisma.boardColumn.findMany({ where: { boardId: board.id } })!;
 		const order = allBoardColumns.length; // Place it at end of board column list
 
-		const createdBoardColumn = await prisma.boardColumn.create({ data: { name, boardId: board.id, order: order } });
+		const newColumn = await prisma.boardColumn.create({
+			data: { name, boardId: board.id, order: order },
+			select: {
+				id: true,
+				name: true,
+				boardId: true,
+				order: true
+			}
+		});
 
-		return response.status(201).json(createdBoardColumn);
+		return response.status(201).json(newColumn);
 	}
 );
 
@@ -80,8 +98,8 @@ boardRouter.put("/:id/columns/order",
 		if (!columnOrder) throw new ApiError(400, "COLUMN_ORDER_REQUIRED", "Column order is required.");
 		if (!Array.isArray(columnOrder)) throw new ApiError(400, "INVALID_COLUMN_ORDER", "Column order must be an array.");
 
-		const boardColumns = await prisma.boardColumn.findMany({ where: { boardId: board.id }, select: { id: true } });
-		const boardColumnIds = new Set(boardColumns.map(c => c.id));
+		const boardColumns = await prisma.boardColumn.findMany({ where: { boardId: board.id } });
+		const boardColumnIds = new Set(boardColumns.map(column => column.id));
 
 		if (columnOrder.length !== boardColumns.length) throw new ApiError(400, "INVALID_COLUMN_ORDER", "Every board column must be included.");
 
@@ -115,16 +133,14 @@ boardRouter.put("/:id/columns/order",
 
 		const updatedBoard = await prisma.board.findUnique({
 			where: { id: board.id },
-			include: {
+			select: {
+				id: true,
+				name: true,
+				projectId: true,
 				columns: {
-					orderBy: { order: "asc" },
-					include: {
-						tasks: {
-							orderBy: { order: "asc" }
-						}
-					}
-				}
-			}
+					orderBy: { order: "asc" }
+				},
+			},
 		});
 
 		return response.status(200).json(updatedBoard);

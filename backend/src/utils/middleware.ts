@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
 import { SECRET } from './config.js';
 import { prisma } from '../prisma.js';
-import { ProjectRole, type User } from '../generated/prisma/client.js';
+import { ProjectRole } from '../generated/prisma/client.js';
 
 export interface TokenPayload {
 	id: number;
@@ -87,7 +87,14 @@ export const userExtractor = async (
 ): Promise<void> => {
 	const userId: number = request.decodedToken.id;
 
-	const user: User | null = await prisma.user.findUnique({ where: { id: userId } });
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: {
+			id: true,
+			username: true,
+			email: true
+		}
+	});
 	if (!user) throw new ApiError(404, "USER_NOT_FOUND", "User not found.");
 
 	request.user = user;
@@ -107,9 +114,22 @@ export const projectExtractor = async (
 
 	const project = await prisma.project.findUnique({
 		where: { id: projectId },
-		include: {
+		select: {
+			id: true,
+			key: true,
+			name: true,
+			description: true,
+			boards: {
+				select: {
+					id: true,
+					name: true,
+					projectId: true
+				}
+			},
 			members: {
-				include: {
+				select: {
+					id: true,
+					role: true,
 					user: {
 						select: {
 							id: true,
@@ -133,10 +153,13 @@ export const requireProjectMember = async (
 	_response: Response,
 	next: NextFunction
 ): Promise<void> => {
-	const userId = request.user.id;
+	const userId = Number(request.user.id);
 	const project = request.project!;
 
-	const membership = project.members.find(member => member.userId === userId);
+	const membership = await prisma.projectMember.findUnique({
+		where: { projectId_userId: { projectId: project.id, userId: userId } },
+		include: { user: true }
+	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
 	request.projectMember = membership;
@@ -167,14 +190,16 @@ export const boardExtractor = async (
 
 	const board = await prisma.board.findUnique({
 		where: { id: boardId },
-		include: {
+		select: {
+			id: true,
+			name: true,
+			projectId: true,
 			columns: {
 				orderBy: { order: "asc" },
 				select: {
 					id: true,
 					name: true,
 					order: true,
-					boardId: true,
 					tasks: {
 						orderBy: { order: "asc" },
 						select: {
@@ -182,32 +207,31 @@ export const boardExtractor = async (
 							title: true,
 							description: true,
 							order: true,
-							columnId: true,
-							comments: {
-								orderBy: { createdAt: "asc" },
-								select: {
-									id: true,
-									content: true,
-									user: {
-										select: {
-											id: true,
-											username: true
-										}
-									}
-								}
-							},
 							assignee: {
 								select: {
 									id: true,
 									username: true,
 									email: true
 								}
+							},
+							comments: {
+								select: {
+									id: true,
+									content: true,
+									user: {
+										select: {
+											id: true,
+											username: true,
+											email: true
+										}
+									}
+								}
 							}
-						},
+						}
 					}
-				},
+				}
 			}
-		},
+		}
 	});
 	if (!board) throw new ApiError(404, "BOARD_NOT_FOUND", "Board not found.");
 
@@ -221,7 +245,7 @@ export const requireBoardMember = async (
 	_response: Response,
 	next: NextFunction
 ): Promise<void> => {
-	const userId = request.user.id;
+	const userId = Number(request.user.id);
 	const board = request.board!;
 
 	const membership = await prisma.projectMember.findUnique({
@@ -229,8 +253,9 @@ export const requireBoardMember = async (
 			projectId_userId: {
 				projectId: board.projectId,
 				userId: userId,
-			},
+			}
 		},
+		include: { user: true }
 	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
@@ -262,9 +287,7 @@ export const columnExtractor = async (
 
 	const boardColumn = await prisma.boardColumn.findUnique({
 		where: { id: columnId },
-		include: {
-			board: true,
-		},
+		include: { board: true },
 	});
 	if (!boardColumn) throw new ApiError(404, "BOARD_COLUMN_NOT_FOUND", "Column not found.");
 
@@ -278,16 +301,17 @@ export const requireColumnMember = async (
 	_response: Response,
 	next: NextFunction
 ): Promise<void> => {
-	const userId = request.user.id;
+	const userId = Number(request.user.id);
 	const boardColumn = request.boardColumn!;
 
 	const membership = await prisma.projectMember.findUnique({
 		where: {
 			projectId_userId: {
 				projectId: boardColumn.board.projectId,
-				userId,
-			},
+				userId: userId,
+			}
 		},
+		include: { user: true }
 	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
@@ -321,17 +345,9 @@ export const taskExtractor = async (
 		where: { id: taskId },
 		include: {
 			column: {
-				include: {
-					board: true,
-				},
+				include: { board: true },
 			},
-			assignee: {
-				select: {
-					id: true,
-					username: true,
-					email: true
-				}
-			}
+			assignee: true
 		},
 	});
 	if (!task) throw new ApiError(404, "TASK_NOT_FOUND", "Task not found.");
@@ -346,8 +362,8 @@ export const requireTaskMember = async (
 	_response: Response,
 	next: NextFunction
 ): Promise<void> => {
-	const userId = request.user.id;
-	const task = request.task!;
+	const userId = Number(request.user.id);
+	const task = request.task!
 
 	const membership = await prisma.projectMember.findUnique({
 		where: {
@@ -356,6 +372,7 @@ export const requireTaskMember = async (
 				userId: userId,
 			}
 		},
+		include: { user: true }
 	});
 	if (!membership) throw new ApiError(403, "PROJECT_ACCESS_DENIED", "You do not have access to this project.");
 
@@ -391,10 +408,9 @@ export const commentExtractor = async (
 			task: {
 				include: {
 					column: {
-						include: {
-							board: true,
-						},
+						include: { board: true },
 					},
+					assignee: true,
 				},
 			},
 		},
@@ -423,6 +439,7 @@ export const requireCommentEditor = async (
 				userId,
 			},
 		},
+		include: { user: true }
 	});
 
 	const isCommentAdmin = membership?.role === ProjectRole.ADMIN;

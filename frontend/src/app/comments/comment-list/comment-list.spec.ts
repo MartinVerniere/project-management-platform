@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CommentList } from './comment-list';
 import { Component, input, output } from '@angular/core';
-import { Comment, CommentAuthor } from '../../services/comments/comment-service';
 import { CommentElement } from '../comment-element/comment-element';
 import { CommentForm } from '../comment-form/comment-form';
 import { By } from '@angular/platform-browser';
+import { CommentAuthor, CommentResponse } from '../../models/comment';
 
 @Component({
 	selector: 'app-comment-element',
@@ -13,7 +13,7 @@ import { By } from '@angular/platform-browser';
 	template: '',
 })
 class CommentElementStub {
-	comment = input.required<Comment>();
+	comment = input.required<CommentResponse>();
 
 	commentEdited = output<void>();
 	commentDeleted = output<void>();
@@ -37,10 +37,11 @@ describe('CommentList', () => {
 
 	const commentAuthor: CommentAuthor = {
 		id: 0,
-		username: 'john'
+		username: 'john',
+		email: 'john@test.com'
 	};
 
-	const commentList: Comment[] = [
+	const commentList: CommentResponse[] = [
 		{
 			id: 1,
 			content: 'Good',

@@ -4,10 +4,10 @@ import { BoardList } from './board-list';
 import { NEVER, of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
-import { Board } from '../../services/boards/board-service';
 import { Component, input, output } from '@angular/core';
 import { BoardElement } from '../board-element/board-element';
 import { By } from '@angular/platform-browser';
+import { BoardResponse } from '../../models/board';
 
 @Component({
 	selector: 'app-board-element',
@@ -15,7 +15,7 @@ import { By } from '@angular/platform-browser';
 	template: '',
 })
 class BoardElementStub {
-	board = input.required<Board>();
+	board = input.required<BoardResponse>();
 	projectId = input.required<number>();
 	boardDeleted = output<void>();
 }
@@ -40,7 +40,7 @@ describe('BoardList', () => {
 
 	const projectId = 1;
 
-	const boards: Board[] = [
+	const boards: BoardResponse[] = [
 		{
 			id: 1,
 			name: 'Board A',

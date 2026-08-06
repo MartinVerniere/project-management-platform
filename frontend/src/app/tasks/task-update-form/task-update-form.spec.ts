@@ -1,16 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskUpdateForm } from './task-update-form';
-import { Task, TaskService } from '../../services/tasks/task-service';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TaskResponse } from '../../models/task';
+import { TaskService } from '../../services/tasks/task-service';
 
 describe('TaskUpdateForm', () => {
 	let fixture: ComponentFixture<TaskUpdateForm>;
 	let component: TaskUpdateForm;
 	let html: HTMLElement;
 
-	const currentTask: Task = {
+	const currentTask: TaskResponse = {
 		id: 1,
 		title: "Task A",
 		description: '',

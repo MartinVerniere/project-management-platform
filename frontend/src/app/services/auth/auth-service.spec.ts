@@ -3,6 +3,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { HttpTestingController, provideHttpClientTesting, TestRequest } from '@angular/common/http/testing';
 import { AuthService } from './auth-service';
+import { LoginResponse, RegisterResponse } from '../../models/auth';
+import { UserResponse } from '../../models/user';
 
 describe('AuthService', () => {
 	let service: AuthService;
@@ -31,10 +33,10 @@ describe('AuthService', () => {
 	});
 
 	it('should login correctly', () => {
-		const expectedResponse = {
+		const expectedResponse: LoginResponse = {
 			token: 'abc123',
 			user: {
-				id: '1',
+				id: 1,
 				username: 'john',
 				email: 'john@test.com',
 			},
@@ -53,6 +55,12 @@ describe('AuthService', () => {
 	});
 
 	it('should register correctly', () => {
+		const expectedResponse: RegisterResponse = {
+			id: 1,
+			username: 'john',
+			email: 'john@test.com',
+		};
+
 		service.register({
 			username: 'john',
 			email: 'john@test.com',
@@ -61,11 +69,7 @@ describe('AuthService', () => {
 
 		const request: TestRequest = httpMock.expectOne('http://localhost:3000/api/auth/register');
 
-		request.flush({
-			id: '1',
-			username: 'john',
-			email: 'john@test.com',
-		});
+		request.flush(expectedResponse);
 	});
 
 	describe('When token exists in local storage', () => {
@@ -98,31 +102,35 @@ describe('AuthService', () => {
 		});
 
 		it('should me correctly', () => {
+			const expectedResponse: UserResponse = {
+				id: 1,
+				username: 'john',
+				email: 'john@test.com',
+			};
+
 			service.me().subscribe();
 
 			const request: TestRequest = httpMock.expectOne('http://localhost:3000/api/auth/me');
 
 			expect(request.request.method).toBe('GET');
 
-			request.flush({
-				id: '1',
-				username: 'john',
-				email: 'john@test.com',
-			});
+			request.flush(expectedResponse);
 		});
 
 		it('should set user on initializeAuth when token is valid', () => {
+			const expectedResponse: UserResponse = {
+				id: 1,
+				username: 'john',
+				email: 'john@test.com',
+			};
+
 			service.initializeAuth();
 
 			const request: TestRequest = httpMock.expectOne('http://localhost:3000/api/auth/me');
 
 			expect(request.request.method).toBe('GET');
 
-			request.flush({
-				id: '1',
-				username: 'john',
-				email: 'john@test.com',
-			});
+			request.flush(expectedResponse);
 
 			expect(service.getCurrentUser()?.username).toBe('john');
 		});

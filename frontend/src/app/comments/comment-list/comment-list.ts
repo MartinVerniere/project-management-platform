@@ -1,7 +1,7 @@
 import { Component, input, output, signal } from '@angular/core';
 import { CommentElement } from '../comment-element/comment-element';
-import { Comment } from '../../services/comments/comment-service';
 import { CommentForm } from '../comment-form/comment-form';
+import { CommentResponse } from '../../models/comment';
 
 @Component({
 	selector: 'app-comment-list',
@@ -10,7 +10,7 @@ import { CommentForm } from '../comment-form/comment-form';
 	styleUrl: './comment-list.css',
 })
 export class CommentList {
-	commentList = input.required<Comment[]>();
+	commentList = input.required<CommentResponse[]>();
 	taskId = input.required<number>();
 
 	commentListEdited = output<void>();

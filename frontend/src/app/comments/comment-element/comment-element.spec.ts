@@ -2,10 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CommentElement } from './comment-element';
 import { Component, input, output } from '@angular/core';
-import { Comment, CommentService } from '../../services/comments/comment-service';
 import { CommentUpdateForm } from '../comment-update-form/comment-update-form';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
+import { CommentResponse } from '../../models/comment';
+import { CommentService } from '../../services/comments/comment-service';
 
 @Component({
 	selector: 'app-comment-update-form',
@@ -13,7 +14,7 @@ import { of } from 'rxjs';
 	template: '',
 })
 class CommentUpdateFormStub {
-	comment = input.required<Comment>();
+	comment = input.required<CommentResponse>();
 
 	commentEdited = output<void>();
 	canceledCommentEdit = output<void>();
@@ -26,12 +27,13 @@ describe('CommentElement', () => {
 
 	let commentServiceMock = { deleteComment: vi.fn() };
 
-	const comment: Comment = {
+	const comment: CommentResponse = {
 		id: 1,
 		content: 'Good',
 		user: {
 			id: 1,
-			username: 'john'
+			username: 'john',
+			email: 'john@test.com'
 		}
 	};
 

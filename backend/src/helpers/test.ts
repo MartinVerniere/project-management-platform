@@ -1,63 +1,11 @@
 import request from 'supertest';
 import { app } from "../app.js";
-import type { ProjectRole } from '../generated/prisma/enums.js';
-
-export interface UserResponse {
-	id: number;
-	username: string;
-	email: string;
-}
-
-export interface LoginResponse {
-	user: UserResponse;
-	token: string;
-}
-
-export interface ProjectResponse {
-	id: number;
-	name: string;
-	key: string;
-	description: string | null;
-}
-
-export interface ProjectMemberResponse {
-	id: number;
-	projectId: number;
-	userId: number;
-	role: ProjectRole;
-}
-
-export interface ProjectMemberWithUserResponse extends ProjectMemberResponse {
-	user: UserResponse;
-}
-
-export interface BoardResponse {
-	id: number;
-	name: string;
-	projectId: number;
-}
-
-export interface ColumnResponse {
-	id: number;
-	name: string;
-	boardId: number;
-	order: number;
-}
-
-export interface TaskResponse {
-	id: number;
-	title: string;
-	description: string | null;
-	columnId: number;
-	order: number;
-}
-
-export interface CommentResponse {
-	id: number;
-	content: string;
-	taskId: number;
-	userId: number;
-}
+import type { LoginResponse, UserResponse } from '../models/user.js';
+import type { ProjectMemberResponse, ProjectResponse } from '../models/project.js';
+import type { BoardResponse } from '../models/board.js';
+import type { ColumnResponse } from '../models/column.js';
+import type { TaskResponse } from '../models/task.js';
+import type { CommentResponse } from '../models/comment.js';
 
 export const registerUser = async (username: string, email: string, password: string): Promise<UserResponse> => {
 	const response = await request(app)

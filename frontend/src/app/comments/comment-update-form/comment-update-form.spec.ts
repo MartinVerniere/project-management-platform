@@ -1,20 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CommentUpdateForm } from './comment-update-form';
-import { Comment, CommentService } from '../../services/comments/comment-service';
+import { CommentService } from '../../services/comments/comment-service';
 import { of, throwError } from 'rxjs';
+import { CommentResponse } from '../../models/comment';
 
 describe('CommentUpdateForm', () => {
 	let fixture: ComponentFixture<CommentUpdateForm>;
 	let component: CommentUpdateForm;
 	let html: HTMLElement;
 
-	const currentComment: Comment = {
+	const currentComment: CommentResponse = {
 		id: 1,
 		content: 'Good',
 		user: {
 			id: 1,
-			username: 'john'
+			username: 'john',
+			email: 'john@test.com'
 		}
 	};
 

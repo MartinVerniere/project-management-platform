@@ -2,40 +2,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Service, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../models/auth';
+import { UserResponse } from '../../models/user';
 
-const API_URL = 'http://localhost:3000/api';
-
-interface LoginResponse {
-	token: string;
-	user: {
-		id: string;
-		username: string;
-		email: string;
-	};
-}
-
-interface RegisterResponse {
-	id: string;
-	username: string;
-	email: string;
-}
-
-interface UserResponse {
-	id: string;
-	username: string;
-	email: string;
-}
-
-interface RegisterRequest {
-	username: string;
-	email: string;
-	password: string;
-}
-
-interface LoginRequest {
-	username: string;
-	password: string;
-}
+const API_URL = 'http://localhost:3000/api/auth';
 
 @Service()
 export class AuthService {
@@ -70,16 +40,16 @@ export class AuthService {
 	}
 
 	login(request: LoginRequest): Observable<LoginResponse> {
-		return this.http.post<LoginResponse>(`${API_URL}/auth/login`, request)
+		return this.http.post<LoginResponse>(`${API_URL}/login`, request)
 			.pipe(tap((response: LoginResponse) => { this.setSession(response.token, response.user); }))
 	}
 
 	register(request: RegisterRequest): Observable<RegisterResponse> {
-		return this.http.post<RegisterResponse>(`${API_URL}/auth/register`, request);
+		return this.http.post<RegisterResponse>(`${API_URL}/register`, request);
 	}
 
 	me(): Observable<UserResponse> {
-		return this.http.get<UserResponse>(`${API_URL}/auth/me`);
+		return this.http.get<UserResponse>(`${API_URL}/me`);
 	}
 
 	logout() {

@@ -5,9 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { BoardService } from '../../services/boards/board-service';
 import { NEVER, of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
-import { Column } from '../../services/columns/column-service';
 import { ColumnList } from '../../columns/column-list/column-list';
 import { By } from '@angular/platform-browser';
+import { ColumnResponse } from '../../models/column';
 
 @Component({
 	selector: 'app-column-list',
@@ -15,7 +15,7 @@ import { By } from '@angular/platform-browser';
 	template: '',
 })
 class ColumnListStub {
-	columnList = input.required<Column[]>();
+	columnList = input.required<ColumnResponse[]>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 

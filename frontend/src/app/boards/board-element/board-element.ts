@@ -1,7 +1,8 @@
 import { Component, inject, input, output, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { Board, BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
+import { BoardService } from "../../services/boards/board-service";
+import { BoardResponse } from "../../models/board";
 
 @Component({
 	selector: 'app-board-element',
@@ -12,7 +13,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 export class BoardElement {
 	boardService = inject(BoardService);
 
-	board = input.required<Board>();
+	board = input.required<BoardResponse>();
 	projectId = input.required<number>();
 	boardDeleted = output<void>();
 

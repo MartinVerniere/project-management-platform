@@ -2,11 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NEVER, of, throwError } from 'rxjs';
 
 import { ProjectList } from './project-list';
-import { Project, ProjectService } from '../../services/projects/project-service';
+import { ProjectService } from '../../services/projects/project-service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, input, output } from '@angular/core';
 import { ProjectElement } from '../project-element/project-element';
 import { By } from '@angular/platform-browser';
+import { ProjectResponse } from '../../models/project';
 
 @Component({
 	selector: 'app-project-element',
@@ -14,7 +15,7 @@ import { By } from '@angular/platform-browser';
 	template: '',
 })
 class ProjectElementStub {
-	project = input.required<Project>();
+	project = input.required<ProjectResponse>();
 
 	projectDeleted = output<void>();
 }
@@ -36,20 +37,18 @@ describe('ProjectList', () => {
 		}
 	}
 
-	const projects: Project[] = [
+	const projects: ProjectResponse[] = [
 		{
 			id: 1,
 			name: 'Project A',
 			key: 'PROA',
 			description: null,
-			members: []
 		},
 		{
 			id: 2,
 			name: 'Project B',
 			key: 'PROB',
 			description: null,
-			members: []
 		}
 	];
 

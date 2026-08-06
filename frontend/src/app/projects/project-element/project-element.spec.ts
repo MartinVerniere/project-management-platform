@@ -2,8 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectElement } from './project-element';
 import { ActivatedRoute } from '@angular/router';
-import { Project, ProjectService } from '../../services/projects/project-service';
+import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
+import { ProjectResponse } from '../../models/project';
 
 describe('ProjectElement', () => {
 	let fixture: ComponentFixture<ProjectElement>;
@@ -22,12 +23,11 @@ describe('ProjectElement', () => {
 		}
 	};
 
-	const project: Project = {
+	const project: ProjectResponse = {
 		id: 1,
 		name: 'Project A',
 		key: 'PROA',
 		description: 'My project',
-		members: []
 	};
 
 	async function createComponent(shouldAwait: boolean = true) {

@@ -1,9 +1,10 @@
-import { Component, computed, inject, input, output, resource, signal } from '@angular/core';
-import { Task, TaskService } from '../../services/tasks/task-service';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { CommentList } from '../../comments/comment-list/comment-list';
-import { ProjectMember } from '../../services/projects/project-service';
+import { ProjectMemberResponse } from '../../models/project';
+import { TaskService } from '../../services/tasks/task-service';
+import { TaskResponse } from '../../models/task';
 
 @Component({
 	selector: 'app-task-element',
@@ -14,11 +15,11 @@ import { ProjectMember } from '../../services/projects/project-service';
 export class TaskElement {
 	taskService = inject(TaskService);
 
-	task = input.required<Task>();
+	task = input.required<TaskResponse>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
-	memberList = input.required<ProjectMember[]>();
+	memberList = input.required<ProjectMemberResponse[]>();
 
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();

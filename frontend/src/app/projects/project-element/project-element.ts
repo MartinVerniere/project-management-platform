@@ -1,7 +1,8 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { Project, ProjectService } from '../../services/projects/project-service';
+import { ProjectService } from '../../services/projects/project-service';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ProjectResponse } from '../../models/project';
 
 @Component({
 	selector: 'app-project-element',
@@ -12,7 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class ProjectElement {
 	projectService = inject(ProjectService);
 
-	project = input.required<Project>();
+	project = input.required<ProjectResponse>();
 	projectDeleted = output<void>();
 
 	error = signal<string | null>(null);
