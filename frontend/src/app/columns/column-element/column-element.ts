@@ -5,10 +5,11 @@ import { TaskList } from "../../tasks/task-list/task-list";
 import { ProjectMemberResponse } from "../../models/project";
 import { ColumnService } from "../../services/columns/column-service";
 import { ColumnResponse } from "../../models/column";
+import { CdkDragHandle } from "@angular/cdk/drag-drop";
 
 @Component({
 	selector: 'app-column-element',
-	imports: [RouterLink, TaskList],
+	imports: [RouterLink, TaskList, CdkDragHandle],
 	templateUrl: './column-element.html',
 	styleUrl: './column-element.css',
 })

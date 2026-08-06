@@ -1,33 +1,52 @@
-<form class="column-form" (submit)="(onSubmit($event))">
-	<div class="form-grid">
-		<div class="form-group">
-			<label class="form-label" for="name"> Name </label>
-			<input id="name" class="form-input" type="text" placeholder="Column A" [formField]="columnForm.name" />
+<div class="column-form-page">
+	<div class="column-form-card">
+		<div class="column-form-header">
+			<div class="header-icon">✓</div>
+			<div>
+				<h1>Create column</h1>
+				<p>Add a new column to organize your tasks.</p>
+			</div>
+		</div>
+		<div class="divider"></div>
+		<form class="column-form" (submit)="(onSubmit($event))">
+			<div class="form-grid">
+				<div class="form-group">
+					<label class="form-label" for="name">
+						Name
+						<div class="required">*</div>
+					</label>
+					<input id="name" class="form-input" type="text" placeholder="e.g. Backlog"
+						[formField]="columnForm.name" />
 
-			@if(columnForm.name().invalid() && columnForm.name().touched()){
-			<div class="error">
-				@for (error of columnForm.name().errors(); track error.kind){
-				<span> {{error.message}}</span>
+					@if(columnForm.name().invalid() && columnForm.name().touched()){
+					<div class="field-error">
+						@for (error of columnForm.name().errors(); track error.kind){
+						<div> {{error.message}}</div>
+						}
+					</div>
+					}
+				</div>
+
+				@if (error()) {
+				<div class="server-error">
+					<div class="server-error-icon">!</div>
+					<div>
+						{{ error() }}
+					</div>
+				</div>
 				}
-			</div>
-			}
-		</div>
 
-		<div class="form-error">
-			@if (error()) {
-			<div class="error">
-				<span>{{ error() }}</span>
+				<div class="form-actions">
+					<button class="btn btn-secondary" type="button"
+						[routerLink]="['/projects', projectId, 'boards', boardId]">
+						Cancel
+					</button>
+					<button class="btn btn-primary" type="submit" [disabled]="columnForm().invalid()">
+						Create column
+						<div class="btn-arrow">→</div>
+					</button>
+				</div>
 			</div>
-			}
-		</div>
-
-		<div class="form-actions">
-			<button class="btn btn-primary" type="submit" [disabled]="columnForm().invalid()">
-				Add Column
-			</button>
-			<button class="btn btn-secondary" type="button" [routerLink]="['/projects', projectId, 'boards', boardId]">
-				Cancel
-			</button>
-		</div>
+		</form>
 	</div>
-</form>
+</div>
