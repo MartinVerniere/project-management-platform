@@ -5,13 +5,35 @@
 	<div class="error">Error loading project</div>
 	} @else {
 	@if (project.value(); as project) {
-	<h2 class="project-name">Name: {{project.name}}</h2>
-	<div class="project-key">Key: {{project.key}}</div>
-	@if (project.description) { <div class="project-description">Description: {{project.description}}</div> }
-	<app-board-list [projectId]="project.id"></app-board-list>
-	<app-member-list [projectId]="project.id" [memberList]="project.members" (memberAdded)="onMemberAdded()"
-		(memberRemoved)="onMemberRemoved()"></app-member-list>
+	<div class="project-header">
+		<div>
+			<div class="project-key">{{ project.key }}</div>
+			<h1 class="project-name">{{ project.name }}</h1>
+
+			@if (project.description) {
+			<p class="project-description">
+				{{ project.description }}
+			</p>
+			}
+		</div>
+
+		<a class="back-button" routerLink="/projects">
+			← Projects
+		</a>
+	</div>
+
+	<div class="project-content">
+		<div class="project-section">
+			<app-board-list [projectId]="project.id">
+			</app-board-list>
+		</div>
+
+		<div class="project-section">
+			<app-member-list [projectId]="project.id" [memberList]="project.members" (memberAdded)="onMemberAdded()"
+				(memberRemoved)="onMemberRemoved()">
+			</app-member-list>
+		</div>
+	</div>
 	}
 	}
-	<button routerLink="/projects">Go back</button>
 </div>
