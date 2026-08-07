@@ -1,5 +1,11 @@
+:host {
+	display: flex;
+	flex: 1;
+}
+
 .board-details-page {
 	display: flex;
+	flex: 1;
 	flex-direction: column;
 	gap: 20px;
 	padding: 24px;

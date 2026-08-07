@@ -1,14 +1,18 @@
+:host {
+	display: flex;
+	flex: 1;
+}
+
 .project-list-page {
-	min-height: 100%;
-	padding: 40px 32px;
+	display: flex;
+	flex: 1;
+	padding: 25px;
 	background: #f7f8fa;
-	box-sizing: border-box;
 }
 
 .project-list {
-	max-width: 1100px;
-	margin: 0 auto;
 	display: flex;
+	flex: 1;
 	flex-direction: column;
 	gap: 24px;
 }

@@ -6,15 +6,28 @@
 				<span class="required">*</span>
 			</label>
 
-			<select id="user" class="form-input" [formField]="memberForm.userId">
-				<option value="">Select a user</option>
+			<div class="form-input-and-actions">
+				<select id="user" class="form-input" [formField]="memberForm.userId">
+					<option value="">Select a user</option>
 
-				@for (user of possibleUsers(); track user.id) {
-				<option [value]="user.id">
-					{{ user.username }}
-				</option>
-				}
-			</select>
+					@for (user of possibleUsers(); track user.id) {
+					<option [value]="user.id">
+						{{ user.username }}
+					</option>
+					}
+				</select>
+				<div class="form-actions">
+					<button class="btn btn-secondary" type="button" (click)="onCancel()">
+						Cancel
+					</button>
+
+					<button class="btn btn-primary" type="submit" [disabled]="memberForm().invalid()">
+						Add member
+						<span class="btn-arrow">→</span>
+					</button>
+				</div>
+			</div>
+
 
 			@if (memberForm.userId().invalid() && memberForm.userId().touched()) {
 			<div class="field-error">
@@ -31,16 +44,5 @@
 			<div>{{ error() }}</div>
 		</div>
 		}
-
-		<div class="form-actions">
-			<button class="btn btn-secondary" type="button" (click)="onCancel()">
-				Cancel
-			</button>
-
-			<button class="btn btn-primary" type="submit" [disabled]="memberForm().invalid()">
-				Add member
-				<span class="btn-arrow">→</span>
-			</button>
-		</div>
 	</div>
 </form>

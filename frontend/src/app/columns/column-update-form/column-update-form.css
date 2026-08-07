@@ -1,10 +1,15 @@
+:host {
+	display: flex;
+	flex: 1;
+}
+
 .column-update-form-page {
 	display: flex;
+	flex: 1;
+	align-items: center;
 	justify-content: center;
-	align-items: flex-start;
-	padding: 64px 24px;
+	padding: 24px;
 	background: #f7f8fa;
-	box-sizing: border-box;
 }
 
 .column-update-form-card {

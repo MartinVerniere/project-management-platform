@@ -15,6 +15,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
+	margin-bottom: 20px;
 }
 
 .form-label {
@@ -27,11 +28,16 @@
 	color: #dc2626;
 }
 
+.form-input-and-actions{
+	display: flex;
+	gap: 10px;
+}
+
 .form-input {
-	width: 100%;
+	flex: 1;
 	box-sizing: border-box;
 
-	padding: 7px 9px;
+	padding: 8px;
 
 	border: 1px solid #d1d5db;
 	border-radius: 4px;

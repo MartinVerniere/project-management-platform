@@ -1,19 +1,24 @@
+:host {
+	display: flex;
+	flex: 1;
+}
+
 .column-list-container {
 	display: flex;
+	flex: 1;
 	flex-direction: column;
 	gap: 16px;
 }
 
 .column-list {
 	display: flex;
-	flex-direction: column;
 	gap: 16px;
+	overflow-x: auto;
 }
 
 .column-element-list {
 	display: flex;
 	gap: 12px;
-	overflow-x: auto;
 }
 
 .column-list-empty {
@@ -43,20 +48,16 @@
 
 .task-filters {
 	display: flex;
-	align-items: flex-end;
+	align-items: flex-start;
+	align-items: center;
 	gap: 16px;
-	flex-wrap: wrap;
-
 	padding: 5px;
 
-	background: #fff;
-	border: 1px solid #e5e7eb;
-	border-radius: 6px;
 }
 
 .filter {
 	display: flex;
-	flex-direction: column;
+	align-items: center;
 	gap: 6px;
 	min-width: 100px;
 }
