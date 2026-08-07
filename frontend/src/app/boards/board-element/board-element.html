@@ -1,9 +1,27 @@
+@if (board(); as board) {
 <div class="board-element">
-	@if (board(); as board) {
-	<div class="board-name">{{board.name}}</div>
-	<button type="button" [routerLink]="['/projects', projectId(), 'boards', board.id]">Details</button>
-	<button type="button" [routerLink]="['/projects', projectId(), 'boards', board.id, 'edit']">Edit</button>
-	<button type="button" (click)="onDeleteBoard(board.id)">Delete</button>
-	<div class="error"> {{ error() }}</div>
+	<div class="board-content">
+		<h3 class="board-name">{{ board.name }}</h3>
+
+		<div class="board-actions">
+			<button type="button" class="btn btn-primary" [routerLink]="['/projects', projectId(), 'boards', board.id]">
+				View
+			</button>
+
+			<button type="button" class="btn btn-secondary"
+				[routerLink]="['/projects', projectId(), 'boards', board.id, 'edit']">
+				Edit
+			</button>
+
+			<button type="button" class="btn btn-danger" (click)="onDeleteBoard(board.id)">
+				Delete
+			</button>
+		</div>
+	</div>
+	@if (error()) {
+	<div class="error">
+		{{ error() }}
+	</div>
 	}
 </div>
+}
