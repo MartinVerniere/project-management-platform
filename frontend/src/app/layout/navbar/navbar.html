@@ -1,0 +1,19 @@
+<div class="navigation-section">
+	<a class="nav-link" routerLink="/">Home</a>
+	<a class="nav-link" routerLink="/projects">Projects</a>
+</div>
+
+<div class="user-section">
+	@if (authService.isLoggedIn()) {
+	<div class="username">
+		{{ authService.user()?.username }}
+	</div>
+
+	<button class="logout-button" type="button" (click)="onLogout()">
+		Logout
+	</button>
+	} @else {
+	<a class="button" routerLink="/login">Login</a>
+	<a class="button" routerLink="/register">Register</a>
+	}
+</div>
