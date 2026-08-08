@@ -7,23 +7,12 @@ describe('Home', () => {
 	let fixture: ComponentFixture<Home>;
 	let component: Home;
 
-	let authServiceMock: { // Injected service 
-		isLoggedIn: ReturnType<typeof vi.fn>,
-		login: ReturnType<typeof vi.fn>
-	};
-
 	beforeEach(async () => {
-		authServiceMock = {
-			login: vi.fn(),
-			isLoggedIn: vi.fn(),
-		};
+
 
 		await TestBed.configureTestingModule({
 			imports: [Home],
-			providers: [
-				{ provide: AuthService, useValue: authServiceMock },
-				provideRouter([])
-			],
+			providers: [provideRouter([])],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(Home);

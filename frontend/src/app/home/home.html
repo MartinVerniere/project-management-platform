@@ -1,10 +1,14 @@
-<p>home works!</p>
-<button type="button" (click)="onClick()">Check Health Status</button>
-<button type="button" routerLink="/projects">View projects</button>
-@if (authService.isLoggedIn()) {
-<p>Welcome, {{ authService.user()?.username }}!</p>
-<button type="button" (click)="authService.logout()">Logout</button>
-} @else {
-<button type="button" routerLink="/login">Go to Login</button>
-<button type="button" routerLink="/register">Go to Register</button>
-}
+<div class="home-content">
+	<h1>Welcome to Task Manager</h1>
+	<p>Manage your projects, boards, and tasks in one place.</p>
+
+	<div class="home-actions">
+		<a class="button primary" routerLink="/projects">
+			View projects
+		</a>
+
+		<button class="button secondary" type="button" (click)="onClick()">
+			Check server status
+		</button>
+	</div>
+</div>
