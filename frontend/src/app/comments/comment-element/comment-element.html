@@ -11,11 +11,11 @@
 	{{ comment.content }}
 </div>
 <div class="comment-actions">
-	<button type="button" class="comment-action" (click)="onEnableEditComment()">
+	<button type="button" class="btn btn-secondary" (click)="onEnableEditComment()">
 		Edit
 	</button>
 
-	<button type="button" class="comment-action comment-action-danger" (click)="onCommentDeleted(comment.id)">
+	<button type="button" class="btn btn-danger" (click)="onCommentDeleted(comment.id)">
 		Delete
 	</button>
 </div>

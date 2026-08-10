@@ -37,27 +37,38 @@
 	margin-top: 2px;
 }
 
-.comment-action {
+.btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	padding: 8px;
-	border: 1px solid var(--white-tertiary);
 	border-radius: 6px;
-	background: var(--white-primary);
-	font-size: 0.85rem;
+	text-decoration: none;
 	cursor: pointer;
 }
 
-.comment-action:hover {
-	background: var(--white-secondary);
+.btn-secondary {
+	border: 1px solid var(--white-tertiary);
+	background: var(--white-primary);
+	color: var(--black-tertiary);
 }
 
-.comment-action-danger {
+.btn-secondary:hover {
+	border: 1px solid var(--white-primary);
+	background: var(--black-tertiary);
+	color: var(--white-primary);
+}
+
+.btn-danger {
+	border: 1px solid var(--red-tertiary);
+	background: var(--white-primary);
 	color: var(--red-secondary);
-	border-color: var(--red-tertiary);
 }
 
-.comment-action-danger:hover {
-	color: var(--white-secondary);
+.btn-danger:hover {
+	border: 1px solid var(--white-primary);
 	background: var(--red-secondary);
+	color: var(--white-primary);
 }
 
 .error {

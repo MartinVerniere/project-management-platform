@@ -24,12 +24,12 @@
 			Add task
 		</button>
 
-		<button type="button" class="icon-button"
+		<button type="button" class="btn btn-secondary"
 			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'edit']">
 			Edit
 		</button>
 
-		<button type="button" class="icon-button danger" (click)="onRemoveColumn(column.id)">
+		<button type="button" class="btn btn-danger" (click)="onRemoveColumn(column.id)">
 			Delete
 		</button>
 	</div>

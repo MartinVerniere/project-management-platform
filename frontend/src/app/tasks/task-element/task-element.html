@@ -22,12 +22,22 @@
 
 <div class="task-assignee">
 	<div class="task-section-header">
-		<div class="form-label">Assigned to</div>
+		<div class="form-label">Assigned to:</div>
 
 		@if (!assigneeFormEnabled()) {
-		<button type="button" (click)="onEnableSetAssignee()">
+		<button type="button" class="btn btn-secondary" (click)="onEnableSetAssignee()">
 			Change
 		</button>
+		} @else {
+		<div class="assignee-actions">
+			<button type="button" class="btn btn-secondary" (click)="onSetAssignee()">
+				Set
+			</button>
+
+			<button type="button" class="btn btn-danger" (click)="onCancelSetAssignee()">
+				Cancel
+			</button>
+		</div>
 		}
 	</div>
 
@@ -41,16 +51,6 @@
 			</option>
 			}
 		</select>
-
-		<div class="assignee-actions">
-			<button type="button" (click)="onSetAssignee()">
-				Set
-			</button>
-
-			<button type="button" (click)="onCancelSetAssignee()">
-				Cancel
-			</button>
-		</div>
 	</div>
 	} @else {
 	<div class="task-assignee-value">
@@ -73,12 +73,12 @@
 }
 
 <div class="task-actions">
-	<button type="button" class="btn"
+	<button type="button" class="btn btn-secondary"
 		[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
 		Edit
 	</button>
 
-	<button type="button" class="btn btn-secondary" (click)="onTaskDeleted(task.id)">
+	<button type="button" class="btn btn-danger" (click)="onTaskDeleted(task.id)">
 		Delete
 	</button>
 </div>

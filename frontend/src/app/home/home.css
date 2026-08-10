@@ -12,14 +12,14 @@
 	text-align: center;
 }
 
-.home-content h1 {
+.header{
 	margin: 0;
 	color: var(--black-primary);
 	font-size: 32px;
 	font-weight: 650;
 }
 
-.home-content p {
+.subtext {
 	margin: 10px 0 24px;
 	color: var(--gray-secondary);
 	font-size: 15px;
@@ -31,40 +31,38 @@
 	gap: 10px;
 }
 
-.button {
-	display: inline-flex;
+.btn {
+	display: flex;
 	align-items: center;
 	justify-content: center;
-
-	min-height: 38px;
-	padding: 0 14px;
-
+	padding: 12px;
 	border-radius: 6px;
-	font: inherit;
 	font-size: 14px;
 	font-weight: 600;
 	text-decoration: none;
 	cursor: pointer;
 }
 
-.primary {
+.btn-primary {
 	border: 1px solid var(--purple-primary);
 	background: var(--purple-primary);
-	color: var(--white-primary);;
+	color: var(--white-primary);
 }
 
-.primary:hover {
-	background: var(--purple-primary);
-	border-color: var(--purple-primary);
+.btn-primary:hover {
+	border: 1px solid var(--purple-primary);
+	background: var(--white-primary);
+	color: var(--purple-primary);
 }
 
-.secondary {
+.btn-secondary {
 	border: 1px solid var(--white-tertiary);
-	background: var(--white-primary);;
+	background: var(--white-primary);
 	color: var(--black-tertiary);
 }
 
-.secondary:hover {
-	background: var(--white-primary);
-	border-color: var(--gray-primary);;
+.btn-secondary:hover {
+	border: 1px solid var(--white-primary);
+	background: var(--black-tertiary);
+	color: var(--white-primary);
 }

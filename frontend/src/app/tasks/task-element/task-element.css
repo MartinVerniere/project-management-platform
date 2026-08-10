@@ -69,15 +69,12 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-
 	padding: 2px;
 	border: none;
 	border-radius: 6px;
 	background: transparent;
-
 	color: var(--gray-primary);
 	cursor: grab;
-
 	border-radius: 2px;
 	transition: .15s;
 }
@@ -95,11 +92,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 6px;
+	padding: 8px;
 	border-radius: 6px;
-	font: inherit;
-	font-size: 12px;
-	font-weight: 600;
+	text-decoration: none;
 	cursor: pointer;
 }
 
@@ -107,6 +102,24 @@
 	border: 1px solid var(--white-tertiary);
 	background: var(--white-primary);
 	color: var(--black-tertiary);
+}
+
+.btn-secondary:hover {
+	border: 1px solid var(--white-primary);
+	background: var(--black-tertiary);
+	color: var(--white-primary);
+}
+
+.btn-danger {
+	border: 1px solid var(--red-tertiary);
+	background: var(--white-primary);
+	color: var(--red-secondary);
+}
+
+.btn-danger:hover {
+	border: 1px solid var(--white-primary);
+	background: var(--red-secondary);
+	color: var(--white-primary);
 }
 
 .error {
