@@ -1,32 +1,28 @@
-<div class="project-list-page">
-	<div class="project-list">
-		<div class="project-list-header">
-			<div>
-				<h1 class="project-list-title">Projects</h1>
-				<p class="project-list-subtitle">Manage your projects and boards.</p>
-			</div>
-
-			<button class="btn btn-primary" type="button" routerLink="/projects/create">
-				Create project
-				<span>→</span>
-			</button>
-		</div>
-		@if (projectList.isLoading()) {
-		<div class="loading">Loading...</div>
-		} @else if (projectList.error()) {
-		<div class="error">Error loading projects</div>
-		} @else {
-		<div class="project-element-list">
-			@for (project of projectList.value(); track project.id) {
-			<app-project-element [project]="project" (projectDeleted)="onDeleteProject()">
-			</app-project-element>
-			} @empty {
-			<div class="project-list-empty">
-				<div class="empty-title">No projects yet</div>
-				<div class="empty-text">Create your first project to get started.</div>
-			</div>
-			}
-		</div>
-		}
+<div class="project-list-header">
+	<div>
+		<h1 class="project-list-title">Projects</h1>
+		<p class="project-list-subtitle">Manage your projects and boards.</p>
 	</div>
+
+	<button class="btn btn-primary" type="button" routerLink="/projects/create">
+		Create project
+		<div>→</div>
+	</button>
 </div>
+@if (projectList.isLoading()) {
+<div class="loading">Loading...</div>
+} @else if (projectList.error()) {
+<div class="error">Error loading projects</div>
+} @else {
+<div class="project-element-list">
+	@for (project of projectList.value(); track project.id) {
+	<app-project-element [project]="project" (projectDeleted)="onDeleteProject()">
+	</app-project-element>
+	} @empty {
+	<div class="project-list-empty">
+		<div class="empty-title">No projects yet</div>
+		<div class="empty-text">Create your first project to get started.</div>
+	</div>
+	}
+</div>
+}

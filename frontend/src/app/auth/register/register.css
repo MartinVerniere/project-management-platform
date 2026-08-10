@@ -1,21 +1,16 @@
 :host {
 	display: flex;
 	flex: 1;
-}
-
-.register-page {
-	display: flex;
-	flex: 1;
 	align-items: center;
 	justify-content: center;
 	padding: 24px;
-	background: #f7f8fa;
+	background: var(--white-primary);
 }
 
 .register-card {
-	background: #ffffff;
-	min-width: 25%;
-	border: 1px solid #e5e7eb;
+	background: var(--white-primary);
+	width: 400px;
+	border: 1px solid var(--white-secondary);
 	border-radius: 10px;
 	padding: 32px;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
@@ -25,17 +20,11 @@
 	margin-bottom: 28px;
 }
 
-.register-header h1 {
+.header {
 	margin: 0;
-	color: #111827;
+	color: var(--black-primary);
 	font-size: 24px;
 	font-weight: 650;
-}
-
-.register-header p {
-	margin: 6px 0 0;
-	color: #6b7280;
-	font-size: 14px;
 }
 
 .register-form {
@@ -47,49 +36,46 @@
 .form-grid {
 	display: flex;
 	flex-direction: column;
-	gap: 7px;
+	gap: 12px;
 }
 
 .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 7px;
+	gap: 12px;
 }
 
 .form-label {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 600;
-	color: #374151;
+	color: var(--black-tertiary);
 }
 
 .required {
-	color: #ef4444;
+	color: var(--red-primary);;
 }
 
 
 .form-control {
-	width: 100%;
-	box-sizing: border-box;
-	padding: 9px 11px;
-	border: 1px solid #d1d5db;
+	padding: 12px;
+	border: 1px solid var(--white-tertiary);
 	border-radius: 6px;
-	background: #ffffff;
-	color: #111827;
+	background: var(--white-primary);;
+	color: var(--black-primary);
 	font: inherit;
-	font-size: 14px;
+	font-size: 12px;
 	outline: none;
 }
 
 .form-control::placeholder {
-	color: #9ca3af;
+	color: var(--gray-primary);
 }
 
 .form-control:focus {
-	border-color: #6366f1;
+	border-color: var(--purple-tertiary);
 	box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
 }
 
@@ -97,7 +83,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
-	color: #dc2626;
+	color: var(--red-secondary);
 	font-size: 12px;
 }
 
@@ -113,46 +99,37 @@
 }
 
 .btn {
-	min-height: 40px;
-	padding: 0 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px;
 	border-radius: 6px;
-	border: 1px solid transparent;
 	font: inherit;
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 600;
 	cursor: pointer;
 }
 
 .btn-primary {
-	background: #4f46e5;
-	color: #ffffff;
+	background: var(--purple-primary);
+	color: var(--white-primary);
 }
 
 .btn-primary:hover:not(:disabled) {
-	background: #4338ca;
+	background: var(--purple-primary);
 }
 
 .btn-secondary {
-	background: #ffffff;
-	border-color: #d1d5db;
-	color: #374151;
+	background: var(--white-primary);
+	border-color: var(--white-tertiary);
+	color: var(--black-tertiary);
 }
 
 .btn-secondary:hover {
-	background: #f9fafb;
+	background: var(--white-primary);
 }
 
 .btn:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
-}
-
-@media (max-width: 480px) {
-	:host {
-		padding: 16px;
-	}
-
-	.register-card {
-		padding: 24px;
-	}
 }

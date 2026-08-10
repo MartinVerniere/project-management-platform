@@ -1,56 +1,41 @@
 :host {
 	display: flex;
 	flex: 1;
-}
-
-.project-form-page {
-	display: flex;
-	flex: 1;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 24px;
-	background: #f7f8fa;
+	padding: 32px;
+	background: var(--white-secondary);
 }
 
 .project-form-card {
-	width: 100%;
-	max-width: 680px;
-
-	background: #fff;
-	border: 1px solid #e5e7eb;
+	width: 600px;
+	background: var(--white-primary);
+	border: 1px solid var(--white-secondary);
 	border-radius: 10px;
-
-	box-shadow:
-		0 4px 6px rgba(0, 0, 0, 0.03),
-		0 12px 30px rgba(0, 0, 0, 0.06);
-
-	overflow: hidden;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .project-form-header {
-	padding: 28px 32px 24px;
+	display: flex;
+	flex-direction: column;
+	padding: 32px;
 }
 
-.project-form-header h1 {
-	margin: 0;
-
+.header {
 	font-size: 24px;
 	font-weight: 650;
-	letter-spacing: -0.02em;
-
-	color: #111827;
+	color: var(--black-secondary);
 }
 
-.project-form-header p {
-	margin: 6px 0 0;
-
+.subtext {
 	font-size: 14px;
-	color: #6b7280;
+	color: var(--gray-secondary);
 }
 
 .divider {
 	height: 1px;
-	background: #e5e7eb;
+	background: var(--white-secondary);
 }
 
 .project-form {
@@ -76,45 +61,29 @@
 
 	font-size: 14px;
 	font-weight: 600;
-	color: #374151;
+	color: var(--gray-tertiary);
 }
 
 .required {
-	color: #ef4444;
+	color: var(--red-primary);
 }
 
 .form-input {
 	width: 100%;
 	box-sizing: border-box;
-
-	padding: 10px 12px;
-
-	border: 1px solid #d1d5db;
+	padding: 12px;
+	border: 1px solid var(--gray-primary);
 	border-radius: 6px;
-
-	background: #fff;
-	color: #111827;
-
+	background: var(--white-primary);
+	color: var(--black-primary);
 	font: inherit;
 	font-size: 14px;
-
 	outline: none;
-
-	transition:
-		border-color 0.15s ease,
-		box-shadow 0.15s ease;
-}
-
-.form-input::placeholder {
-	color: #9ca3af;
-}
-
-.form-input:hover {
-	border-color: #9ca3af;
+	transition: 0.15s ease;
 }
 
 .form-input:focus {
-	border-color: #6366f1;
+	border-color: var(--purple-primary);
 	box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
@@ -126,7 +95,7 @@
 
 .field-hint {
 	font-size: 12px;
-	color: #9ca3af;
+	color: var(--gray-primary);
 }
 
 .field-error {
@@ -135,40 +104,31 @@
 	gap: 3px;
 
 	font-size: 12px;
-	color: #dc2626;
+	color: var(--red-primary);
 }
 
 .server-error {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-
-	padding: 12px 14px;
-
-	border: 1px solid #fecaca;
+	padding: 12px;
+	border: 1px solid  var(--red-tertiary);
 	border-radius: 6px;
-
-	background: #fef2f2;
-	color: #b91c1c;
-
+	background: var(--white-primary);
+	color: var(--red-primary);
 	font-size: 13px;
 }
 
 .server-error-icon {
-	width: 20px;
-	height: 20px;
-
 	display: flex;
 	align-items: center;
 	justify-content: center;
-
 	flex-shrink: 0;
-
+	background: var(--red-primary);
+	color: var(--white-primary);
+	width: 20px;
+	height: 20px;
 	border-radius: 50%;
-	background: #dc2626;
-
-	color: #fff;
-
 	font-size: 12px;
 	font-weight: 700;
 }
@@ -177,52 +137,41 @@
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
-
 	gap: 8px;
-	padding-top: 8px;
 }
 
 .btn {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
-
-	min-height: 38px;
-	padding: 0 14px;
-
+	padding: 12px;
 	border: 1px solid transparent;
 	border-radius: 6px;
-
 	font: inherit;
 	font-size: 14px;
 	font-weight: 600;
-
 	cursor: pointer;
-
-	transition:
-		background 0.15s ease,
-		border-color 0.15s ease;
+	transition: 0.15s ease;
 }
 
 .btn-primary {
-	background: #4f46e5;
-	color: #fff;
+	background: var(--purple-primary);
+	color: var(--white-primary);
 }
 
 .btn-primary:hover:not(:disabled) {
-	background: #4338ca;
+	background: var(--purple-primary);
 }
 
 .btn-secondary {
-	border-color: #d1d5db;
-	background: #fff;
-	color: #374151;
+	border-color: var(--white-tertiary);
+	background: var(--white-primary);
+	color:  var(--gray-tertiary);
 }
 
 .btn-secondary:hover {
-	background: #f9fafb;
-	border-color: #9ca3af;
+	background: var(--white-primary);
+	border-color:  var(--gray-primary);
 }
 
 .btn:disabled {
@@ -232,27 +181,4 @@
 
 .btn-arrow {
 	font-size: 16px;
-	line-height: 1;
-}
-
-@media (max-width: 640px) {
-	.project-form-page {
-		padding: 24px 16px;
-	}
-
-	.project-form-header {
-		padding: 22px 20px 20px;
-	}
-
-	.project-form {
-		padding: 24px 20px;
-	}
-
-	.form-actions {
-		flex-direction: column-reverse;
-	}
-
-	.form-actions .btn {
-		width: 100%;
-	}
 }

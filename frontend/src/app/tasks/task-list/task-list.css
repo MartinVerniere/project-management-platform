@@ -1,10 +1,8 @@
-.task-list {
+:host {
 	display: flex;
+	flex: 1;
 	flex-direction: column;
 	gap: 16px;
-
-	flex: 1;
-	min-height: 0;
 }
 
 .task-element-list {
@@ -14,18 +12,15 @@
 }
 
 .task-list-empty {
-	padding: 32px 12px;
-
+	padding: 32px;
 	text-align: center;
-
-	border: 2px dashed #d1d5db;
+	border: 2px dashed var(--white-tertiary);
 	border-radius: 10px;
-
-	color: #6b7280;
+	color: var(--gray-secondary);
 }
 
 .empty-icon {
-	font-size: 28px;
+	font-size: 24px;
 	margin-bottom: 8px;
 }
 
@@ -34,6 +29,22 @@
 	margin-bottom: 4px;
 }
 
-.add-task-button {
-	width: fit-content;
+.btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: 0.15s ease;
+}
+
+.btn-primary {
+	background: var(--purple-primary);
+	color: var(--white-primary);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }

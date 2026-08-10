@@ -1,57 +1,55 @@
-<div class="login-page">
-	<div class="login-card">
-		<div class="login-header">
-			<h1>Welcome back</h1>
-			<p>Log in to continue to Task Manager.</p>
-		</div>
-
-		<form class="task-form" (submit)="onSubmit($event)">
-			<div class="form-grid">
-				<div class="form-group">
-					<label class="form-label" for="username"> Username </label>
-					<input id="username" class="form-control" type="text" placeholder="Enter a username"
-						[formField]="loginForm.username" />
-
-					@if (loginForm.username().invalid() && loginForm.username().touched()) {
-					<div class="error">
-						@for (error of loginForm.username().errors(); track error.kind) {
-						<span>{{ error.message }}</span>
-						}
-					</div>
-					}
-				</div>
-
-				<div class="form-group">
-					<label class="form-label" for="password"> Password </label>
-					<input id="password" class="form-control" type="password" placeholder="Enter a password"
-						[formField]="loginForm.password" />
-
-					@if (loginForm.password().invalid() && loginForm.password().touched()) {
-					<div class="error">
-						@for (error of loginForm.password().errors(); track error.kind) {
-						<span>{{ error.message }}</span>
-						}
-					</div>
-					}
-				</div>
-
-				<div class="form-error">
-					@if (error()) {
-					<div class="error">
-						<span>{{ error() }}</span>
-					</div>
-					}
-				</div>
-
-				<div class="form-actions">
-					<button class="btn btn-primary" type="submit" [disabled]="loginForm().invalid()">
-						Login
-					</button>
-					<button class="btn btn-secondary" type="button" routerLink="/register">
-						Register
-					</button>
-				</div>
-			</div>
-		</form>
+<div class="login-card">
+	<div class="login-header">
+		<h1 class="header">Welcome back</h1>
+		<p class="subtext">Log in to continue to Task Manager.</p>
 	</div>
+
+	<form class="task-form" (submit)="onSubmit($event)">
+		<div class="form-grid">
+			<div class="form-group">
+				<label class="form-label" for="username"> Username </label>
+				<input id="username" class="form-control" type="text" placeholder="Enter a username"
+					[formField]="loginForm.username" />
+
+				@if (loginForm.username().invalid() && loginForm.username().touched()) {
+				<div class="error">
+					@for (error of loginForm.username().errors(); track error.kind) {
+					<span>{{ error.message }}</span>
+					}
+				</div>
+				}
+			</div>
+
+			<div class="form-group">
+				<label class="form-label" for="password"> Password </label>
+				<input id="password" class="form-control" type="password" placeholder="Enter a password"
+					[formField]="loginForm.password" />
+
+				@if (loginForm.password().invalid() && loginForm.password().touched()) {
+				<div class="error">
+					@for (error of loginForm.password().errors(); track error.kind) {
+					<span>{{ error.message }}</span>
+					}
+				</div>
+				}
+			</div>
+
+			<div class="form-error">
+				@if (error()) {
+				<div class="error">
+					<span>{{ error() }}</span>
+				</div>
+				}
+			</div>
+
+			<div class="form-actions">
+				<button class="btn btn-primary" type="submit" [disabled]="loginForm().invalid()">
+					Login
+				</button>
+				<button class="btn btn-secondary" type="button" routerLink="/register">
+					Register
+				</button>
+			</div>
+		</div>
+	</form>
 </div>

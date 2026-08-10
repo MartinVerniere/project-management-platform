@@ -1,36 +1,34 @@
-<div class="member-list">
-	<div class="member-list-header">
-		<h2 class="member-list-title">Members</h2>
+<div class="member-list-header">
+	<h2 class="member-list-title">Members</h2>
 
-		@if (!addMemberFormEnabled()) {
-		<button class="btn btn-primary" type="button" (click)="onEnableAddMember()">
-			Add member
-			<span class="btn-arrow">→</span>
-		</button>
-		}
-	</div>
+	@if (!addMemberFormEnabled()) {
+	<button class="btn btn-primary" type="button" (click)="onEnableAddMember()">
+		Add member
+		<span class="btn-arrow">→</span>
+	</button>
+	}
+</div>
 
-	@if (addMemberFormEnabled()) {
+@if (addMemberFormEnabled()) {
 
-	<app-member-form [projectId]="projectId()" [memberList]="memberList()" (memberAdded)="onMemberAdded()"
-		(canceledMemberAdd)="onCancelAddMember()">
-	</app-member-form>
+<app-member-form [projectId]="projectId()" [memberList]="memberList()" (memberAdded)="onMemberAdded()"
+	(canceledMemberAdd)="onCancelAddMember()">
+</app-member-form>
 
-	} @else {
+} @else {
 
-	<div class="member-element-list">
-		@for (member of memberList(); track member.id) {
-		<app-member-element [projectId]="projectId()" [member]="member" (memberRemoved)="onMemberRemoved()">
-		</app-member-element>
-		} @empty {
-		<div class="member-list-empty">
-			<div class="empty-icon">♙</div>
-			<div class="empty-title">No members yet</div>
-			<div class="empty-text">
-				Add members to this project.
-			</div>
+<div class="member-element-list">
+	@for (member of memberList(); track member.id) {
+	<app-member-element [projectId]="projectId()" [member]="member" (memberRemoved)="onMemberRemoved()">
+	</app-member-element>
+	} @empty {
+	<div class="member-list-empty">
+		<div class="empty-icon">♙</div>
+		<div class="empty-title">No members yet</div>
+		<div class="empty-text">
+			Add members to this project.
 		</div>
-		}
 	</div>
 	}
 </div>
+}

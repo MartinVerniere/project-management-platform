@@ -1,61 +1,57 @@
-.member-element {
+:host {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 16px;
-
-	padding: 12px 14px;
-
-	border: 1px solid #e5e7eb;
+	padding: 12px;
+	border: 1px solid var(--white-secondary);
 	border-radius: 6px;
-
-	background: #fff;
+	background: var(--white-primary);
 }
 
 .member-info {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	min-width: 0;
 }
 
 .member-name {
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 600;
-	color: #111827;
+	color: var(--black-primary);
 }
 
 .member-role {
-	font-size: 13px;
-	color: #6b7280;
+	font-size: 12px;
+	color: var(--gray-secondary);
 }
 
 .btn {
-	height: 32px;
-	padding: 0 10px;
-
-	border-radius: 5px;
-
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px;
+	border-radius: 6px;
 	font: inherit;
 	font-size: 12px;
 	font-weight: 600;
-
 	cursor: pointer;
 }
 
 .btn-danger {
-	border: 1px solid #fecaca;
-	background: #fff;
-	color: #dc2626;
+	border: 1px solid var(--red-tertiary);
+	background: var(--white-primary);
+	color: var(--red-secondary);
 }
 
 .btn-danger:hover {
-	background: #fef2f2;
+	border: 1px solid var(--white-tertiary);
+	background: var(--red-primary);
+	color: var(--white-secondary);
 }
 
 .error {
 	margin-left: auto;
-
 	font-size: 12px;
-	color: #dc2626;
+	color: var(--red-secondary);
 }

@@ -1,92 +1,85 @@
 @if (task(); as task) {
-<div class="task-element">
-	<div class="task-header">
-		<h3 class="task-title">{{ task.title }}</h3>
+<div class="task-header">
+	<h3 class="task-title">{{ task.title }}</h3>
 
-		<div class="task-handle" cdkDragHandle>
-			<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="5" cy="3" r="1.25" />
-				<circle cx="11" cy="3" r="1.25" />
-				<circle cx="5" cy="8" r="1.25" />
-				<circle cx="11" cy="8" r="1.25" />
-				<circle cx="5" cy="13" r="1.25" />
-				<circle cx="11" cy="13" r="1.25" />
-			</svg>
-		</div>
+	<div class="task-handle" cdkDragHandle>
+		<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+			<circle cx="5" cy="3" r="1.25" />
+			<circle cx="11" cy="3" r="1.25" />
+			<circle cx="5" cy="8" r="1.25" />
+			<circle cx="11" cy="8" r="1.25" />
+			<circle cx="5" cy="13" r="1.25" />
+			<circle cx="11" cy="13" r="1.25" />
+		</svg>
 	</div>
+</div>
 
-	@if (task.description) {
-	<div class="task-description">
-		{{ task.description }}
-	</div>
-	}
+@if (task.description) {
+<div class="task-description">
+	{{ task.description }}
+</div>
+}
 
-	<div class="task-assignee">
-		<div class="task-section-header">
-			<div class="form-label">Assigned to</div>
+<div class="task-assignee">
+	<div class="task-section-header">
+		<div class="form-label">Assigned to</div>
 
-			@if (!assigneeFormEnabled()) {
-			<button type="button" (click)="onEnableSetAssignee()">
-				Change
-			</button>
-			}
-		</div>
-
-		@if (assigneeFormEnabled()) {
-		<div class="assignee-form">
-			<select id="assignee" class="form-input" (change)="onAssigneeChanged($event)">
-
-				<option value="null">None</option>
-
-				@for (member of memberList(); track member.user.id) {
-				<option [value]="member.user.id">
-					{{ member.user.username }}
-				</option>
-				}
-			</select>
-
-			<div class="assignee-actions">
-				<button type="button" (click)="onSetAssignee()">
-					Set
-				</button>
-
-				<button type="button" (click)="onCancelSetAssignee()">
-					Cancel
-				</button>
-			</div>
-		</div>
-		} @else {
-		<div class="task-assignee-value">
-			@if (task.assignee) {
-			{{ task.assignee.username }}
-			} @else {
-			<div>None</div>
-			}
-		</div>
+		@if (!assigneeFormEnabled()) {
+		<button type="button" (click)="onEnableSetAssignee()">
+			Change
+		</button>
 		}
 	</div>
 
-	<div class="task-comments">
-		<app-comment-list [taskId]="task.id" [commentList]="task.comments"
-			(commentListEdited)="taskCommentsEdited.emit()">
-		</app-comment-list>
-	</div>
+	@if (assigneeFormEnabled()) {
+	<div class="assignee-form">
+		<select id="assignee" class="form-input" (change)="onAssigneeChanged($event)">
+			<option value="null">None</option>
+			@for (member of memberList(); track member.user.id) {
+			<option [value]="member.user.id">
+				{{ member.user.username }}
+			</option>
+			}
+		</select>
 
-	@if (error()) {
-	<div class="error">
-		{{ error() }}
+		<div class="assignee-actions">
+			<button type="button" (click)="onSetAssignee()">
+				Set
+			</button>
+
+			<button type="button" (click)="onCancelSetAssignee()">
+				Cancel
+			</button>
+		</div>
+	</div>
+	} @else {
+	<div class="task-assignee-value">
+		@if (task.assignee) {
+		{{ task.assignee.username }}
+		} @else {
+		<div>None</div>
+		}
 	</div>
 	}
+</div>
 
-	<div class="task-actions">
-		<button type="button"
-			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
-			Edit
-		</button>
+<app-comment-list [taskId]="task.id" [commentList]="task.comments" (commentListEdited)="taskCommentsEdited.emit()">
+</app-comment-list>
 
-		<button type="button" (click)="onTaskDeleted(task.id)">
-			Delete
-		</button>
-	</div>
+@if (error()) {
+<div class="error">
+	{{ error() }}
+</div>
+}
+
+<div class="task-actions">
+	<button type="button" class="btn"
+		[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
+		Edit
+	</button>
+
+	<button type="button" class="btn btn-secondary" (click)="onTaskDeleted(task.id)">
+		Delete
+	</button>
 </div>
 }

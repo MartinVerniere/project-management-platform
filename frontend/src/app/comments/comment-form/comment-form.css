@@ -2,11 +2,10 @@
 	display: flex;
 	flex-direction: column;
 	gap: 14px;
-
 	padding: 14px;
-	border: 1px solid #ddd;
+	border: 1px solid var(--white-tertiary);;
 	border-radius: 8px;
-	background: #fff;
+	background: var(--white-primary);
 }
 
 .form-group {
@@ -18,24 +17,21 @@
 .form-label {
 	font-size: 0.85rem;
 	font-weight: 600;
-	color: #444;
+	color: var(--gray-tertiary);
 }
 
 .form-input {
 	width: 100%;
 	box-sizing: border-box;
-
-	padding: 9px 10px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-
-	font: inherit;
+	padding: 8px;
+	border: 1px solid var(--white-tertiary);
+	border-radius: 6px;
 	resize: vertical;
 }
 
 .form-input:focus {
 	outline: none;
-	border-color: #777;
+	border-color: var(--gray-secondary);
 }
 
 .form-actions {
@@ -44,29 +40,29 @@
 }
 
 .btn {
-	padding: 7px 12px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
+	padding: 8px;
+	border: 1px solid var(--white-tertiary);
+	border-radius: 6px;
 	font-size: 0.85rem;
 	cursor: pointer;
 }
 
 .btn-primary {
-	background: #333;
-	color: white;
-	border-color: #333;
+	background: var(--black-tertiary);
+	color: var(--white-primary);
+	border-color: var(--black-tertiary);
 }
 
 .btn-primary:hover:not(:disabled) {
-	background: #222;
+	background: var(--black-secondary);
 }
 
 .btn-secondary {
-	background: #f7f7f7;
+	background: var(--white-primary);
 }
 
 .btn-secondary:hover {
-	background: #eee;
+	background: var(--white-secondary);
 }
 
 .btn:disabled {
@@ -75,6 +71,6 @@
 }
 
 .form-error {
-	color: #c62828;
+	color: var(--red-secondary);
 	font-size: 0.85rem;
 }

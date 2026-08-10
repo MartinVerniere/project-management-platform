@@ -1,29 +1,27 @@
 @if (comment(); as comment) {
-<div class="comment-element">
-	@if (editCommentFormEnabled()) {
-	<app-comment-update-form [comment]="comment" (commentEdited)="onCommentEdited()"
-		(canceledCommentEdit)="onCancelEditComment()">
-	</app-comment-update-form>
-	} @else {
-	<div class="comment-header">
-		<span class="comment-creator">{{ comment.user.username }}</span>
-	</div>
-	<div class="comment-content">
-		{{ comment.content }}
-	</div>
-	<div class="comment-actions">
-		<button type="button" class="comment-action" (click)="onEnableEditComment()">
-			Edit
-		</button>
-
-		<button type="button" class="comment-action comment-action-danger" (click)="onCommentDeleted(comment.id)">
-			Delete
-		</button>
-	</div>
-	}
-
-	@if (error(); as error) {
-	<div class="error">{{ error }}</div>
-	}
+<div class="comment-header">
+	<div class="comment-creator">{{ comment.user.username }}</div>
 </div>
+@if (editCommentFormEnabled()) {
+<app-comment-update-form [comment]="comment" (commentEdited)="onCommentEdited()"
+	(canceledCommentEdit)="onCancelEditComment()">
+</app-comment-update-form>
+} @else {
+<div class="comment-content">
+	{{ comment.content }}
+</div>
+<div class="comment-actions">
+	<button type="button" class="comment-action" (click)="onEnableEditComment()">
+		Edit
+	</button>
+
+	<button type="button" class="comment-action comment-action-danger" (click)="onCommentDeleted(comment.id)">
+		Delete
+	</button>
+</div>
+}
+
+@if (error(); as error) {
+<div class="error">{{ error }}</div>
+}
 }

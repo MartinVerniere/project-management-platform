@@ -1,16 +1,11 @@
 :host {
 	display: flex;
 	flex: 1;
-}
-
-.column-list-container {
-	display: flex;
-	flex: 1;
 	flex-direction: column;
 	gap: 16px;
 }
 
-.column-list {
+.cdk-drop-list {
 	display: flex;
 	gap: 16px;
 	overflow-x: auto;
@@ -18,18 +13,15 @@
 
 .column-element-list {
 	display: flex;
-	gap: 12px;
+	gap: 16px;
 }
 
 .column-list-empty {
-	padding: 32px 12px;
-
+	padding: 32px;
 	text-align: center;
-
-	border: 2px dashed #d1d5db;
+	border: 2px dashed var(--white-tertiary);
 	border-radius: 10px;
-
-	color: #6b7280;
+	color: var(--gray-secondary);
 }
 
 .empty-icon {
@@ -63,23 +55,21 @@
 }
 
 .filter-label {
-	font-size: 13px;
+	font-size: 12px;
 	font-weight: 600;
-	color: #374151;
+	color: var(--black-tertiary);
 }
 
 .filter-element {
 	padding: 4px;
-
-	border: 1px solid #d1d5db;
+	border: 1px solid var(--white-tertiary);
 	border-radius: 4px;
-
-	background: #fff;
-	color: #111827;
+	background: var(--white-primary);
+	color: var(--black-primary);
 }
 
 .filter-element:focus {
 	outline: none;
-	border-color: #6366f1;
+	border-color: var(--purple-tertiary);;
 	box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }

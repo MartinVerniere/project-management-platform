@@ -1,29 +1,31 @@
-<div class="board-details-page">
-	@if (board.isLoading()) {
-	<div class="loading">Loading...</div>
-	} @else if (board.error()) {
-	<div class="error">Error loading board</div>
-	} @else {
-	@if (board.value(); as board) {
+@if (board.isLoading()) {
+<div class="loading">Loading...</div>
+} @else if (board.error()) {
+<div class="error">Error loading board info</div>
+} @else {
+@if (board.value(); as board) {
 
-	<div class="board-header">
-		<div>
-			<h1 class="board-name">{{ board.name }}</h1>
-			<div class="board-subtitle">Organize and manage your tasks.</div>
-		</div>
-
-		<div class="board-actions">
-			<button type="button" class="btn btn-secondary" [routerLink]="['/projects', projectId]">
-				Back to project
-			</button>
-		</div>
+<div class="board-header">
+	<div>
+		<h1 class="board-name">{{ board.name }}</h1>
+		<div class="board-subtitle">Organize and manage your tasks.</div>
 	</div>
 
-	<div class="divider"></div>
-
-	<app-column-list [columnList]="board.columns" [projectId]="projectId" [boardId]="boardId"
-		(columnListEdited)="onColumnListEdited()">
-	</app-column-list>
-	}
-	}
+	<div class="board-actions">
+		<button class="btn" type="button"
+			[routerLink]="['/projects', projectId, 'boards', boardId, 'columns', 'create']">
+			Add column
+		</button>
+		<button type="button" class="btn btn-secondary" [routerLink]="['/projects', projectId]">
+			Back to project
+		</button>
+	</div>
 </div>
+
+<div class="divider"></div>
+
+<app-column-list [columnList]="board.columns" [projectId]="projectId" [boardId]="boardId"
+	(columnListEdited)="onColumnListEdited()">
+</app-column-list>
+}
+}

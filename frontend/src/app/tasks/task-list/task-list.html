@@ -1,5 +1,5 @@
 @if (taskList(); as taskList){
-<div class="task-list" cdkDropList [cdkDropListData]="taskList" (cdkDropListDropped)="onMoveTask($event)"
+<div cdkDropList [cdkDropListData]="taskList" (cdkDropListDropped)="onMoveTask($event)"
 	[cdkDropListEnterPredicate]="enabledDragAndDropPredicate" [cdkDropListSortingDisabled]="filtersActive()">
 	<div class="task-element-list">
 		@for (task of taskList; track task.id; let i = $index) {
@@ -16,16 +16,11 @@
 		</div>
 		}
 	</div>
-	
-	<button class="add-task-button"
-		[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', 'create']">
-		Add task
-	</button>
-
-	@if (error()) {
-	<div class="error">
-		{{ error() }}
-	</div>
-	}
 </div>
+
+@if (error()) {
+<div class="error">
+	{{ error() }}
+</div>
+}
 }

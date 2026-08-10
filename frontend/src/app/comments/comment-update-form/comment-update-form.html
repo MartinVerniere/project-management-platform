@@ -1,8 +1,7 @@
-<form class="comment-update-form" (submit)="(onSubmit($event))">
-	<div class="form-group">
-		<label class="form-label" for="content"> Comment </label>
-		<textarea id="content" class="form-input" rows="3" [formField]="commentForm.content"> </textarea>
-	</div>
+<form (submit)="(onSubmit($event))">
+	<label class="form-label" for="content"> Comment </label>
+	<textarea id="content" class="form-input" rows="3" [formField]="commentForm.content">
+	</textarea>
 
 	@if (error(); as error) {
 	<div class="form-error">

@@ -1,23 +1,21 @@
 @if (member(); as member) {
-<div class="member-element">
-	<div class="member-info">
-		<div class="member-name">
-			{{ member.user.username }}
-		</div>
-
-		<div class="member-role">
-			{{ member.role }}
-		</div>
+<div class="member-info">
+	<div class="member-name">
+		{{ member.user.username }}
 	</div>
 
-	<button class="btn btn-danger" type="button" (click)="onRemoveMember(member.user.id)">
-		Remove
-	</button>
-
-	@if (error()) {
-	<div class="error">
-		{{ error() }}
+	<div class="member-role">
+		{{ member.role }}
 	</div>
-	}
 </div>
+
+<button class="btn btn-danger" type="button" (click)="onRemoveMember(member.user.id)">
+	Remove
+</button>
+
+@if (error()) {
+<div class="error">
+	{{ error() }}
+</div>
+}
 }

@@ -1,51 +1,49 @@
-<div class="column-update-form-page">
-	<div class="column-update-form-card">
-		<div class="column-update-form-header">
-			<div class="header-icon">✓</div>
-			<div>
-				<h1>Update column</h1>
-				<p>Edit column in board.</p>
-			</div>
+<div class="column-update-form-card">
+	<div class="column-update-form-header">
+		<div class="header-icon">✓</div>
+		<div>
+			<h1 class="header">Update column</h1>
+			<p class="subtext">Edit column in board.</p>
 		</div>
-		<div class="divider"></div>
-		<form class="column-update-form" (submit)="(onSubmit($event))">
-			<div class="form-grid">
-				<div class="form-group">
-					<label class="form-label" for="name">
-						Name
-						<div class="required">*</div>
-					</label>
-					<input id="name" class="form-input" type="text" placeholder="e.g. Backlog"
-						[formField]="columnForm.name" />
+	</div>
+	<div class="divider"></div>
+	<form class="column-update-form" (submit)="(onSubmit($event))">
+		<div class="form-grid">
+			<div class="form-group">
+				<label class="form-label" for="name">
+					Name
+					<div class="required">*</div>
+				</label>
+				<input id="name" class="form-input" type="text" placeholder="e.g. Backlog"
+					[formField]="columnForm.name" />
 
-					@if(columnForm.name().invalid() && columnForm.name().touched()){
-					<div class="field-error">
-						@for (error of columnForm.name().errors(); track error.kind){
-						<div> {{error.message}}</div>
-						}
-					</div>
+				@if(columnForm.name().invalid() && columnForm.name().touched()){
+				<div class="field-error">
+					@for (error of columnForm.name().errors(); track error.kind){
+					<div> {{error.message}}</div>
 					}
 				</div>
-
-				@if (error()) {
-				<div class="server-error">
-					<div class="server-error-icon">!</div>
-					<div>
-						{{ error() }}
-					</div>
-				</div>
 				}
+			</div>
 
-				<div class="form-actions">
-					<button class="btn btn-secondary" type="button" (click)="onCancel()">
-						Cancel
-					</button>
-					<button class="btn btn-primary" type="submit" [disabled]="columnForm().invalid()">
-						Save changes
-						<div class="btn-arrow">→</div>
-					</button>
+			@if (error()) {
+			<div class="server-error">
+				<div class="server-error-icon">!</div>
+				<div>
+					{{ error() }}
 				</div>
 			</div>
-		</form>
-	</div>
+			}
+
+			<div class="form-actions">
+				<button class="btn btn-secondary" type="button" (click)="onCancel()">
+					Cancel
+				</button>
+				<button class="btn btn-primary" type="submit" [disabled]="columnForm().invalid()">
+					Save changes
+					<div class="btn-arrow">→</div>
+				</button>
+			</div>
+		</div>
+	</form>
 </div>

@@ -1,11 +1,6 @@
 :host {
 	display: flex;
 	flex: 1;
-}
-
-.board-details-page {
-	display: flex;
-	flex: 1;
 	flex-direction: column;
 	gap: 20px;
 	padding: 24px;
@@ -22,13 +17,13 @@
 	margin: 0;
 	font-size: 24px;
 	font-weight: 600;
-	color: #111827;
+	color: var(--black-primary);
 }
 
 .board-subtitle {
 	margin: 4px 0 0;
 	font-size: 14px;
-	color: #6b7280;
+	color: var(--gray-secondary);
 }
 
 .board-actions {
@@ -38,31 +33,62 @@
 
 .divider {
 	height: 1px;
-	background: #e5e7eb;
+	background: var(--white-secondary);
 }
 
 .loading {
-	padding: 24px;
-	color: #6b7280;
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+
+	color: var(--gray-secondary);
+	font-size: 14px;
+
+	animation: loading 1.4s ease-in-out infinite;
+}
+
+@keyframes loading {
+	0% {
+		opacity: 0.4;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0.4;
+	}
 }
 
 .error {
-	color: #dc2626;
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	color: var(--red-secondary);
 }
 
 .btn {
-	padding: 8px 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px;
 	border-radius: 6px;
 	font: inherit;
+	font-size: 12px;
+	font-weight: 600;
 	cursor: pointer;
 }
 
 .btn-secondary {
-	border: 1px solid #d1d5db;
-	background: #fff;
-	color: #374151;
+	border: 1px solid var(--white-tertiary);
+	background: var(--white-primary);
+	color: var(--black-tertiary);
 }
 
 .btn-secondary:hover {
-	background: #f9fafb;
+	background: var(--white-primary);
 }

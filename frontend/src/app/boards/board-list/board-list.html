@@ -1,33 +1,31 @@
-<div class="board-list">
-	<div class="board-list-header">
-		<div>
-			<h2 class="board-list-title">Boards</h2>
-			<p class="board-list-subtitle">Boards for this project.</p>
-		</div>
-
-		<button class="btn btn-primary" type="button" [routerLink]="['/projects', projectId(), 'boards', 'create']">
-			Add board
-			<span class="btn-arrow">→</span>
-		</button>
+<div class="board-list-header">
+	<div>
+		<h2 class="board-list-title">Boards</h2>
+		<p class="board-list-subtitle">Boards for this project.</p>
 	</div>
 
+	<button class="btn btn-primary" type="button" [routerLink]="['/projects', projectId(), 'boards', 'create']">
+		Add board
+		<span class="btn-arrow">→</span>
+	</button>
+</div>
 
-	@if (boardList.isLoading()) {
-	<div class="loading">Loading...</div>
-	} @else if (boardList.error()) {
-	<div class="error">Error loading boards</div>
-	} @else {
-	<div class="board-element-list">
-		@for (board of boardList.value(); track board.id) {
-		<app-board-element [projectId]="projectId()" [board]="board" (boardDeleted)="onDeleteBoard()">
-		</app-board-element>
-		} @empty {
-		<div class="board-list-empty">
-			<div class="empty-icon">▦</div>
-			<div class="empty-title">No boards yet</div>
-			<div class="empty-text">Create a board to start organizing this project.</div>
-		</div>
-		}
+
+@if (boardList.isLoading()) {
+<div class="loading">Loading...</div>
+} @else if (boardList.error()) {
+<div class="error">Error loading boards</div>
+} @else {
+<div class="board-element-list">
+	@for (board of boardList.value(); track board.id) {
+	<app-board-element [projectId]="projectId()" [board]="board" (boardDeleted)="onDeleteBoard()">
+	</app-board-element>
+	} @empty {
+	<div class="board-list-empty">
+		<div class="empty-icon">▦</div>
+		<div class="empty-title">No boards yet</div>
+		<div class="empty-text">Create a board to start organizing this project.</div>
 	</div>
 	}
 </div>
+}

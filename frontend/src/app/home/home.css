@@ -5,7 +5,7 @@
 	align-items: center;
 	justify-content: center;
 	padding: 32px;
-	background: #f7f8fa;
+	background: var(--white-primary);
 }
 
 .home-content {
@@ -14,14 +14,14 @@
 
 .home-content h1 {
 	margin: 0;
-	color: #111827;
+	color: var(--black-primary);
 	font-size: 32px;
 	font-weight: 650;
 }
 
 .home-content p {
 	margin: 10px 0 24px;
-	color: #6b7280;
+	color: var(--gray-secondary);
 	font-size: 15px;
 }
 
@@ -48,23 +48,23 @@
 }
 
 .primary {
-	border: 1px solid #4f46e5;
-	background: #4f46e5;
-	color: #ffffff;
+	border: 1px solid var(--purple-primary);
+	background: var(--purple-primary);
+	color: var(--white-primary);;
 }
 
 .primary:hover {
-	background: #4338ca;
-	border-color: #4338ca;
+	background: var(--purple-primary);
+	border-color: var(--purple-primary);
 }
 
 .secondary {
-	border: 1px solid #d1d5db;
-	background: #ffffff;
-	color: #374151;
+	border: 1px solid var(--white-tertiary);
+	background: var(--white-primary);;
+	color: var(--black-tertiary);
 }
 
 .secondary:hover {
-	background: #f9fafb;
-	border-color: #9ca3af;
+	background: var(--white-primary);
+	border-color: var(--gray-primary);;
 }

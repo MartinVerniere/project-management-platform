@@ -1,37 +1,34 @@
 @if (project(); as project){
-<div class="project-element">
+<div class="project-info">
+	<div class="project-key">{{ project.key }}</div>
 
-	<div class="project-info">
-		<div class="project-key">{{ project.key }}</div>
+	<h3 class="project-name">
+		{{ project.name }}
+	</h3>
 
-		<h3 class="project-name">
-			{{ project.name }}
-		</h3>
+	@if (project.description) {
+	<p class="project-description">
+		{{ project.description }}
+	</p>
+	}
+</div>
+<div class="project-actions">
+	<button class="btn btn-primary" [routerLink]="['/projects', project.id]">
+		Open
+	</button>
 
-		@if (project.description) {
-		<p class="project-description">
-			{{ project.description }}
-		</p>
-		}
-	</div>
-	<div class="project-actions">
-		<button class="btn btn-primary" [routerLink]="['/projects', project.id]">
-			Open
-		</button>
-
-		<!-- <button class="btn btn-secondary" [routerLink]="['/projects', project.id, 'edit']">
+	<!-- <button class="btn btn-secondary" [routerLink]="['/projects', project.id, 'edit']">
 			Edit
 		</button> -->
 
-		<button class="btn btn-danger" type="button" (click)="onDeleteProject(project.id)">
-			Delete
-		</button>
-	</div>
-
-	@if (error()) {
-	<div class="error">
-		{{ error() }}
-	</div>
-	}
+	<button class="btn btn-danger" type="button" (click)="onDeleteProject(project.id)">
+		Delete
+	</button>
 </div>
+
+@if (error()) {
+<div class="error">
+	{{ error() }}
+</div>
+}
 }

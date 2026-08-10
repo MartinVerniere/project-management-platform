@@ -1,58 +1,51 @@
 @if (columnList(); as columnList){
-<div class="column-list-container">
-	<div class="task-filters">
-		<div class="filter">
-			<label class="filter-label" for="search">Search</label>
-			<input class="filter-element" id="search" type="text" placeholder="Search tasks..."
-				(input)="onSearchChange($event)">
-		</div>
-
-		<div class="filter">
-			<label class="filter-label" for="assignee">Assignee</label>
-			<select class="filter-element" id="assignee" (change)="onAssigneeChange($event)">
-				<option value="">All</option>
-
-				@for (member of memberList(); track member.id) {
-				<option [value]="member.user.id">
-					{{ member.user.username }}
-				</option>
-				}
-			</select>
-		</div>
-
-		<button class="btn btn-secondary clear-btn" type="button" (click)="clearFilters()">
-			Clear
-		</button>
+<div class="task-filters">
+	<div class="filter">
+		<label class="filter-label" for="search">Search</label>
+		<input class="filter-element" id="search" type="text" placeholder="Search tasks..."
+			(input)="onSearchChange($event)">
 	</div>
 
-	<div class="column-list" cdkDropList [cdkDropListData]="columnList" (cdkDropListDropped)="onMoveColumn($event)"
-		[cdkDropListEnterPredicate]="onlyColumnsPredicate" cdkDropListOrientation="horizontal">
-		<div class="column-element-list" cdkDropListGroup>
-			@for (column of filteredColumnList(); track column.id; let i = $index) {
-			<div cdkDrag [cdkDragData]="{ type: 'column', column: column }">
-				<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()"
-					[isFirst]="i === 0" [isLast]="i === columnList.length - 1" [memberList]="memberList()"
-					[filtersActive]="filtersActive()" (columnElementEdited)="columnListEdited.emit()"
-					(moveTaskToColumn)="onMoveTaskToColumn($event)">
-				</app-column-element>
-			</div>
-			} @empty {
-			<div class="column-list-empty">
-				<div class="empty-icon">📋</div>
-				<div class="empty-title">No columns yet!</div>
-			</div>
+	<div class="filter">
+		<label class="filter-label" for="assignee">Assignee</label>
+		<select class="filter-element" id="assignee" (change)="onAssigneeChange($event)">
+			<option value="">All</option>
+
+			@for (member of memberList(); track member.id) {
+			<option [value]="member.user.id">
+				{{ member.user.username }}
+			</option>
 			}
-		</div>
+		</select>
 	</div>
 
-	<button class="add-column-button" type="button" [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', 'create']">
-		Add column
+	<button class="btn btn-secondary clear-btn" type="button" (click)="clearFilters()">
+		Clear
 	</button>
-
-	@if (error()) {
-	<div class="error">
-		{{ error() }}
-	</div>
-	}
 </div>
+
+<div cdkDropList [cdkDropListData]="columnList" (cdkDropListDropped)="onMoveColumn($event)"
+	[cdkDropListEnterPredicate]="onlyColumnsPredicate" cdkDropListOrientation="horizontal">
+	<div class="column-element-list" cdkDropListGroup>
+		@for (column of filteredColumnList(); track column.id; let i = $index) {
+		<div cdkDrag [cdkDragData]="{ type: 'column', column: column }">
+			<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()" [isFirst]="i === 0"
+				[isLast]="i === columnList.length - 1" [memberList]="memberList()" [filtersActive]="filtersActive()"
+				(columnElementEdited)="columnListEdited.emit()" (moveTaskToColumn)="onMoveTaskToColumn($event)">
+			</app-column-element>
+		</div>
+		} @empty {
+		<div class="column-list-empty">
+			<div class="empty-icon">📋</div>
+			<div class="empty-title">No columns yet!</div>
+		</div>
+		}
+	</div>
+</div>
+
+@if (error()) {
+<div class="error">
+	{{ error() }}
+</div>
+}
 }
