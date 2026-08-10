@@ -4,10 +4,12 @@
 		<p class="board-list-subtitle">Boards for this project.</p>
 	</div>
 
+	@if (hasAdminPermissions()){
 	<button class="btn btn-primary" type="button" [routerLink]="['/projects', projectId(), 'boards', 'create']">
 		Add board
-		<span class="btn-arrow">→</span>
+		<div class="btn-arrow">→</div>
 	</button>
+	}
 </div>
 
 
@@ -18,7 +20,8 @@
 } @else {
 <div class="board-element-list">
 	@for (board of boardList.value(); track board.id) {
-	<app-board-element [projectId]="projectId()" [board]="board" (boardDeleted)="onDeleteBoard()">
+	<app-board-element [projectId]="projectId()" [board]="board" [hasAdminPermissions]="hasAdminPermissions()"
+		(boardDeleted)="onDeleteBoard()">
 	</app-board-element>
 	} @empty {
 	<div class="board-list-empty">

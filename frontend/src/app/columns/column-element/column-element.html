@@ -24,6 +24,7 @@
 			Add task
 		</button>
 
+		@if(hasAdminPermissions()){
 		<button type="button" class="btn btn-secondary"
 			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'edit']">
 			Edit
@@ -32,11 +33,12 @@
 		<button type="button" class="btn btn-danger" (click)="onRemoveColumn(column.id)">
 			Delete
 		</button>
+		}
 	</div>
 </div>
 
 <app-task-list [taskList]="column.tasks" [projectId]="projectId()" [boardId]="boardId()" [columnId]="column.id"
-	[memberList]="memberList()" [filtersActive]="filtersActive()" (taskListEdited)="columnElementEdited.emit()"
+	[memberList]="memberList()" [filtersActive]="filtersActive()" [hasAdminPermissions]="hasAdminPermissions()" (taskListEdited)="columnElementEdited.emit()"
 	(moveTaskToColumn)="moveTaskToColumn.emit({ taskId: $event, destinationColumnId: column.id })">
 </app-task-list>
 

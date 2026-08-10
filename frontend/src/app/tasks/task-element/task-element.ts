@@ -21,6 +21,7 @@ export class TaskElement {
 	boardId = input.required<number>();
 	columnId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();
+	hasAdminPermissions = input.required<boolean>();
 
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();

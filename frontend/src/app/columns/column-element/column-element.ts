@@ -22,6 +22,7 @@ export class ColumnElement {
 	boardId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();
 	filtersActive = input.required<boolean>();
+	hasAdminPermissions = input.required<boolean>();
 
 	isFirst = input<boolean>();
 	isLast = input<boolean>();

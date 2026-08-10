@@ -5,7 +5,7 @@
 		@for (task of taskList; track task.id; let i = $index) {
 		<div cdkDrag [cdkDragData]="{ type: 'task', task: task }">
 			<app-task-element [task]="task" [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()"
-				[memberList]="memberList()" (taskDeleted)="taskListEdited.emit()"
+				[memberList]="memberList()" [hasAdminPermissions]="hasAdminPermissions()" (taskDeleted)="taskListEdited.emit()"
 				(taskCommentsEdited)="taskListEdited.emit()" (taskAssigneeEdited)="taskListEdited.emit()">
 			</app-task-element>
 		</div>

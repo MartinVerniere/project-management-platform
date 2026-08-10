@@ -95,3 +95,8 @@
 	background: var(--black-tertiary);
 	color: var(--white-primary);
 }
+
+.error {
+	color: var(--red-secondary);
+	font-size: 12px;
+}

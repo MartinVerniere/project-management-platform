@@ -11,7 +11,7 @@
 		<select class="filter-element" id="assignee" (change)="onAssigneeChange($event)">
 			<option value="">All</option>
 
-			@for (member of memberList(); track member.id) {
+			@for (member of members(); track member.id) {
 			<option [value]="member.user.id">
 				{{ member.user.username }}
 			</option>
@@ -30,8 +30,9 @@
 		@for (column of filteredColumnList(); track column.id; let i = $index) {
 		<div cdkDrag [cdkDragData]="{ type: 'column', column: column }">
 			<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()" [isFirst]="i === 0"
-				[isLast]="i === columnList.length - 1" [memberList]="memberList()" [filtersActive]="filtersActive()"
-				(columnElementEdited)="columnListEdited.emit()" (moveTaskToColumn)="onMoveTaskToColumn($event)">
+				[isLast]="i === columnList.length - 1" [memberList]="members()" [filtersActive]="filtersActive()"
+				[hasAdminPermissions]="hasAdminPermissions()" (columnElementEdited)="columnListEdited.emit()"
+				(moveTaskToColumn)="onMoveTaskToColumn($event)">
 			</app-column-element>
 		</div>
 		} @empty {

@@ -7,6 +7,7 @@
 			View
 		</button>
 
+		@if(hasAdminPermissions()){
 		<button type="button" class="btn btn-secondary"
 			[routerLink]="['/projects', projectId(), 'boards', board.id, 'edit']">
 			Edit
@@ -15,6 +16,7 @@
 		<button type="button" class="btn btn-danger" (click)="onDeleteBoard(board.id)">
 			Delete
 		</button>
+		}
 	</div>
 </div>
 @if (error()) {

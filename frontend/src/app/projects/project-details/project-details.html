@@ -22,11 +22,11 @@
 </div>
 
 <div class="project-content">
-	<app-board-list [projectId]="project.id">
+	<app-board-list [projectId]="project.id" [hasAdminPermissions]="hasAdminPermissions()">
 	</app-board-list>
 
-	<app-member-list [projectId]="project.id" [memberList]="project.members" (memberAdded)="onMemberAdded()"
-		(memberRemoved)="onMemberRemoved()">
+	<app-member-list [projectId]="project.id" [memberList]="project.members" [hasAdminPermissions]="hasAdminPermissions()"
+		(memberAdded)="onMemberAdded()" (memberRemoved)="onMemberRemoved()">
 	</app-member-list>
 </div>
 }

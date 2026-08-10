@@ -15,6 +15,8 @@ export class BoardElement {
 
 	board = input.required<BoardResponse>();
 	projectId = input.required<number>();
+	hasAdminPermissions = input.required<boolean>();
+
 	boardDeleted = output<void>();
 
 	error = signal<string | null>(null);

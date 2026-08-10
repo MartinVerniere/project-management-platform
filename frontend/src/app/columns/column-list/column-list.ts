@@ -8,6 +8,7 @@ import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } 
 import { firstValueFrom } from "rxjs";
 import { ProjectService } from "../../services/projects/project-service";
 import { ColumnResponse } from "../../models/column";
+import { ProjectMemberResponse } from "../../models/project";
 
 @Component({
 	selector: 'app-column-list',
@@ -24,16 +25,15 @@ export class ColumnList {
 	columnList = input.required<ColumnResponse[]>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
+	members = input.required<ProjectMemberResponse[]>();
+	hasAdminPermissions = input.required<boolean>();
 
 	columnListEdited = output<void>();
-
-	members = resource({ loader: () => firstValueFrom(this.projectService.getMembers(this.projectId())) });
 
 	searchTerm = signal('');
 	selectedAssigneeId = signal<number | null>(null);
 	error = signal<string | null>(null);
 
-	memberList = computed(() => { return this.members.value() ?? [] });
 	filtersActive = computed(() => this.searchTerm().trim() !== '' || this.selectedAssigneeId() !== null);
 
 	filteredColumnList = computed(() => {

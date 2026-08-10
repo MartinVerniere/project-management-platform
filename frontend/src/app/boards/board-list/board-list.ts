@@ -14,6 +14,7 @@ export class BoardList {
 	projectService = inject(ProjectService);
 
 	projectId = input.required<number>();
+	hasAdminPermissions = input.required<boolean>();
 
 	boardList = resource({ loader: () => firstValueFrom(this.projectService.getBoards(this.projectId())) });
 

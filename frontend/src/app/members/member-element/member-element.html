@@ -9,9 +9,11 @@
 	</div>
 </div>
 
+@if(hasAdminPermissions()){
 <button class="btn btn-danger" type="button" (click)="onRemoveMember(member.user.id)">
 	Remove
 </button>
+}
 
 @if (error()) {
 <div class="error">

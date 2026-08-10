@@ -24,6 +24,7 @@
 	<div class="task-section-header">
 		<div class="form-label">Assigned to:</div>
 
+		@if (hasAdminPermissions()){
 		@if (!assigneeFormEnabled()) {
 		<button type="button" class="btn btn-secondary" (click)="onEnableSetAssignee()">
 			Change
@@ -38,6 +39,7 @@
 				Cancel
 			</button>
 		</div>
+		}
 		}
 	</div>
 
@@ -63,7 +65,8 @@
 	}
 </div>
 
-<app-comment-list [taskId]="task.id" [commentList]="task.comments" (commentListEdited)="taskCommentsEdited.emit()">
+<app-comment-list [taskId]="task.id" [commentList]="task.comments" [hasAdminPermissions]="hasAdminPermissions()"
+	(commentListEdited)="taskCommentsEdited.emit()">
 </app-comment-list>
 
 @if (error()) {

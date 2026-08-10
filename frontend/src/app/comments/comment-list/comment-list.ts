@@ -12,6 +12,7 @@ import { CommentResponse } from '../../models/comment';
 export class CommentList {
 	commentList = input.required<CommentResponse[]>();
 	taskId = input.required<number>();
+	hasAdminPermissions = input.required<boolean>();
 
 	commentListEdited = output<void>();
 

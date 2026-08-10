@@ -21,9 +21,11 @@
 			Edit
 		</button> -->
 
+	@if (hasDeletePermission()) {
 	<button class="btn btn-danger" type="button" (click)="onDeleteProject(project.id)">
 		Delete
 	</button>
+	}
 </div>
 
 @if (error()) {

@@ -22,6 +22,7 @@ export class TaskList {
 	columnId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();
 	filtersActive = input.required<boolean>();
+	hasAdminPermissions = input.required<boolean>();
 
 	taskListEdited = output<void>();
 	moveTaskToColumn = output<number>();
