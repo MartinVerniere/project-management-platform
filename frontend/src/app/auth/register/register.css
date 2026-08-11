@@ -55,7 +55,8 @@
 }
 
 .required {
-	color: var(--red-primary);;
+	color: var(--red-primary);
+	;
 }
 
 
@@ -63,7 +64,8 @@
 	padding: 12px;
 	border: 1px solid var(--white-tertiary);
 	border-radius: 6px;
-	background: var(--white-primary);;
+	background: var(--white-primary);
+	;
 	color: var(--black-primary);
 	font: inherit;
 	font-size: 12px;
@@ -96,6 +98,18 @@
 	flex: 1;
 	justify-content: space-between;
 	gap: 10px;
+}
+
+.form-image {
+	display: none;
+}
+
+.avatar-preview {
+	width: 60px;
+	height: 60px;
+	object-fit: cover;
+	border-radius: 50%;
+	cursor: pointer;
 }
 
 .btn {

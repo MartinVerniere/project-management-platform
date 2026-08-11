@@ -1,6 +1,13 @@
 @if (comment(); as comment) {
 <div class="comment-header">
-	<div class="comment-creator">{{ comment.user.username }}</div>
+	<div class="user-info">
+		<div class="avatar">
+			<img class="avatar-image" [src]="comment.user.avatarUrl ?? avatarPreview()" />
+		</div>
+		<div class="username">
+			{{ comment.user.username }}
+		</div>
+	</div>
 </div>
 @if (editCommentFormEnabled()) {
 <app-comment-update-form [comment]="comment" (commentEdited)="onCommentEdited()"

@@ -5,8 +5,14 @@
 
 <div class="user-section">
 	@if (authService.isLoggedIn()) {
-	<div class="username">
-		{{ authService.user()?.username }}
+	<div class="user-info">
+		<div class="username">
+			{{ authService.user()?.username }}
+		</div>
+
+		<div class="avatar">
+			<img class="avatar-image" [src]="authService.user()?.avatarUrl ?? avatarPreview()" />
+		</div>
 	</div>
 
 	<button class="logout-button" type="button" (click)="onLogout()">

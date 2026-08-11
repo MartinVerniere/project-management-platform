@@ -66,10 +66,30 @@
 	color: var(--purple-primary);
 }
 
+.user-info {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
 .username {
-	color: #000000;
+	color: var(--black-primary);;
 	font-size: 14px;
 	font-weight: 600;
+}
+
+.avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .logout-button {

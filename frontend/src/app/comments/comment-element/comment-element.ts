@@ -26,6 +26,7 @@ export class CommentElement {
 	commentEdited = output<void>();
 	commentDeleted = output<void>();
 
+	avatarPreview = signal('/images/default-avatar.png');
 	editCommentFormEnabled = signal<boolean>(false);
 	error = signal<string | null>(null);
 

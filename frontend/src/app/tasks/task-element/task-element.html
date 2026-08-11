@@ -57,7 +57,14 @@
 	} @else {
 	<div class="task-assignee-value">
 		@if (task.assignee) {
-		{{ task.assignee.username }}
+		<div class="user-info">
+			<div class="avatar">
+				<img class="avatar-image" [src]="task.assignee.avatarUrl ?? avatarPreview()" />
+			</div>
+			<div class="username">
+				{{ task.assignee.username }}
+			</div>
+		</div>
 		} @else {
 		<div>None</div>
 		}

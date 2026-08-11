@@ -27,6 +27,7 @@ export class TaskElement {
 	taskCommentsEdited = output<void>();
 	taskAssigneeEdited = output<void>();
 
+	avatarPreview = signal('/images/default-avatar.png');
 	selectedAssigneeId = signal<number | null>(null);
 	assigneeFormEnabled = signal<boolean>(false);
 	error = signal<string | null>(null);

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../services/auth/auth-service';
 import { RouterLink } from '@angular/router';
 
@@ -10,6 +10,8 @@ import { RouterLink } from '@angular/router';
 })
 export class Navbar {
 	authService = inject(AuthService);
+
+	avatarPreview = signal('/images/default-avatar.png');
 
 	onLogout() {
 		this.authService.logout()
