@@ -1,19 +1,24 @@
 @if (taskList(); as taskList){
-<div cdkDropList [cdkDropListData]="taskList" (cdkDropListDropped)="onMoveTask($event)"
+<div cdkDropList [cdkDropListData]="taskList" (cdkDropListEntered)="onDragEntered()"
+	(cdkDropListExited)="onDragExited()" (cdkDropListDropped)="onMoveTask($event)"
 	[cdkDropListEnterPredicate]="enabledDragAndDropPredicate" [cdkDropListSortingDisabled]="filtersActive()">
 	<div class="task-element-list">
 		@for (task of taskList; track task.id; let i = $index) {
 		<div cdkDrag [cdkDragData]="{ type: 'task', task: task }">
+			<div class="task-custom-placeholder" *cdkDragPlaceholder></div>
 			<app-task-element [task]="task" [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()"
-				[memberList]="memberList()" [hasAdminPermissions]="hasAdminPermissions()" (taskDeleted)="taskListEdited.emit()"
-				(taskCommentsEdited)="taskListEdited.emit()" (taskAssigneeEdited)="taskListEdited.emit()">
+				[memberList]="memberList()" [hasAdminPermissions]="hasAdminPermissions()"
+				(taskDeleted)="taskListEdited.emit()" (taskCommentsEdited)="taskListEdited.emit()"
+				(taskAssigneeEdited)="taskListEdited.emit()">
 			</app-task-element>
 		</div>
 		} @empty {
+		@if (!isDragOver()) {
 		<div class="task-list-empty">
 			<div class="empty-icon">📋</div>
 			<div class="empty-title">No tasks yet!</div>
 		</div>
+		}
 		}
 	</div>
 </div>

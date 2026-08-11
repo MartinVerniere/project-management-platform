@@ -27,7 +27,16 @@ export class TaskList {
 	taskListEdited = output<void>();
 	moveTaskToColumn = output<number>();
 
+	isDragOver = signal<boolean>(false);
 	error = signal<string | null>(null);
+
+	onDragEntered() {
+		this.isDragOver.set(true);
+	}
+	
+	onDragExited() {
+		this.isDragOver.set(false);
+	}
 
 	onMoveTask(event: CdkDragDrop<TaskResponse[]>) {
 		if (this.filtersActive()) return;
@@ -60,6 +69,8 @@ export class TaskList {
 				this.error.set(errorObject.message);
 			}
 		});
+
+		this.isDragOver.set(false);
 	};
 
 	enabledDragAndDropPredicate = (drag: CdkDrag) => {
