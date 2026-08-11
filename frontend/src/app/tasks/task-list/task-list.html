@@ -20,6 +20,13 @@
 		</div>
 		}
 		}
+
+		@if (taskList.length === 1 && isDragExited()) {
+		<div class="task-list-empty">
+			<div class="empty-icon">📋</div>
+			<div class="empty-title">No tasks yet!</div>
+		</div>
+		}
 	</div>
 </div>
 
