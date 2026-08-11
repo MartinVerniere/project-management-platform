@@ -6,10 +6,14 @@ import { ApiError, tokenExtractor, userExtractor } from '../utils/middleware.js'
 import { SECRET } from '../utils/config.js';
 import { prisma } from '../prisma.js';
 import type { LoginResponse } from '../models/user.js';
+import multer from "multer";
+import { supabase } from '../services/supabase.js';
 
 const authRouter: Router = Router();
 
-authRouter.post('/register', async (request: Request, response: Response) => {
+const upload = multer({ storage: multer.memoryStorage() });
+
+authRouter.post('/register', upload.single('avatar'), async (request: Request, response: Response) => {
 	const { username, email, password } = request.body;
 
 	if (!username) throw new ApiError(400, "USERNAME_REQUIRED", "Username is required.");
@@ -35,10 +39,35 @@ authRouter.post('/register', async (request: Request, response: Response) => {
 			id: true,
 			username: true,
 			email: true,
+			avatarUrl: true,
 		}
 	});
 
-	return response.status(201).json(userCreated);
+	let avatarUrl: string | null = null;
+
+	if (request.file) {
+		const fileExtension = request.file.originalname.split('.').pop();
+		const filePath = `${userCreated.id}.${fileExtension}`;
+
+		const { error } = await supabase.storage
+			.from('avatars')
+			.upload(filePath, request.file.buffer, { contentType: request.file.mimetype, upsert: true });
+
+		if (error) throw new ApiError(500, "STORE_IMAGE_ERROR", "Failed storing avatar.");
+
+		const { data } = supabase.storage
+			.from('avatars')
+			.getPublicUrl(filePath);
+
+		avatarUrl = data.publicUrl;
+
+		await prisma.user.update({
+			where: { id: userCreated.id },
+			data: { avatarUrl }
+		});
+	}
+
+	return response.status(201).json({ ...userCreated, avatarUrl });
 });
 
 authRouter.post('/login', async (request: Request, response: Response) => {
@@ -60,7 +89,8 @@ authRouter.post('/login', async (request: Request, response: Response) => {
 		user: {
 			id: user.id,
 			username: user.username,
-			email: user.email
+			email: user.email,
+			avatarUrl: user.avatarUrl,
 		},
 		token
 	};

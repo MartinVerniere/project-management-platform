@@ -92,7 +92,8 @@ export const userExtractor = async (
 		select: {
 			id: true,
 			username: true,
-			email: true
+			email: true,
+			avatarUrl: true,
 		}
 	});
 	if (!user) throw new ApiError(404, "USER_NOT_FOUND", "User not found.");
@@ -134,7 +135,8 @@ export const projectExtractor = async (
 						select: {
 							id: true,
 							username: true,
-							email: true
+							email: true,
+							avatarUrl: true,
 						}
 					}
 				}
@@ -211,7 +213,8 @@ export const boardExtractor = async (
 								select: {
 									id: true,
 									username: true,
-									email: true
+									email: true,
+									avatarUrl: true,
 								}
 							},
 							comments: {
@@ -222,7 +225,8 @@ export const boardExtractor = async (
 										select: {
 											id: true,
 											username: true,
-											email: true
+											email: true,
+											avatarUrl: true,
 										}
 									}
 								}
