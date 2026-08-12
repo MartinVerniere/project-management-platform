@@ -39,7 +39,6 @@ authRouter.post('/register', upload.single('avatar'), async (request: Request, r
 			id: true,
 			username: true,
 			email: true,
-			avatarUrl: true,
 		}
 	});
 
@@ -53,7 +52,10 @@ authRouter.post('/register', upload.single('avatar'), async (request: Request, r
 			.from('avatars')
 			.upload(filePath, request.file.buffer, { contentType: request.file.mimetype, upsert: true });
 
-		if (error) throw new ApiError(500, "STORE_IMAGE_ERROR", "Failed storing avatar.");
+		if (error) {
+			await prisma.user.delete({ where: { id: userCreated.id } });
+			throw new ApiError(500, "STORE_IMAGE_ERROR", "Failed storing avatar.");
+		}
 
 		const { data } = supabase.storage
 			.from('avatars')
