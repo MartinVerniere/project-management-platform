@@ -136,6 +136,14 @@ describe('BoardDetails', () => {
 		expect(boardServiceMock.getBoard).toHaveBeenCalledWith(1);
 	});
 
+	it('should fetch project members', async () => {
+		projectServiceMock.getMembers.mockReturnValue(of(members));
+
+		await createComponent();
+
+		expect(projectServiceMock.getMembers).toHaveBeenCalledWith(1);
+	});
+
 	it('should show loading state', async () => {
 		boardServiceMock.getBoard.mockReturnValue(NEVER);
 
