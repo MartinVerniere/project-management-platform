@@ -17,6 +17,8 @@ import { BoardResponse } from '../../models/board';
 class BoardElementStub {
 	board = input.required<BoardResponse>();
 	projectId = input.required<number>();
+	hasAdminPermissions = input.required<boolean>();
+
 	boardDeleted = output<void>();
 }
 
@@ -53,12 +55,13 @@ describe('BoardList', () => {
 		}
 	];
 
-	async function createComponent(shouldAwait: boolean = true) {
+	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(BoardList);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
 
 		fixture.componentRef.setInput('projectId', projectId);
+		fixture.componentRef.setInput('hasAdminPermissions', hasAdminPermissions);
 
 		fixture.detectChanges();
 
@@ -78,12 +81,8 @@ describe('BoardList', () => {
 				{ provide: ActivatedRoute, useValue: activatedRouteMock },
 			]
 		}).overrideComponent(BoardList, {
-			remove: {
-				imports: [BoardElement],
-			},
-			add: {
-				imports: [BoardElementStub],
-			}
+			remove: { imports: [BoardElement] },
+			add: { imports: [BoardElementStub] }
 		}).compileComponents();
 	});
 
@@ -125,6 +124,16 @@ describe('BoardList', () => {
 		await createComponent();
 
 		expect(html.textContent).toContain('Error loading boards');
+	});
+
+	it('should not render "Add board" button when user doesnt have admin permissions', async () => {
+		await createComponent(true, false);
+
+		const addBoardButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Edit'));
+
+		expect(addBoardButton).toBeUndefined();
 	});
 
 	it('should reload board list when BoardElement emits boardDeleted', async () => {

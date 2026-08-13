@@ -23,6 +23,7 @@ class TaskListStub {
 	columnId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();
 	filtersActive = input.required<boolean>();
+	hasAdminPermissions = input.required<boolean>();
 
 	taskListEdited = output<void>();
 	moveTaskToColumn = output<number>();
@@ -64,7 +65,8 @@ describe('ColumnElement', () => {
 			user: {
 				id: 1,
 				username: 'john',
-				email: 'john@example.com'
+				email: 'john@example.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		},
 		{
@@ -73,7 +75,8 @@ describe('ColumnElement', () => {
 			user: {
 				id: 3,
 				username: 'martin',
-				email: 'martin@example.com'
+				email: 'martin@example.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		},
 		{
@@ -82,12 +85,13 @@ describe('ColumnElement', () => {
 			user: {
 				id: 2,
 				username: 'alice',
-				email: 'alice@example.com'
+				email: 'alice@example.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		}
 	];
 
-	async function createComponent(shouldAwait: boolean = true, isFirst = false, isLast = false, filtersActive = false) {
+	async function createComponent(shouldAwait = true, isFirst = false, isLast = false, filtersActive = false, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(ColumnElement);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -99,7 +103,8 @@ describe('ColumnElement', () => {
 		fixture.componentRef.setInput('isLast', isLast);
 		fixture.componentRef.setInput('memberList', memberList);
 		fixture.componentRef.setInput('filtersActive', filtersActive);
-		
+		fixture.componentRef.setInput('hasAdminPermissions', hasAdminPermissions);
+
 		fixture.detectChanges();
 
 		if (shouldAwait) {
@@ -118,12 +123,8 @@ describe('ColumnElement', () => {
 				{ provide: ActivatedRoute, useValue: activatedRouteMock }
 			]
 		}).overrideComponent(ColumnElement, {
-			remove: {
-				imports: [TaskList],
-			},
-			add: {
-				imports: [TaskListStub],
-			},
+			remove: { imports: [TaskList] },
+			add: { imports: [TaskListStub] },
 		})
 			.compileComponents();
 	});
@@ -138,6 +139,21 @@ describe('ColumnElement', () => {
 		await createComponent();
 
 		expect(html.textContent).toContain('Todo');
+	});
+
+	it('should not render "Edit" and "Delete" buttons when user doesnt have admin permissions', async () => {
+		await createComponent(true, false, false, false, false);
+
+		const editButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Edit'));
+
+		const deleteButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Delete'));
+
+		expect(editButton).toBeUndefined();
+		expect(deleteButton).toBeUndefined();
 	});
 
 	it('should remove column and emit columnElementEdited when "Delete" button is clicked', async () => {

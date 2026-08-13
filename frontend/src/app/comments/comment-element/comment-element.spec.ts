@@ -7,6 +7,8 @@ import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { CommentResponse } from '../../models/comment';
 import { CommentService } from '../../services/comments/comment-service';
+import { AuthService } from '../../services/auth/auth-service';
+import { UserResponse } from '../../models/user';
 
 @Component({
 	selector: 'app-comment-update-form',
@@ -26,23 +28,28 @@ describe('CommentElement', () => {
 	let html: HTMLElement;
 
 	let commentServiceMock = { deleteComment: vi.fn() };
+	let authServiceMock = { user: vi.fn() };
+
+	const me: UserResponse = {
+		id: 1,
+		username: 'john',
+		email: 'john@test.com',
+		avatarUrl: '/images/default-avatar.png'
+	}
 
 	const comment: CommentResponse = {
 		id: 1,
 		content: 'Good',
-		user: {
-			id: 1,
-			username: 'john',
-			email: 'john@test.com'
-		}
+		user: me
 	};
 
-	async function createComponent(shouldAwait: boolean = true) {
+	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(CommentElement);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
 
 		fixture.componentRef.setInput('comment', comment);
+		fixture.componentRef.setInput('hasAdminPermissions', hasAdminPermissions);
 
 		fixture.detectChanges();
 
@@ -59,14 +66,11 @@ describe('CommentElement', () => {
 			imports: [CommentElement],
 			providers: [
 				{ provide: CommentService, useValue: commentServiceMock },
+				{ provide: AuthService, useValue: authServiceMock },
 			]
 		}).overrideComponent(CommentElement, {
-			remove: {
-				imports: [CommentUpdateForm],
-			},
-			add: {
-				imports: [CommentUpdateFormStub],
-			}
+			remove: { imports: [CommentUpdateForm] },
+			add: { imports: [CommentUpdateFormStub] }
 		}).compileComponents();
 	});
 
@@ -82,7 +86,31 @@ describe('CommentElement', () => {
 		expect(html.textContent).toContain('Good');
 	});
 
+	it('should not render "Edit" nor "Delete" buttons when user doesnt have comment editor permissions', async () => {
+		authServiceMock.user.mockReturnValue(of({
+			id: 2,
+			username: 'alice',
+			email: 'alice@test.com',
+			avatarUrl: '/images/default-avatar.png'
+		}));
+
+		await createComponent(true, false);
+
+		const editButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Edit'));
+
+		const deleteButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Delete'));
+
+		expect(editButton).toBeUndefined();
+		expect(deleteButton).toBeUndefined();
+	});
+
 	it('should emit commentEdited when CommentUpdateForm emits commentEdited, and hide the form', async () => {
+		authServiceMock.user.mockReturnValue(of({ me }));
+
 		await createComponent();
 
 		component.onEnableEditComment();
@@ -103,18 +131,19 @@ describe('CommentElement', () => {
 
 	it('should remove comment and emit commentDeleted when "Delete" button is clicked', async () => {
 		commentServiceMock.deleteComment.mockReturnValue(of({}));
+		authServiceMock.user.mockReturnValue(of({ me }));
 
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.commentDeleted, 'emit');
 
-		const deletColumnButton = Array
+		const deleteButton = Array
 			.from(html.querySelectorAll('button'))
 			.find(button => button.textContent?.includes('Delete'));
 
-		expect(deletColumnButton).toBeTruthy();
+		expect(deleteButton).toBeTruthy();
 
-		deletColumnButton!.click();
+		deleteButton!.click();
 
 		await fixture.whenStable();
 
@@ -123,6 +152,8 @@ describe('CommentElement', () => {
 	});
 
 	it('should hide comment update form when CommentUpdateForm emits canceledCommentEdit', async () => {
+		authServiceMock.user.mockReturnValue(of({ me }));
+
 		await createComponent();
 
 		component.onEnableEditComment();

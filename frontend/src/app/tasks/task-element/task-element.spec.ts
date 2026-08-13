@@ -9,6 +9,7 @@ import { By } from '@angular/platform-browser';
 import { ProjectMemberResponse } from '../../models/project';
 import { TaskResponse } from '../../models/task';
 import { TaskService } from '../../services/tasks/task-service';
+import { UserResponse } from '../../models/user';
 
 @Component({
 	selector: 'app-comment-list',
@@ -18,6 +19,7 @@ import { TaskService } from '../../services/tasks/task-service';
 class CommentListStub {
 	commentList = input.required<Comment[]>();
 	taskId = input.required<number>();
+	hasAdminPermissions = input.required<boolean>();
 
 	commentListEdited = output<void>();
 }
@@ -45,6 +47,13 @@ describe('TaskElement', () => {
 		unassignTask: vi.fn()
 	};
 
+	const me: UserResponse = {
+		id: 1,
+		username: 'john',
+		email: 'john@test.com',
+		avatarUrl: '/images/default-avatar.png'
+	}
+
 	const task: TaskResponse = {
 		id: 1,
 		title: 'Task A',
@@ -53,20 +62,12 @@ describe('TaskElement', () => {
 			{
 				id: 1,
 				content: 'Good',
-				user: {
-					id: 1,
-					username: 'john',
-					email: 'john@test.com'
-				}
+				user: me
 			},
 			{
 				id: 2,
 				content: 'Great',
-				user: {
-					id: 1,
-					username: 'john',
-					email: 'john@test.com'
-				}
+				user: me
 			}
 		]
 	};
@@ -79,11 +80,7 @@ describe('TaskElement', () => {
 		{
 			id: 1,
 			role: 'ADMIN',
-			user: {
-				id: 1,
-				username: 'john',
-				email: 'john@example.com'
-			}
+			user: me
 		},
 		{
 			id: 2,
@@ -91,7 +88,8 @@ describe('TaskElement', () => {
 			user: {
 				id: 3,
 				username: 'martin',
-				email: 'martin@example.com'
+				email: 'martin@example.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		},
 		{
@@ -100,12 +98,13 @@ describe('TaskElement', () => {
 			user: {
 				id: 2,
 				username: 'alice',
-				email: 'alice@example.com'
+				email: 'alice@example.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		}
 	];
 
-	async function createComponent(shouldAwait: boolean = true) {
+	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(TaskElement);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -115,6 +114,7 @@ describe('TaskElement', () => {
 		fixture.componentRef.setInput('boardId', boardId);
 		fixture.componentRef.setInput('columnId', columnId);
 		fixture.componentRef.setInput('memberList', memberList);
+		fixture.componentRef.setInput('hasAdminPermissions', hasAdminPermissions);
 
 		fixture.detectChanges();
 
@@ -134,12 +134,8 @@ describe('TaskElement', () => {
 				{ provide: ActivatedRoute, useValue: activatedRouteMock }
 			]
 		}).overrideComponent(TaskElement, {
-			remove: {
-				imports: [CommentList],
-			},
-			add: {
-				imports: [CommentListStub],
-			}
+			remove: { imports: [CommentList] },
+			add: { imports: [CommentListStub] }
 		}).compileComponents();
 	});
 
@@ -158,6 +154,16 @@ describe('TaskElement', () => {
 		expect(children).toHaveLength(1);
 	});
 
+	it('should not render "Change" assignee button when user doesnt have admin permissions', async () => {
+		await createComponent(true, false);
+
+		const changeButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Change'));
+
+		expect(changeButton).toBeUndefined();
+	});
+
 	it('should remove task and emit taskRemoved when "Delete" button is clicked', async () => {
 		taskServiceMock.deleteTask.mockReturnValue(of({}));
 
@@ -165,13 +171,13 @@ describe('TaskElement', () => {
 
 		const emitSpy = vi.spyOn(component.taskDeleted, 'emit');
 
-		const deleteColumnButton = Array
+		const deleteButton = Array
 			.from(html.querySelectorAll('button'))
 			.find(button => button.textContent?.includes('Delete'));
 
-		expect(deleteColumnButton).toBeTruthy();
+		expect(deleteButton).toBeTruthy();
 
-		deleteColumnButton!.click();
+		deleteButton!.click();
 
 		await fixture.whenStable();
 

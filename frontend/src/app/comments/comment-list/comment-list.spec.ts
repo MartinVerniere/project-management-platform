@@ -14,6 +14,7 @@ import { CommentAuthor, CommentResponse } from '../../models/comment';
 })
 class CommentElementStub {
 	comment = input.required<CommentResponse>();
+	hasAdminPermissions = input.required<boolean>();
 
 	commentEdited = output<void>();
 	commentDeleted = output<void>();
@@ -38,7 +39,8 @@ describe('CommentList', () => {
 	const commentAuthor: CommentAuthor = {
 		id: 0,
 		username: 'john',
-		email: 'john@test.com'
+		email: 'john@test.com',
+		avatarUrl: null
 	};
 
 	const commentList: CommentResponse[] = [
@@ -56,12 +58,13 @@ describe('CommentList', () => {
 
 	const taskId = 1;
 
-	async function createComponent(shouldAwait: boolean = true) {
+	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(CommentList);
 		component = fixture.componentInstance;
 
 		fixture.componentRef.setInput('commentList', commentList);
 		fixture.componentRef.setInput('taskId', taskId);
+		fixture.componentRef.setInput('hasAdminPermissions', hasAdminPermissions);
 
 		fixture.detectChanges();
 
@@ -75,12 +78,8 @@ describe('CommentList', () => {
 		await TestBed.configureTestingModule({
 			imports: [CommentList],
 		}).overrideComponent(CommentList, {
-			remove: {
-				imports: [CommentElement, CommentForm],
-			},
-			add: {
-				imports: [CommentElementStub, CommentFormStub],
-			}
+			remove: { imports: [CommentElement, CommentForm] },
+			add: { imports: [CommentElementStub, CommentFormStub] }
 		}).compileComponents();
 	});
 

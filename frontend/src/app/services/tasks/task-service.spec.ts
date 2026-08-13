@@ -119,7 +119,8 @@ describe('TaskService', () => {
 			user: {
 				id: 1,
 				username: 'john',
-				email: 'john@test.com'
+				email: 'john@test.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		}
 

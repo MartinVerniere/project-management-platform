@@ -5,6 +5,9 @@ import { MemberElement } from '../member-element/member-element';
 import { By } from '@angular/platform-browser';
 import { MemberForm } from '../member-form/member-form';
 import { ProjectMemberResponse } from '../../models/project';
+import { UserResponse } from '../../models/user';
+import { AuthService } from '../../services/auth/auth-service';
+import { of } from 'rxjs';
 
 @Component({
 	selector: 'app-member-element',
@@ -14,6 +17,7 @@ import { ProjectMemberResponse } from '../../models/project';
 class MemberElementStub {
 	projectId = input.required<number>();
 	member = input.required<ProjectMemberResponse>();
+	hasAdminPermissions = input.required<boolean>();
 
 	memberRemoved = output<void>();
 }
@@ -34,16 +38,22 @@ class MemberFormStub {
 describe('MemberList', () => {
 	let fixture: ComponentFixture<MemberList>;
 	let component: MemberList;
+	let html: HTMLElement;
+
+	const authServiceMock = { user: vi.fn() };
+
+	const me: UserResponse = {
+		id: 1,
+		username: 'john',
+		email: 'john@email.com',
+		avatarUrl: '/images/default-avatar.png'
+	}
 
 	const memberList: ProjectMemberResponse[] = [
 		{
 			id: 1,
 			role: 'ADMIN',
-			user: {
-				id: 10,
-				username: 'john',
-				email: 'john@email.com'
-			}
+			user: me
 		},
 		{
 			id: 2,
@@ -51,19 +61,22 @@ describe('MemberList', () => {
 			user: {
 				id: 12,
 				username: 'alice',
-				email: 'alice@email.com'
+				email: 'alice@email.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		}
 	];
 
 	const projectId = 1;
 
-	async function createComponent(shouldAwait: boolean = true) {
+	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(MemberList);
 		component = fixture.componentInstance;
+		html = fixture.nativeElement;
 
 		fixture.componentRef.setInput('projectId', projectId);
 		fixture.componentRef.setInput('memberList', memberList);
+		fixture.componentRef.setInput('hasAdminPermissions', hasAdminPermissions);
 
 		fixture.detectChanges();
 
@@ -78,14 +91,12 @@ describe('MemberList', () => {
 
 		await TestBed.configureTestingModule({
 			imports: [MemberList],
-			providers: []
+			providers: [
+				{ provide: AuthService, useValue: authServiceMock }
+			]
 		}).overrideComponent(MemberList, {
-			remove: {
-				imports: [MemberElement, MemberForm],
-			},
-			add: {
-				imports: [MemberElementStub, MemberFormStub],
-			}
+			remove: { imports: [MemberElement, MemberForm] },
+			add: { imports: [MemberElementStub, MemberFormStub] }
 		}).compileComponents();
 	});
 
@@ -102,6 +113,23 @@ describe('MemberList', () => {
 
 		expect(children).toHaveLength(2);
 	});
+
+	it('should not render "Add member" button when user doesnt have add permissions', async () => {
+		authServiceMock.user.mockReturnValue(of({
+			id: 12,
+			username: 'alice',
+			email: 'alice@email.com',
+			avatarUrl: '/images/default-avatar.png'
+		}));
+
+		await createComponent();
+
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Remove from project'));
+
+		expect(addButton).toBeUndefined();
+	})
 
 	it('should enable add member form on click', async () => {
 		await createComponent();

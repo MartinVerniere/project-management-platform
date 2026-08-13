@@ -39,6 +39,7 @@ describe('AuthService', () => {
 				id: 1,
 				username: 'john',
 				email: 'john@test.com',
+				avatarUrl: '/images/default-avatar.png'
 			},
 		};
 
@@ -59,13 +60,15 @@ describe('AuthService', () => {
 			id: 1,
 			username: 'john',
 			email: 'john@test.com',
+			avatarUrl: '/images/default-avatar.png'
 		};
 
-		service.register({
-			username: 'john',
-			email: 'john@test.com',
-			password: '123',
-		}).subscribe();
+		let formData = new FormData();
+		formData.append('username', 'john');
+		formData.append('email', 'john@test.com');
+		formData.append('password', '123');
+
+		service.register(formData).subscribe();
 
 		const request: TestRequest = httpMock.expectOne('http://localhost:3000/api/auth/register');
 
@@ -106,6 +109,7 @@ describe('AuthService', () => {
 				id: 1,
 				username: 'john',
 				email: 'john@test.com',
+				avatarUrl: '/images/default-avatar.png'
 			};
 
 			service.me().subscribe();
@@ -122,6 +126,7 @@ describe('AuthService', () => {
 				id: 1,
 				username: 'john',
 				email: 'john@test.com',
+				avatarUrl: '/images/default-avatar.png'
 			};
 
 			service.initializeAuth();

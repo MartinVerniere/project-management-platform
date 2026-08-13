@@ -10,8 +10,8 @@ describe('TaskForm', () => {
 	let component: TaskForm;
 	let html: HTMLElement;
 
-	let columnServiceMock = { addTask: vi.fn() };
-	let routerMock = { navigate: vi.fn().mockResolvedValue(true) };
+	const columnServiceMock = { addTask: vi.fn() };
+	const routerMock = { navigate: vi.fn().mockResolvedValue(true) };
 
 	const activatedRouteMock = {
 		snapshot: {
