@@ -10,7 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 	styleUrl: './home.css',
 })
 export class Home {
-	private healthService = inject(Health);
+	healthService = inject(Health);
 
 	onClick() {
 		console.log('Checking health status...');
