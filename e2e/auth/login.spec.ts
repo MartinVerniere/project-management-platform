@@ -44,7 +44,7 @@ test.describe('Login', () => {
 		await expect(page).toHaveURL('/login');
 	});
 
-	test('should login successfully and navigate to home', async ({ page }) => {
+	test('should login successfully and navigate to home and show navbar', async ({ page }) => {
 		await page.goto('/login');
 
 		await page.getByLabel('Username').fill('john');
@@ -56,6 +56,12 @@ test.describe('Login', () => {
 		await registerButton.click();
 
 		await expect(page).toHaveURL('/');
+
+		const navbar = page.locator('app-navbar');
+		await expect(navbar.getByRole('link', { name: 'Home' })).toBeVisible();
+		await expect(navbar.getByRole('link', { name: 'Projects' })).toBeVisible();
+		await expect(navbar.getByText('john', { exact: true })).toBeVisible();
+		await expect(navbar.getByRole('button', { name: 'Logout' })).toBeVisible();
 	});
 
 	test('should navigate to register page on register button click', async ({ page }) => {
