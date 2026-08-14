@@ -1,37 +1,65 @@
-<form class="task-form" (submit)="(onSubmit($event))">
-	<div class="form-grid">
-		<div class="form-group">
-			<label class="form-label" for="title"> Title </label>
-			<input id="title" class="form-input" type="text" placeholder="Task A" [formField]="taskForm.title" />
-
-			@if(taskForm.title().invalid() && taskForm.title().touched()){
-			<div class="error">
-				@for (error of taskForm.title().errors(); track error.kind){
-				<span> {{error.message}}</span>
-				}
-			</div>
-			}
-		</div>
-
-		<div class="form-group">
-			<label class="form-label" for="description"> Description </label>
-			<input id="description" class="form-input" type="text" placeholder="Description"
-				[formField]="taskForm.description" />
-		</div>
-
-		<div class="form-error">
-			@if (error()) {
-			<div class="error">
-				<span>{{ error() }}</span>
-			</div>
-			}
-		</div>
-
-		<div class="form-actions">
-			<button class="btn btn-primary" type="submit" [disabled]="taskForm().invalid()">
-				Add task
-			</button>
-			<button type="button" (click)="onCancel()">Cancel</button>
+<div class="task-form-card">
+	<div class="task-form-header">
+		<div class="header-icon">✓</div>
+		<div>
+			<h1 class="header">Create task</h1>
+			<p class="subtext">Add a new task to your board.</p>
 		</div>
 	</div>
-</form>
+	<div class="divider"></div>
+	<form class="task-form" (submit)="onSubmit($event)">
+		<div class="form-grid">
+			<div class="form-group">
+				<label class="form-label" for="title">
+					Title
+					<div class="required">*</div>
+				</label>
+				<input id="title" class="form-input" type="text" placeholder="e.g. Implement authentication"
+					[formField]="taskForm.title" />
+
+				@if (taskForm.title().invalid() && taskForm.title().touched()) {
+				<div class="field-error">
+					@for (error of taskForm.title().errors(); track error.kind) {
+					<div>
+						{{ error.message }}
+					</div>
+					}
+				</div>
+				}
+			</div>
+			<div class="form-group">
+				<label class="form-label" for="description">
+					Description
+					<div class="optional">
+						Optional
+					</div>
+				</label>
+				<textarea id="description" class="form-input form-textarea"
+					placeholder="Describe what needs to be done..." [formField]="taskForm.description">
+				</textarea>
+				<div class="field-hint">
+					Add any details that will help explain the task.
+				</div>
+			</div>
+
+			@if (error()) {
+			<div class="server-error">
+				<div class="server-error-icon">!</div>
+				<div>
+					{{ error() }}
+				</div>
+			</div>
+			}
+
+			<div class="form-actions">
+				<button class="btn btn-secondary" type="button" (click)="onCancel()">
+					Cancel
+				</button>
+				<button class="btn btn-primary" type="submit" [disabled]="taskForm().invalid()">
+					<div>Create task</div>
+					<div class="btn-arrow">→</div>
+				</button>
+			</div>
+		</div>
+	</form>
+</div>

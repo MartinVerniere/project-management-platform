@@ -12,12 +12,11 @@ import { CommentResponse } from '../../models/comment';
 export class CommentList {
 	commentList = input.required<CommentResponse[]>();
 	taskId = input.required<number>();
+	hasAdminPermissions = input.required<boolean>();
 
 	commentListEdited = output<void>();
 
 	addCommentFormEnabled = signal<boolean>(false);
-
-	error = signal<string | null>(null);
 
 	onEnableAddComment() { this.addCommentFormEnabled.set(true); }
 	onCancelAddComment() { this.addCommentFormEnabled.set(false); }

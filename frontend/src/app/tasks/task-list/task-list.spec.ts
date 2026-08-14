@@ -22,6 +22,7 @@ class TaskElementStub {
 	boardId = input.required<number>();
 	columnId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();
+	hasAdminPermissions = input.required<boolean>();
 
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();
@@ -63,7 +64,8 @@ describe('TaskList', () => {
 			user: {
 				id: 1,
 				username: 'john',
-				email: 'john@example.com'
+				email: 'john@example.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		},
 		{
@@ -72,7 +74,8 @@ describe('TaskList', () => {
 			user: {
 				id: 3,
 				username: 'martin',
-				email: 'martin@example.com'
+				email: 'martin@example.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		},
 		{
@@ -81,12 +84,13 @@ describe('TaskList', () => {
 			user: {
 				id: 2,
 				username: 'alice',
-				email: 'alice@example.com'
+				email: 'alice@example.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		}
 	];
 
-	async function createComponent(shouldAwait: boolean = true, taskList: TaskResponse[] = [], filtersActive: boolean = false) {
+	async function createComponent(shouldAwait = true, taskList: TaskResponse[] = [], filtersActive = false, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(TaskList);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -97,7 +101,8 @@ describe('TaskList', () => {
 		fixture.componentRef.setInput('columnId', columnId);
 		fixture.componentRef.setInput('memberList', memberList);
 		fixture.componentRef.setInput('filtersActive', filtersActive);
-		
+		fixture.componentRef.setInput('hasAdminPermissions', hasAdminPermissions);
+
 		fixture.detectChanges();
 
 		if (shouldAwait) {
@@ -116,12 +121,8 @@ describe('TaskList', () => {
 				{ provide: ActivatedRoute, useValue: activatedRouteMock },
 			]
 		}).overrideComponent(TaskList, {
-			remove: {
-				imports: [TaskElement],
-			},
-			add: {
-				imports: [TaskElementStub],
-			}
+			remove: { imports: [TaskElement] },
+			add: { imports: [TaskElementStub] }
 		}).compileComponents();
 	});
 

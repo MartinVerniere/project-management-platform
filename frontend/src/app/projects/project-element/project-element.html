@@ -1,11 +1,36 @@
-<div class="project-element">
-	@if (project(); as project){
-	<div class="project-name">{{project.name}}</div>
-	<div class="project-key">Key: {{project.key}}</div>
-	@if (project.description) { <div class="project-description">Description: {{project.description}}</div> }
-	<button type="button" [routerLink]="['/projects', project.id]">Details</button>
-	<button type="button" [routerLink]="['/projects', project.id, 'edit']">Edit</button>
-	<button type="button" (click)="onDeleteProject(project.id)">Delete</button>
-	<div class="error"> {{ error() }}</div>
+@if (project(); as project){
+<div class="project-info">
+	<div class="project-key">{{ project.key }}</div>
+
+	<h3 class="project-name">
+		{{ project.name }}
+	</h3>
+
+	@if (project.description) {
+	<p class="project-description">
+		{{ project.description }}
+	</p>
 	}
 </div>
+<div class="project-actions">
+	<button class="btn btn-primary" [routerLink]="['/projects', project.id]">
+		Open
+	</button>
+
+	<!-- <button class="btn btn-secondary" [routerLink]="['/projects', project.id, 'edit']">
+			Edit
+		</button> -->
+
+	@if (hasDeletePermission()) {
+	<button class="btn btn-danger" type="button" (click)="onDeleteProject(project.id)">
+		Delete
+	</button>
+	}
+</div>
+
+@if (error()) {
+<div class="error">
+	{{ error() }}
+</div>
+}
+}

@@ -1,23 +1,48 @@
-<form class="board-form" (submit)="(onSubmit($event))">
-	<div class="form-grid">
-		<div class="form-group">
-			<label class="form-label" for="name"> Name </label>
-			<input type="text" id="name" class="form-input" [formField]="boardForm.name" />
-		</div>
+<div class="board-form-card">
+	<div class="board-form-header">
+		<h1 class="header">Create board</h1>
+		<p class="subtext">Create a new board for this project.</p>
+	</div>
 
-		<div class="form-error">
+	<div class="divider"></div>
+
+	<form class="board-form" (submit)="(onSubmit($event))">
+		<div class="form-grid">
+			<div class="form-group">
+				<label class="form-label" for="name">
+					Name
+					<div class="required">*</div>
+				</label>
+
+				<input id="name" class="form-input" type="text" placeholder="e.g. Sprint Board"
+					[formField]="boardForm.name" />
+
+				@if (boardForm.name().invalid() && boardForm.name().touched()) {
+				<div class="field-error">
+					@for (error of boardForm.name().errors(); track error.kind) {
+					<div>{{ error.message }}</div>
+					}
+				</div>
+				}
+			</div>
+
 			@if (error()) {
-			<div class="error">
-				<span>{{ error() }}</span>
+			<div class="server-error">
+				<div class="server-error-icon">!</div>
+				<div>{{ error() }}</div>
 			</div>
 			}
-		</div>
 
-		<div class="form-actions">
-			<button class="btn btn-primary" type="submit" [disabled]="boardForm().invalid()">
-				Add board
-			</button>
-			<button type="button" (click)="onCancel()">Cancel</button>
+			<div class="form-actions">
+				<button class="btn btn-secondary" type="button" (click)="onCancel()">
+					Cancel
+				</button>
+
+				<button class="btn btn-primary" type="submit" [disabled]="boardForm().invalid()">
+					Create board
+					<div class="btn-arrow">→</div>
+				</button>
+			</div>
 		</div>
-	</div>
-</form>
+	</form>
+</div>

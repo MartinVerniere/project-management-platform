@@ -8,8 +8,28 @@ import { app } from '../app.js';
 import { clearDatabase } from '../helpers/database.js';
 import { loginUser, registerUser } from '../helpers/test.js';
 
+import { vi } from 'vitest';
+
+const { uploadMock, getPublicUrlMock } = vi.hoisted(() => ({
+	uploadMock: vi.fn(),
+	getPublicUrlMock: vi.fn(() => ({ data: { publicUrl: 'https://example.com' } }))
+}));
+
+vi.mock('../services/supabase.js', () => ({
+	supabase: {
+		storage: {
+			from: vi.fn(() => ({
+				upload: uploadMock,
+				getPublicUrl: getPublicUrlMock,
+			})),
+		},
+	},
+}));
+
 describe('Auth API', () => {
 	beforeEach(async () => {
+		vi.clearAllMocks();
+		uploadMock.mockResolvedValue({ data: { path: 'avatar.png' }, error: null });
 		await clearDatabase();
 	});
 
@@ -26,10 +46,61 @@ describe('Auth API', () => {
 				const user = await prisma.user.findUnique({ where: { email: 'john@test.com' } });
 
 				expect(user).not.toBeNull();
+				expect(response.body.avatarUrl).toBeNull();
 				expect(user?.username).toBe('john');
 			});
+
+			it('creates user with avatar successfully', async () => {
+				const response = await request(app)
+					.post('/api/auth/register')
+					.field('username', 'avataruser')
+					.field('email', 'avatar@test.com')
+					.field('password', 'password123')
+					.attach('avatar', Buffer.from('fake image'), {
+						filename: 'avatar.png',
+						contentType: 'image/png',
+					});
+
+				expect(response.status).toBe(201);
+				expect(response.body.username).toBe('avataruser');
+				expect(response.body.avatarUrl).toBeDefined();
+				expect(response.body.avatarUrl).not.toBeNull();
+
+				const user = await prisma.user.findUnique({
+					where: { email: 'avatar@test.com' },
+				});
+
+				expect(user).not.toBeNull();
+				expect(user?.avatarUrl).toBe(response.body.avatarUrl);
+			});
+
+			it('returns 500 when avatar storage fails', async () => {
+				uploadMock.mockResolvedValueOnce({
+					data: null,
+					error: new Error('Upload failed'),
+				});
+				
+				const response = await request(app)
+					.post('/api/auth/register')
+					.field('username', 'avataruser')
+					.field('email', 'avatar@test.com')
+					.field('password', 'password123')
+					.attach('avatar', Buffer.from('fake image'), {
+						filename: 'avatar.png',
+						contentType: 'image/png',
+					});
+
+				expect(response.status).toBe(500);
+				expect(response.body.error.message).toBe('Failed storing avatar.');
+
+				const user = await prisma.user.findUnique({
+					where: { email: 'avatar@test.com' },
+				});
+
+				expect(user).toBeNull();
+			});
 		});
-	})
+	});
 
 	describe('when a user exists in database', async () => {
 		let johnId: number;

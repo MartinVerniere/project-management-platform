@@ -1,1 +1,34 @@
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+	margin: 0;
+	height: 100%;
+}
+
+app-root {
+	display: flex;
+	height: 100%;
+}
+
+:root {
+	--purple-primary: #4343e9;
+	--purple-secondary: #3838c8;
+	--purple-tertiary: #6366f1;
+
+	--white-primary: #ffffff;
+	--white-secondary: #eeeeee;
+	--white-tertiary: #dddddd;
+
+	--gray-primary: #999999;
+	--gray-secondary: #666666;
+	--gray-tertiary: #444444;
+
+	--black-primary: #111111;
+	--black-secondary: #222222;
+	--black-tertiary: #333333;
+
+	--red-primary: #ee4444;
+	--red-secondary: #cc3333;
+	--red-tertiary: #fecaca;
+
+	--blue-primary: #ddeeff;
+}

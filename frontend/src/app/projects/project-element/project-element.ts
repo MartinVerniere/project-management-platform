@@ -1,8 +1,10 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, resource, signal } from '@angular/core';
 import { ProjectService } from '../../services/projects/project-service';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProjectResponse } from '../../models/project';
+import { AuthService } from '../../services/auth/auth-service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
 	selector: 'app-project-element',
@@ -12,9 +14,21 @@ import { ProjectResponse } from '../../models/project';
 })
 export class ProjectElement {
 	projectService = inject(ProjectService);
+	authService = inject(AuthService);
 
 	project = input.required<ProjectResponse>();
 	projectDeleted = output<void>();
+
+	members = resource({ loader: () => firstValueFrom(this.projectService.getMembers(this.project().id)) });
+
+	hasDeletePermission = computed(() => {
+		const userId = this.authService.user()?.id;
+		const members = this.members.value();
+
+		if (!userId || !members) return false;
+
+		return members.some(member => member.user.id === userId && member.role === 'ADMIN');
+	});
 
 	error = signal<string | null>(null);
 

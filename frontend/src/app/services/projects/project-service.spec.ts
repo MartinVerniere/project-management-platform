@@ -12,6 +12,7 @@ const memberA: ProjectMemberResponse = {
 		id: 1,
 		username: 'john',
 		email: 'john@email.com',
+		avatarUrl: '/images/default-avatar.png'
 	},
 };
 
@@ -23,6 +24,7 @@ const memberB: ProjectMemberResponse = {
 		id: 2,
 		username: 'alice',
 		email: 'alice@email.com',
+		avatarUrl: '/images/default-avatar.png'
 	},
 };
 
@@ -34,6 +36,7 @@ const memberC: ProjectMemberResponse = {
 		id: 2,
 		username: 'alice',
 		email: 'alice@email.com',
+		avatarUrl: '/images/default-avatar.png'
 	},
 }
 

@@ -20,7 +20,8 @@ describe('MemberForm', () => {
 			user: {
 				id: 10,
 				username: 'john',
-				email: 'john@email.com'
+				email: 'john@email.com',
+				avatarUrl: '/images/default-avatar.png'
 			}
 		}
 	]

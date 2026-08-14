@@ -1,6 +1,130 @@
-.column-element {
-	background: lightblue;
+:host {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	min-width: 350px;
+	background: var(--white-primary);
+	border: 1px solid var(--white-secondary);
+	border-radius: 12px;
+	padding: 16px;
+	gap: 16px;
+}
+
+.column-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+.column-title {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.column-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.header {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.subtext {
+	font-size: 12px;
+	color: var(--gray-secondary);
+}
+
+.column-actions {
+	display: flex;
+	gap: 6px;
+}
+
+.btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px;
+	border-radius: 6px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.btn-primary {
+	border: 1px solid var(--white-primary);
+	background: var(--purple-primary);
+	color: var(--white-primary);
+}
+
+.btn-primary:hover {
+	border: 1px solid var(--purple-primary);
+	background: var(--white-primary);
+	color: var(--purple-primary);
+}
+
+.btn-secondary {
+	border: 1px solid var(--white-tertiary);
+	background: var(--white-primary);
+	color: var(--black-tertiary);
+}
+
+.btn-secondary:hover {
+	border: 1px solid var(--white-primary);
+	background: var(--black-tertiary);
+	color: var(--white-primary);
+}
+
+.btn-secondary {
+	border: 1px solid var(--white-tertiary);
+	background: var(--white-primary);
+	color: var(--black-tertiary);
+}
+
+.btn-secondary:hover {
+	border: 1px solid var(--white-primary);
+	background: var(--black-tertiary);
+	color: var(--white-primary);
+}
+
+.btn-danger {
+	border: 1px solid var(--red-tertiary);
+	background: var(--white-primary);
+	color: var(--red-secondary);
+}
+
+.btn-danger:hover {
+	border: 1px solid var(--white-primary);
+	background: var(--red-secondary);
+	color: var(--white-primary);
+}
+
+.column-handle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2px;
+	border: none;
+	background: transparent;
+	color: var(--gray-primary);
+	cursor: grab;
+	border-radius: 2px;
+	transition: .15s ease;
+}
+
+.column-handle:hover {
+	background: var(--white-primary);
+	color: var(--gray-tertiary);
+}
+
+.column-handle:active {
+	cursor: grabbing;
+}
+
+.error {
+	color: var(--red-secondary);
+	font-size: 12px;
 }

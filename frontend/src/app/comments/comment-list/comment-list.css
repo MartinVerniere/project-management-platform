@@ -1,12 +1,52 @@
-.comment-list {
-	background: mediumseagreen;
+:host {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 16px;
+}
+
+.comment-list-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.comment-title {
+	margin: 0;
 }
 
 .comment-element-list {
 	display: flex;
-	gap: 100px;
-	overflow-x: auto;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.comment-list-empty {
+	padding: 16px;
+	text-align: center;
+	color: var(--gray-secondary);
+	border: 1px dashed var(--white-tertiary);
+	border-radius: 6px;
+}
+
+.btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px;
+	border-radius: 6px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.btn-secondary {
+	border: 1px solid var(--white-primary);
+	background: var(--black-tertiary);
+	color: var(--white-primary);
+}
+
+.btn-secondary:hover {
+	border: 1px solid var(--white-tertiary);
+	background: var(--white-primary);
+	color: var(--black-tertiary);
 }

@@ -1,39 +1,36 @@
-import { Component, computed, inject, input, output, resource, signal } from "@angular/core";
-import { RouterLink, ActivatedRoute } from "@angular/router";
+import { Component, computed, inject, input, output, signal } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { ColumnElement } from "../column-element/column-element";
 import { BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TaskService } from "../../services/tasks/task-service";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from "@angular/cdk/drag-drop";
-import { firstValueFrom } from "rxjs";
-import { ProjectService } from "../../services/projects/project-service";
 import { ColumnResponse } from "../../models/column";
+import { ProjectMemberResponse } from "../../models/project";
 
 @Component({
 	selector: 'app-column-list',
-	imports: [RouterLink, ColumnElement, CdkDrag, CdkDropList, CdkDropListGroup],
+	imports: [ColumnElement, CdkDrag, CdkDropList, CdkDropListGroup],
 	templateUrl: './column-list.html',
 	styleUrl: './column-list.css',
 })
 export class ColumnList {
 	route = inject(ActivatedRoute);
-	projectService = inject(ProjectService);
 	boardService = inject(BoardService);
 	taskService = inject(TaskService);
 
 	columnList = input.required<ColumnResponse[]>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
+	members = input.required<ProjectMemberResponse[]>();
+	hasAdminPermissions = input.required<boolean>();
 
 	columnListEdited = output<void>();
-
-	members = resource({ loader: () => firstValueFrom(this.projectService.getMembers(this.projectId())) });
 
 	searchTerm = signal('');
 	selectedAssigneeId = signal<number | null>(null);
 	error = signal<string | null>(null);
 
-	memberList = computed(() => { return this.members.value() ?? [] });
 	filtersActive = computed(() => this.searchTerm().trim() !== '' || this.selectedAssigneeId() !== null);
 
 	filteredColumnList = computed(() => {

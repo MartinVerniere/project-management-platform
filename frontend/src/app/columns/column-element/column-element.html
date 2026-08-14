@@ -1,16 +1,50 @@
-<div class="column-element">
-	@if (column(); as column) {
-	<div class="column-id">Id: {{column.id}}</div>
-	<div class="column-name">Name: {{column.name}}</div>
-	<app-task-list [taskList]="column.tasks" [projectId]="projectId()" [boardId]="boardId()" [columnId]="column.id" [memberList]="memberList()" [filtersActive]="filtersActive()"
-		(taskListEdited)="columnElementEdited.emit()" (moveTaskToColumn)="moveTaskToColumn.emit({ taskId: $event, destinationColumnId: column.id })">
-	</app-task-list>
-	<div class="column-buttons">
-		<button type="button" [routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'edit']">
+@if (column(); as column) {
+<div class="column-header">
+	<div class="column-title">
+		<div class="column-handle" cdkDragHandle>
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="5" cy="3" r="1.25" />
+				<circle cx="11" cy="3" r="1.25" />
+				<circle cx="5" cy="8" r="1.25" />
+				<circle cx="11" cy="8" r="1.25" />
+				<circle cx="5" cy="13" r="1.25" />
+				<circle cx="11" cy="13" r="1.25" />
+			</svg>
+		</div>
+
+		<div class="column-info">
+			<h2 class="header">{{ column.name }}</h2>
+			<div class="subtext">{{ column.tasks.length }} tasks</div>
+		</div>
+	</div>
+
+	<div class="column-actions">
+		<button class="btn btn-primary"
+			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'tasks', 'create']">
+			Add task
+		</button>
+
+		@if(hasAdminPermissions()){
+		<button type="button" class="btn btn-secondary"
+			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'edit']">
 			Edit
 		</button>
-		<button type="button" (click)="onRemoveColumn(column.id)">Delete</button>
+
+		<button type="button" class="btn btn-danger" (click)="onRemoveColumn(column.id)">
+			Delete
+		</button>
+		}
 	</div>
-	<div class="error"> {{ error() }}</div>
-	}
 </div>
+
+<app-task-list [taskList]="column.tasks" [projectId]="projectId()" [boardId]="boardId()" [columnId]="column.id"
+	[memberList]="memberList()" [filtersActive]="filtersActive()" [hasAdminPermissions]="hasAdminPermissions()" (taskListEdited)="columnElementEdited.emit()"
+	(moveTaskToColumn)="moveTaskToColumn.emit({ taskId: $event, destinationColumnId: column.id })">
+</app-task-list>
+
+@if (error()) {
+<div class="error">
+	{{ error() }}
+</div>
+}
+}

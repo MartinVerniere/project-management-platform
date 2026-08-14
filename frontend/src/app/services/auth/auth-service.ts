@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Service, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../../models/auth';
+import { LoginRequest, LoginResponse, RegisterResponse } from '../../models/auth';
 import { UserResponse } from '../../models/user';
 
 const API_URL = 'http://localhost:3000/api/auth';
@@ -44,7 +44,7 @@ export class AuthService {
 			.pipe(tap((response: LoginResponse) => { this.setSession(response.token, response.user); }))
 	}
 
-	register(request: RegisterRequest): Observable<RegisterResponse> {
+	register(request: FormData): Observable<RegisterResponse> {
 		return this.http.post<RegisterResponse>(`${API_URL}/register`, request);
 	}
 

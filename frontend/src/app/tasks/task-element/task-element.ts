@@ -5,10 +5,11 @@ import { CommentList } from '../../comments/comment-list/comment-list';
 import { ProjectMemberResponse } from '../../models/project';
 import { TaskService } from '../../services/tasks/task-service';
 import { TaskResponse } from '../../models/task';
+import { CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
 	selector: 'app-task-element',
-	imports: [RouterLink, CommentList],
+	imports: [RouterLink, CommentList, CdkDragHandle],
 	templateUrl: './task-element.html',
 	styleUrl: './task-element.css',
 })
@@ -20,11 +21,13 @@ export class TaskElement {
 	boardId = input.required<number>();
 	columnId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();
+	hasAdminPermissions = input.required<boolean>();
 
 	taskDeleted = output<void>();
 	taskCommentsEdited = output<void>();
 	taskAssigneeEdited = output<void>();
 
+	avatarPreview = signal('/images/default-avatar.png');
 	selectedAssigneeId = signal<number | null>(null);
 	assigneeFormEnabled = signal<boolean>(false);
 	error = signal<string | null>(null);

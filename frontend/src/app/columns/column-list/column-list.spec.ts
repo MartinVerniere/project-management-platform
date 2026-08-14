@@ -9,7 +9,6 @@ import { ColumnElement } from '../column-element/column-element';
 import { By } from '@angular/platform-browser';
 import { TaskService } from '../../services/tasks/task-service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ProjectService } from '../../services/projects/project-service';
 import { ProjectMemberResponse } from '../../models/project';
 import { ColumnResponse } from '../../models/column';
 
@@ -24,6 +23,7 @@ class ColumnElementStub {
 	boardId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();
 	filtersActive = input.required<boolean>();
+	hasAdminPermissions = input.required<boolean>();
 
 	isFirst = input<boolean>();
 	isLast = input<boolean>();
@@ -39,7 +39,6 @@ describe('ColumnList', () => {
 
 	const boardServiceMock = { changeColumnOrder: vi.fn() };
 	const taskServiceMock = { moveTask: vi.fn() };
-	const projectServiceMock = { getMembers: vi.fn().mockReturnValue(of([])) };
 
 	const activatedRouteMock = {
 		snapshot: {
@@ -70,7 +69,7 @@ describe('ColumnList', () => {
 	const projectId = 1;
 	const boardId = 1;
 
-	async function createComponent(shouldAwait: boolean = true, columnList: ColumnResponse[] = []) {
+	async function createComponent(shouldAwait: boolean = true, columnList: ColumnResponse[] = [], members: ProjectMemberResponse[] = [], hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(ColumnList);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -78,6 +77,8 @@ describe('ColumnList', () => {
 		fixture.componentRef.setInput('columnList', columnList);
 		fixture.componentRef.setInput('projectId', projectId);
 		fixture.componentRef.setInput('boardId', boardId);
+		fixture.componentRef.setInput('members', members);
+		fixture.componentRef.setInput('hasAdminPermissions', hasAdminPermissions);
 
 		fixture.detectChanges();
 
@@ -96,7 +97,6 @@ describe('ColumnList', () => {
 				{ provide: BoardService, useValue: boardServiceMock },
 				{ provide: TaskService, useValue: taskServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock },
-				{ provide: ProjectService, useValue: projectServiceMock }
 			]
 		}).overrideComponent(ColumnList, {
 			remove: {
@@ -114,14 +114,6 @@ describe('ColumnList', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('should fetch project members', async () => {
-		projectServiceMock.getMembers.mockReturnValue(of([]));
-
-		await createComponent(true, columnList);
-
-		expect(projectServiceMock.getMembers).toHaveBeenCalledWith(projectId);
-	});
-
 	it('should render columns', async () => {
 		await createComponent(true, columnList);
 
@@ -133,7 +125,7 @@ describe('ColumnList', () => {
 	it('should render empty message when no column exists', async () => {
 		await createComponent(true);
 
-		expect(html.textContent).toContain('No columns in this project');
+		expect(html.textContent).toContain('No columns yet!');
 	});
 
 	it('should update searchTerm when search input changes', async () => {
@@ -173,9 +165,10 @@ describe('ColumnList', () => {
 						id: 1,
 						title: 'Login',
 						assignee: {
-							id: 1, 
+							id: 1,
 							username: 'john',
-							email: 'john@example.com'
+							email: 'john@example.com',
+							avatarUrl: '/images/default-avatar.png'
 						},
 						comments: []
 					},
@@ -183,9 +176,10 @@ describe('ColumnList', () => {
 						id: 2,
 						title: 'Dashboard',
 						assignee: {
-							id: 2, 
+							id: 2,
 							username: 'mary',
-							email: 'mary@example.com'
+							email: 'mary@example.com',
+							avatarUrl: '/images/default-avatar.png'
 						},
 						comments: []
 					}

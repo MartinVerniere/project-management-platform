@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Health } from '../services/health';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../services/auth/auth-service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -11,8 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 	styleUrl: './home.css',
 })
 export class Home {
-	private healthService = inject(Health);
-	authService = inject(AuthService);
+	healthService = inject(Health);
 
 	onClick() {
 		console.log('Checking health status...');

@@ -1,12 +1,72 @@
-.task-list {
-	background: lightcoral;
+:host {
 	display: flex;
+	flex: 1;
 	flex-direction: column;
+	gap: 16px;
 }
 
 .task-element-list {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
-	overflow-y: auto;
+	gap: 12px;
+}
+
+.cdk-drag-placeholder {
+	opacity: 0.35;
+}
+
+.task-list-empty {
+	display: none;
+	padding: 32px;
+	text-align: center;
+	border: 2px dashed var(--white-tertiary);
+	border-radius: 10px;
+	color: var(--gray-secondary);
+	pointer-events: none;
+}
+
+/* Show empty list message if the list is completely empty (no cdkDrag items exist at all) */
+.task-element-list:not(:has([cdkDrag])) .task-list-empty {
+	display: block;
+}
+
+/* Show empty list message if a drag placeholder exists, but NO stable task components are present */
+/* This targets the exact moment the last element is lifted out of its original list and dragged away */
+.task-element-list:has(.task-custom-placeholder):not(:has(app-task-element)) .task-list-empty {
+	display: block;
+}
+
+/* Hide empty list message if the list is actively hosting a destination preview */
+.cdk-drop-list-dragging .task-element-list>.task-list-empty {
+	display: none !important;
+}
+
+.empty-icon {
+	font-size: 24px;
+	margin-bottom: 8px;
+}
+
+.empty-title {
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: 0.15s ease;
+}
+
+.btn-primary {
+	background: var(--purple-primary);
+	color: var(--white-primary);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }

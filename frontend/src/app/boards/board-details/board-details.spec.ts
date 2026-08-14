@@ -8,6 +8,10 @@ import { Component, input, output } from '@angular/core';
 import { ColumnList } from '../../columns/column-list/column-list';
 import { By } from '@angular/platform-browser';
 import { ColumnResponse } from '../../models/column';
+import { ProjectMemberResponse } from '../../models/project';
+import { AuthService } from '../../services/auth/auth-service';
+import { ProjectService } from '../../services/projects/project-service';
+import { UserResponse } from '../../models/user';
 
 @Component({
 	selector: 'app-column-list',
@@ -18,6 +22,8 @@ class ColumnListStub {
 	columnList = input.required<ColumnResponse[]>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
+	members = input.required<ProjectMemberResponse[]>();
+	hasAdminPermissions = input.required<boolean>();
 
 	columnListEdited = output<void>();
 }
@@ -40,12 +46,49 @@ describe('BoardDetails', () => {
 	};
 
 	let boardServiceMock = { getBoard: vi.fn() };
+	let projectServiceMock = { getMembers: vi.fn() };
+	let authServiceMock = { user: vi.fn() };
 
 	const board = {
 		id: 1,
 		name: 'Board A',
 		columns: [{ id: 1, name: 'Todo' }],
 	};
+
+	const me: UserResponse = {
+		id: 1,
+		username: 'john',
+		email: 'john@test.com',
+		avatarUrl: '/images/default-avatar.png'
+	}
+
+	const members: ProjectMemberResponse[] = [
+		{
+			id: 1,
+			role: 'ADMIN',
+			user: me
+		},
+		{
+			id: 2,
+			role: 'MEMBER',
+			user: {
+				id: 2,
+				username: 'alice',
+				email: 'alice@test.com',
+				avatarUrl: '/images/default-avatar.png'
+			}
+		},
+		{
+			id: 3,
+			role: 'MEMBER',
+			user: {
+				id: 3,
+				username: 'martin',
+				email: 'martin@test.com',
+				avatarUrl: '/images/default-avatar.png'
+			}
+		}
+	]
 
 	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(BoardDetails);
@@ -67,15 +110,13 @@ describe('BoardDetails', () => {
 			imports: [BoardDetails],
 			providers: [
 				{ provide: BoardService, useValue: boardServiceMock },
+				{ provide: ProjectService, useValue: projectServiceMock },
+				{ provide: AuthService, useValue: authServiceMock },
 				{ provide: ActivatedRoute, useValue: activatedRouteMock }
 			]
 		}).overrideComponent(BoardDetails, {
-			remove: {
-				imports: [ColumnList],
-			},
-			add: {
-				imports: [ColumnListStub],
-			}
+			remove: { imports: [ColumnList] },
+			add: { imports: [ColumnListStub] }
 		}).compileComponents();
 	});
 
@@ -93,6 +134,14 @@ describe('BoardDetails', () => {
 		await createComponent();
 
 		expect(boardServiceMock.getBoard).toHaveBeenCalledWith(1);
+	});
+
+	it('should fetch project members', async () => {
+		projectServiceMock.getMembers.mockReturnValue(of(members));
+
+		await createComponent();
+
+		expect(projectServiceMock.getMembers).toHaveBeenCalledWith(1);
 	});
 
 	it('should show loading state', async () => {
@@ -113,6 +162,7 @@ describe('BoardDetails', () => {
 	});
 
 	it('should render board information', async () => {
+		projectServiceMock.getMembers.mockReturnValue(of({ members }));
 		boardServiceMock.getBoard.mockReturnValue(of(board));
 
 		await createComponent();
@@ -120,7 +170,21 @@ describe('BoardDetails', () => {
 		expect(html.textContent).toContain('Board A');
 	});
 
+	it('should not render "Add column" button when user doesnt have admin permissions', () => {
+		authServiceMock.user.mockReturnValue(of({ me }));
+		projectServiceMock.getMembers.mockReturnValue(of({ members }));
+		boardServiceMock.getBoard.mockReturnValue(of(board));
+
+		const addColumnButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add column'));
+
+		expect(addColumnButton).toBeUndefined();
+	});
+
 	it('should reload board when ColumnList emits columnListEdited', async () => {
+		authServiceMock.user.mockReturnValue(of({ me }));
+		projectServiceMock.getMembers.mockReturnValue(of({ members }));
 		boardServiceMock.getBoard.mockReturnValue(of(board));
 
 		await createComponent();

@@ -1,15 +1,14 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { TaskElement } from '../task-element/task-element';
 import { ColumnService } from '../../services/columns/column-service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ProjectMemberResponse } from '../../models/project';
 import { TaskResponse } from '../../models/task';
 
 @Component({
 	selector: 'app-task-list',
-	imports: [TaskElement, RouterLink, CdkDrag, CdkDropList],
+	imports: [TaskElement, CdkDrag, CdkDropList, CdkDragPlaceholder],
 	templateUrl: './task-list.html',
 	styleUrl: './task-list.css',
 })
@@ -22,6 +21,7 @@ export class TaskList {
 	columnId = input.required<number>();
 	memberList = input.required<ProjectMemberResponse[]>();
 	filtersActive = input.required<boolean>();
+	hasAdminPermissions = input.required<boolean>();
 
 	taskListEdited = output<void>();
 	moveTaskToColumn = output<number>();

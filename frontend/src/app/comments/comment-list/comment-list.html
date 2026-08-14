@@ -1,17 +1,18 @@
-<div class="comment-list">
-	<h3 class="comment-title">Comments</h3>
-	<div class="comment-element-list">
-		@for (comment of commentList(); track comment.id; let i = $index) {
-		<app-comment-element [comment]="comment" (commentEdited)="commentListEdited.emit()"
-			(commentDeleted)="commentListEdited.emit()"></app-comment-element>
-		} @empty {
-		<div class="comment-list-empty">No comments yet!</div>
-		}
-	</div>
-	@if (addCommentFormEnabled()) {
-	<app-comment-form [taskId]="taskId()" (commentAdded)="onCommentAdded()"
-		(canceledCommentAdd)="onCancelAddComment()"></app-comment-form>
-	} @else {
-	<button type="button" (click)="onEnableAddComment()">Add comment</button>
+<h3 class="comment-title">Comments</h3>
+<div class="comment-element-list">
+	@for (comment of commentList(); track comment.id; let i = $index) {
+	<app-comment-element [comment]="comment" [hasAdminPermissions]="hasAdminPermissions()"
+		(commentEdited)="commentListEdited.emit()" (commentDeleted)="commentListEdited.emit()">
+	</app-comment-element>
+	} @empty {
+	<div class="comment-list-empty">No comments yet!</div>
 	}
 </div>
+@if (addCommentFormEnabled()) {
+<app-comment-form [taskId]="taskId()" (commentAdded)="onCommentAdded()" (canceledCommentAdd)="onCancelAddComment()">
+</app-comment-form>
+} @else {
+<button type="button" class="btn btn-secondary" (click)="onEnableAddComment()">
+	Add comment
+</button>
+}

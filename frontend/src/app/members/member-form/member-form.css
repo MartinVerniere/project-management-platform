@@ -1,0 +1,125 @@
+.member-form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 16px;
+	border: 1px solid var(--white-secondary);
+	border-radius: 6px;
+	background: var(--white-primary);
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 20px;
+}
+
+.form-label {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--black-tertiary);
+}
+
+.required {
+	color: var(--red-secondary);
+}
+
+.form-input-and-actions{
+	display: flex;
+	gap: 10px;
+}
+
+.form-input {
+	flex: 1;
+	padding: 8px;
+	border: 1px solid var(--white-tertiary);
+	border-radius: 4px;
+	background: var(--white-primary);
+	color: var(--black-primary);
+	font: inherit;
+	font-size: 12px;
+}
+
+.form-input:focus {
+	outline: none;
+	border-color: var(--purple-tertiary);;
+}
+
+.field-error {
+	font-size: 12px;
+	color: var(--red-secondary);
+}
+
+.server-error {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px;
+	border: 1px solid var(--red-tertiary);
+	border-radius: 4px;
+	background: var(--white-primary);
+	color: var(--red-secondary);;
+	font-size: 12px;
+}
+
+.server-error-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	background: var(--red-secondary);
+	color: var(--white-primary);
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.form-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 10px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.btn-primary {
+	background: var(--purple-primary);
+	color: var(--white-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+	background: var(--purple-primary);
+}
+
+.btn-secondary {
+	border-color: var(--white-tertiary);
+	background: var(--white-primary);
+	color: var(--black-tertiary);
+}
+
+.btn-secondary:hover {
+	background: var(--white-primary);
+}
+
+.btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.btn-arrow {
+	font-size: 12px;
+}

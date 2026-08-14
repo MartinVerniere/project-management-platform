@@ -1,38 +1,44 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Home } from './home';
-import { AuthService } from '../services/auth/auth-service';
 import { provideRouter } from '@angular/router';
+import { Health } from '../services/health';
+import { of } from 'rxjs';
 
 describe('Home', () => {
 	let fixture: ComponentFixture<Home>;
 	let component: Home;
+	let html: HTMLElement;
 
-	let authServiceMock: { // Injected service 
-		isLoggedIn: ReturnType<typeof vi.fn>,
-		login: ReturnType<typeof vi.fn>
-	};
+	let healthServiceMock = { getHealthStatus: vi.fn() };
+
+	async function createComponent(shouldAwait = true) {
+		fixture = TestBed.createComponent(Home);
+		component = fixture.componentInstance;
+		html = fixture.nativeElement;
+
+		fixture.detectChanges();
+
+		if (shouldAwait) {
+			await fixture.whenStable();
+			fixture.detectChanges();
+		}
+	}
 
 	beforeEach(async () => {
-		authServiceMock = {
-			login: vi.fn(),
-			isLoggedIn: vi.fn(),
-		};
-
 		await TestBed.configureTestingModule({
 			imports: [Home],
 			providers: [
-				{ provide: AuthService, useValue: authServiceMock },
+				{ provide: Health, useValue: healthServiceMock },
 				provideRouter([])
 			],
 		}).compileComponents();
-
-		fixture = TestBed.createComponent(Home);
-		component = fixture.componentInstance;
-
-		await fixture.whenStable();
 	});
 
-	it('should create', () => {
+	it('should create', async () => {
+		healthServiceMock.getHealthStatus.mockReturnValue(of({}));
+		
+		await createComponent();
+		
 		expect(component).toBeTruthy();
 	});
 });

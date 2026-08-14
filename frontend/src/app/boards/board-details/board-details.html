@@ -1,14 +1,34 @@
-<div class="board-details">
-	@if (board.isLoading()) {
-	<div class="loading">Loading...</div>
-	} @else if (board.error()) {
-	<div class="error">Error loading board</div>
-	} @else {
-	@if (board.value(); as board) {
-	<h2 class="board-name">Name: {{board.name}}</h2>
-	<app-column-list [columnList]="board.columns" [projectId]="projectId" [boardId]="boardId" (columnListEdited)="onColumnListEdited()">
-	</app-column-list>
-	}
-	}
-	<button type="button" [routerLink]="['/projects', projectId]">Go back</button>
+@if (board.isLoading() || members.isLoading()) {
+<div class="loading">Loading...</div>
+} @else if (board.error() || members.error()) {
+<div class="error">Error loading board info</div>
+} @else {
+@if (board.value(); as board) {
+@if (members.value(); as members) {
+<div class="board-header">
+	<div>
+		<h1 class="board-name">{{ board.name }}</h1>
+		<div class="board-subtitle">Organize and manage your tasks.</div>
+	</div>
+
+	<div class="board-actions">
+		@if(hasAdminPermissions()){
+		<button class="btn btn-primary" type="button"
+			[routerLink]="['/projects', projectId, 'boards', boardId, 'columns', 'create']">
+			Add column
+		</button>
+		}
+		<button type="button" class="btn btn-secondary" [routerLink]="['/projects', projectId]">
+			Back to project
+		</button>
+	</div>
 </div>
+
+<div class="divider"></div>
+
+<app-column-list [columnList]="board.columns" [projectId]="projectId" [boardId]="boardId" [members]="members"
+	[hasAdminPermissions]="hasAdminPermissions()" (columnListEdited)="onColumnListEdited()">
+</app-column-list>
+}
+}
+}

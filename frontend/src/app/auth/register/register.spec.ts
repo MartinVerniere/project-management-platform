@@ -43,20 +43,28 @@ describe('Register', () => {
 			email: 'john@test.com',
 		}));
 
+		const avatar = new File(['avatar'], 'avatar.png', {
+			type: 'image/png'
+		});
+
 		component.registerModel.set({
 			username: 'john',
 			email: 'john@test.com',
 			password: '123',
+			avatar: avatar
 		});
 
 		component.onSubmit(new Event('submit'));
 
-		expect(authServiceMock.register).toHaveBeenCalledWith({
-			username: 'john',
-			email: 'john@test.com',
-			password: '123',
-		});
+		expect(authServiceMock.register).toHaveBeenCalledTimes(1);
+		const formData = authServiceMock.register.mock.calls[0][0];
 
+		expect(formData).toBeInstanceOf(FormData);
+		expect(formData.get('username')).toBe('john');
+		expect(formData.get('email')).toBe('john@test.com');
+		expect(formData.get('password')).toBe('123');
+		expect(formData.get('avatar')).toBe(avatar);
+	
 		expect(navigateSpy).toHaveBeenCalledWith(['/login']);
 	});
 
@@ -65,6 +73,7 @@ describe('Register', () => {
 			username: '',
 			email: '',
 			password: '',
+			avatar: null
 		});
 
 		component.onSubmit(new Event('submit'));

@@ -1,8 +1,9 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommentService } from '../../services/comments/comment-service';
 import { CommentUpdateForm } from '../comment-update-form/comment-update-form';
 import { CommentResponse } from '../../models/comment';
+import { AuthService } from '../../services/auth/auth-service';
 
 @Component({
 	selector: 'app-comment-element',
@@ -12,12 +13,20 @@ import { CommentResponse } from '../../models/comment';
 })
 export class CommentElement {
 	commentService = inject(CommentService);
+	authService = inject(AuthService);
 
 	comment = input.required<CommentResponse>();
+	hasAdminPermissions = input.required<boolean>();
+
+	hasCommentEditorPermissions = computed(() => {
+		const userId = this.authService.user()?.id;
+		return this.hasAdminPermissions() || this.comment().user.id === userId;
+	});
 
 	commentEdited = output<void>();
 	commentDeleted = output<void>();
 
+	avatarPreview = signal('/images/default-avatar.png');
 	editCommentFormEnabled = signal<boolean>(false);
 	error = signal<string | null>(null);
 

@@ -1,0 +1,90 @@
+:host {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 24px;
+	padding: 24px;
+	background: var(--white-primary);
+}
+
+.project-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 24px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid var(--white-secondary);
+}
+
+.project-key {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--gray-secondary);
+	text-transform: uppercase;
+}
+
+.project-name {
+	margin: 0;
+	font-size: 28px;
+	font-weight: 650;
+	color: var(--black-primary);
+}
+
+.project-description {
+	max-width: 650px;
+	font-size: 12px;
+	color: var(--gray-secondary);
+}
+
+.back-button {
+	color: var(--purple-primary);
+	font-size: 12px;
+	font-weight: 600;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.back-button:hover {
+	color: var(--purple-primary);
+}
+
+.project-content {
+	display: flex;
+	flex-direction: column;
+	gap: 28px;
+}
+
+.loading {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+
+	color: var(--gray-secondary);
+	font-size: 14px;
+
+	animation: loading 1.4s ease-in-out infinite;
+}
+
+@keyframes loading {
+	0% {
+		opacity: 0.4;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0.4;
+	}
+}
+
+.error {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	color: var(--red-secondary);
+}

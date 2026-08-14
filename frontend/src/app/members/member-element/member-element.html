@@ -1,9 +1,23 @@
-<div class="member-element">
-	@if (member(); as member) {
-	<div class="member-id">Id: {{member.user.id}}</div>
-	<div class="member-role">Role: {{member.role}}</div>
-	<div class="member-name">Name: {{member.user.username}}</div>
-	<button type="button" (click)="onRemoveMember(member.user.id)">Remove from project</button>
-	<div class="error"> {{ error() }}</div>
-	}
+@if (member(); as member) {
+<div class="member-info">
+	<div class="member-name">
+		{{ member.user.username }}
+	</div>
+
+	<div class="member-role">
+		{{ member.role }}
+	</div>
 </div>
+
+@if(hasAdminPermissions()){
+<button class="btn btn-danger" type="button" (click)="onRemoveMember(member.user.id)">
+	Remove
+</button>
+}
+
+@if (error()) {
+<div class="error">
+	{{ error() }}
+</div>
+}
+}
