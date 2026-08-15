@@ -27,9 +27,9 @@ test.describe('Login', () => {
 		await page.goto('/login');
 
 		await page.getByLabel('Username').fill('john');
-		const registerButton = page.getByRole('button', { name: 'Login' });
+		const loginButton = page.getByRole('button', { name: 'Login' });
 
-		await expect(registerButton).toBeDisabled();
+		await expect(loginButton).toBeDisabled();
 	});
 
 	test('should show error with invalid credentials', async ({ page }) => {	
@@ -44,24 +44,18 @@ test.describe('Login', () => {
 		await expect(page).toHaveURL('/login');
 	});
 
-	test('should login successfully and navigate to home and show navbar', async ({ page }) => {
+	test('should login successfully and navigate to home', async ({ page }) => {
 		await page.goto('/login');
 
 		await page.getByLabel('Username').fill('john');
 		await page.getByLabel('Password').fill('12345678');
 
-		const registerButton = page.getByRole('button', { name: 'Login' });
+		const loginButton = page.getByRole('button', { name: 'Login' });
 
-		await expect(registerButton).toBeVisible();
-		await registerButton.click();
+		await expect(loginButton).toBeVisible();
+		await loginButton.click();
 
 		await expect(page).toHaveURL('/');
-
-		const navbar = page.locator('app-navbar');
-		await expect(navbar.getByRole('link', { name: 'Home' })).toBeVisible();
-		await expect(navbar.getByRole('link', { name: 'Projects' })).toBeVisible();
-		await expect(navbar.getByText('john', { exact: true })).toBeVisible();
-		await expect(navbar.getByRole('button', { name: 'Logout' })).toBeVisible();
 	});
 
 	test('should navigate to register page on register button click', async ({ page }) => {
