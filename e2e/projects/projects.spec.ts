@@ -26,7 +26,7 @@ test.describe('Projects', () => {
 		const registerCResponse = await request.post('http://localhost:3000/api/auth/register', {
 			data: { username: 'martin', email: 'martin@test.com', password: '12345678' },
 		});
-		expect(registerBResponse.ok()).toBeTruthy();
+		expect(registerCResponse.ok()).toBeTruthy();
 		const { id: registerCId } = await registerCResponse.json();
 		nonMemberId = registerCId;
 
