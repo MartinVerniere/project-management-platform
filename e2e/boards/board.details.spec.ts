@@ -39,12 +39,12 @@ test.describe('Projects', () => {
 		const { id: projectAId } = await createProjectAresponse.json();
 		projectId = projectAId;
 
-		const updateBoardAresponse = await request.post(`http://localhost:3000/api/projects/${projectId}/boards`, {
+		const createBoardAresponse = await request.post(`http://localhost:3000/api/projects/${projectId}/boards`, {
 			headers: { Authorization: `Bearer ${authToken}` },
 			data: { name: 'Board A' },
 		});
-		expect(updateBoardAresponse.ok()).toBeTruthy();
-		const { id: boardAId } = await updateBoardAresponse.json();
+		expect(createBoardAresponse.ok()).toBeTruthy();
+		const { id: boardAId } = await createBoardAresponse.json();
 		boardId = boardAId;
 
 		await page.goto('/');
