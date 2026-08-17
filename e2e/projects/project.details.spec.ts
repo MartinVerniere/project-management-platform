@@ -3,8 +3,6 @@ import { test, expect } from '@playwright/test';
 test.describe('Projects', () => {
 	let authToken: string;
 	let adminId: number;
-	let memberId: number;
-	let nonMemberId: number;
 	let projectId: number;
 
 	test.beforeEach(async ({ page, request }) => {
@@ -16,20 +14,6 @@ test.describe('Projects', () => {
 		expect(registerResponse.ok()).toBeTruthy();
 		const { id: registerAId } = await registerResponse.json();
 		adminId = registerAId;
-
-		const registerBResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'alice', email: 'alice@test.com', password: '12345678' },
-		});
-		expect(registerBResponse.ok()).toBeTruthy();
-		const { id: registerBId } = await registerBResponse.json();
-		memberId = registerBId;
-
-		const registerCResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'martin', email: 'martin@test.com', password: '12345678' },
-		});
-		expect(registerBResponse.ok()).toBeTruthy();
-		const { id: registerCId } = await registerCResponse.json();
-		nonMemberId = registerCId;
 
 		const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
 			data: { username: 'john', password: '12345678' },
