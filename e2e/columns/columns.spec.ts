@@ -112,7 +112,7 @@ test.describe('Columns', () => {
 				await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
 			});
 
-			test('should display each column with all info and actions actions', async ({ page }) => {
+			test('should display each column with all info and actions', async ({ page }) => {
 				await page.goto(`/projects/${projectId}/boards/${boardId}`);
 
 				const board = page.locator('app-board-details');
