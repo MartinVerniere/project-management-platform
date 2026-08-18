@@ -2,13 +2,14 @@
 <div class="task-filters">
 	<div class="filter">
 		<label class="filter-label" for="search">Search</label>
-		<input class="filter-element" id="search" type="text" placeholder="Search tasks..."
+		<input class="filter-element" id="search" type="text" placeholder="Search tasks..." [value]="searchTerm()"
 			(input)="onSearchChange($event)">
 	</div>
 
 	<div class="filter">
 		<label class="filter-label" for="assignee">Assignee</label>
-		<select class="filter-element" id="assignee" (change)="onAssigneeChange($event)">
+		<select class="filter-element" id="assignee" [value]="selectedAssigneeId() ?? ''"
+			(change)="onAssigneeChange($event)">
 			<option value="">All</option>
 
 			@for (member of members(); track member.id) {

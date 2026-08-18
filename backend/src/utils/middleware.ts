@@ -218,6 +218,7 @@ export const boardExtractor = async (
 								}
 							},
 							comments: {
+								orderBy: { createdAt: "asc" },
 								select: {
 									id: true,
 									content: true,
