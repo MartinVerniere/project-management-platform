@@ -198,4 +198,47 @@ test.describe('Columns', () => {
 			});
 		});
 	});
+
+	// test.describe('multiple columns exist', () => {
+	// 	let columnAId: number;
+	// 	let columnBId: number;
+
+	// 	test.beforeEach(async ({ request }) => {
+	// 		const createColumnAresponse = await request.post(`http://localhost:3000/api/boards/${boardId}/columns`, {
+	// 			headers: { Authorization: `Bearer ${authToken}` },
+	// 			data: { name: 'Column A' },
+	// 		});
+	// 		expect(createColumnAresponse.ok()).toBeTruthy();
+	// 		const { id: idA } = await createColumnAresponse.json();
+	// 		columnAId = idA;
+
+	// 		const createColumnBresponse = await request.post(`http://localhost:3000/api/boards/${boardId}/columns`, {
+	// 			headers: { Authorization: `Bearer ${authToken}` },
+	// 			data: { name: 'Column B' },
+	// 		});
+	// 		expect(createColumnBresponse.ok()).toBeTruthy();
+	// 		const { id: idB } = await createColumnBresponse.json();
+	// 		columnBId = idB;
+	// 	});
+
+	// 	test('should reorder columns when dragging one to a different position', async ({ page }) => {
+	// 		await page.goto(`/projects/${projectId}/boards/${boardId}`);
+
+	// 		const columnList = page.locator('app-column-list');
+	// 		const columnA = columnList.locator('app-column-element').filter({ hasText: 'Column A' });
+	// 		const columnB = columnList.locator('app-column-element').filter({ hasText: 'Column B' });
+
+	// 		const columnAHandle = columnA.locator('.cdk-drag-handle');
+	// 		await expect(columnAHandle).toBeVisible();
+
+	// 		const dropList = columnList.locator('.cdk-drop-list').first();
+
+	// 		await columnAHandle.dragTo(dropList);
+
+	// 		const columns = columnList.locator('app-column-element');
+
+	// 		await expect(columns.first()).toHaveText('Column B');
+	// 		await expect(columns.last()).toHaveText('Column A');
+	// 	});
+	// });
 });

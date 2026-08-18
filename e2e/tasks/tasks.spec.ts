@@ -103,7 +103,7 @@ test.describe('Tasks', () => {
 				data: { title: 'Task B', description: 'Desc B' },
 			});
 			expect(createTaskBresponse.ok()).toBeTruthy();
-			const { id: columnBId } = await createTaskBresponse.json();
+			const { id: taskBId } = await createTaskBresponse.json();
 		});
 
 		test.describe('ADMIN is logged in', () => {
@@ -209,4 +209,78 @@ test.describe('Tasks', () => {
 			});
 		});
 	});
+
+	// test.describe('multiple tasks and columns exist', () => {
+	// 	let taskAId: number;
+	// 	let taskBId: number;
+	// 	let secondColumnId: number;
+
+	// 	test.beforeEach(async ({ request }) => {
+	// 		const createColumnBresponse = await request.post(`http://localhost:3000/api/boards/${boardId}/columns`, {
+	// 			headers: { Authorization: `Bearer ${authToken}` },
+	// 			data: { name: 'Column B' },
+	// 		});
+	// 		expect(createColumnBresponse.ok()).toBeTruthy();
+	// 		const { id: columnBId } = await createColumnBresponse.json();
+	// 		secondColumnId = columnBId;
+
+	// 		// Add tasks to column A
+	// 		const createTaskAresponse = await request.post(`http://localhost:3000/api/columns/${columnId}/tasks`, {
+	// 			headers: { Authorization: `Bearer ${authToken}` },
+	// 			data: { title: 'Task A', description: 'Desc A' },
+	// 		});
+	// 		expect(createTaskAresponse.ok()).toBeTruthy();
+	// 		const { id: idA } = await createTaskAresponse.json();
+	// 		taskAId = idA;
+
+	// 		const createTaskBresponse = await request.post(`http://localhost:3000/api/columns/${columnId}/tasks`, {
+	// 			headers: { Authorization: `Bearer ${authToken}` },
+	// 			data: { title: 'Task B', description: 'Desc B' },
+	// 		});
+	// 		expect(createTaskBresponse.ok()).toBeTruthy();
+	// 		const { id: idB } = await createTaskBresponse.json();
+	// 		taskBId = idB;
+	// 	});
+
+	// 	test('should move task to another column on drag-and-drop', async ({ page }) => {
+	// 		await page.goto(`/projects/${projectId}/boards/${boardId}`);
+
+	// 		const columnList = page.locator('app-column-list');
+	// 		const columnA = columnList.locator('app-column-element').filter({ hasText: 'Column A' });
+	// 		const columnB = columnList.locator('app-column-element').filter({ hasText: 'Column B' });
+
+	// 		const taskA = columnA.locator('.cdk-drag').filter({ hasText: 'Task A' });
+	// 		await expect(taskA).toBeVisible();
+	// 		const taskAHandle = taskA.locator('.cdk-drag-handle');
+	// 		await expect(taskAHandle).toBeVisible();
+
+	// 		const taskListB = columnB.locator('app-task-list');
+	// 		await expect(taskListB).toBeVisible();
+	// 		const dropListB = taskListB.locator('.cdk-drop-list');
+	// 		await expect(dropListB).toBeVisible();
+
+	// 		await taskAHandle.dragTo(dropListB);
+
+	// 		await expect(columnA.locator('app-task-element').filter({ hasText: 'Task A' })).not.toBeVisible();
+	// 		await expect(columnB.locator('app-task-element').filter({ hasText: 'Task A' })).toBeVisible();
+	// 	});
+
+	// 	test('should reorder task when dragged within the same column', async ({ page }) => {
+	// 		await page.goto(`/projects/${projectId}/boards/${boardId}`);
+
+	// 		const columnA = page.locator('app-column-list app-column-element').filter({ hasText: 'Column A' });
+
+	// 		const taskList = columnA.locator('app-task-list');
+	// 		const dropList = taskList.locator('.cdk-drop-list');
+
+	// 		const taskB = columnA.locator('.cdk-drag').filter({ hasText: 'Task B' });
+
+	// 		await taskB.dragTo(dropList);
+
+	// 		const tasks = columnA.locator('app-task-element');
+
+	// 		await expect(tasks.first()).toHaveText('Task B');
+	// 		await expect(tasks.last()).toHaveText('Task A');
+	// 	});
+	// });
 });
