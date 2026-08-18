@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { resetDatabase, registerUser, loginUser, createProject, addProjectMember, createBoard, createColumn, createTask } from '../helpers';
+import { resetDatabase, registerUser, loginUser, createProject, addProjectMember, createBoard, createColumn, createTask, assignTask } from '../helpers';
 
 test.describe('Tasks', () => {
 	let authToken: string;
@@ -82,6 +82,66 @@ test.describe('Tasks', () => {
 				}
 			});
 
+			test('should display assignee form on "Change" button click', async ({ page }) => {
+				await page.goto(`/projects/${projectId}/boards/${boardId}`);
+
+				const column = page.locator('app-column-element');
+				const taskList = column.locator('app-task-list');
+				const tasks = taskList.locator('app-task-element');
+				const task = tasks.first();
+
+				await task.getByRole('button', { name: 'Change' }).click();
+
+				const assigneeForm = task.locator('.assignee-form');
+				const assigneeSelect = assigneeForm.getByRole('combobox');
+
+				await expect(assigneeForm).toBeVisible();
+				await expect(assigneeSelect).toBeVisible();
+				await expect(task.getByRole('button', { name: 'Set' })).toBeVisible();
+				await expect(task.getByRole('button', { name: 'Cancel' })).toBeVisible();
+			});
+
+			test('should change task assignee on "Set" button click', async ({ page }) => {
+				await page.goto(`/projects/${projectId}/boards/${boardId}`);
+
+				const column = page.locator('app-column-element');
+				const taskList = column.locator('app-task-list');
+				const tasks = taskList.locator('app-task-element');
+				const task = tasks.first();
+
+				await task.getByRole('button', { name: 'Change' }).click();
+
+				const assigneeForm = task.locator('.assignee-form');
+				const assigneeSelect = assigneeForm.getByRole('combobox');
+
+				await assigneeSelect.selectOption({ label: 'alice' });
+
+				await task.getByRole('button', { name: 'Set' }).click();
+
+				await expect(task.locator('.assignee-form')).not.toBeVisible();
+				await expect(task.locator('.task-assignee-value')).toContainText('alice');
+			});
+
+			test('should hide assignee form on "Cancel" button click', async ({ page }) => {
+				await page.goto(`/projects/${projectId}/boards/${boardId}`);
+
+				const column = page.locator('app-column-element');
+				const taskList = column.locator('app-task-list');
+				const tasks = taskList.locator('app-task-element');
+				const task = tasks.first();
+
+				await task.getByRole('button', { name: 'Change' }).click();
+
+				const assigneeForm = task.locator('.assignee-form');
+
+				await expect(assigneeForm).toBeVisible();
+
+				await task.getByRole('button', { name: 'Cancel' }).click();
+
+				await expect(assigneeForm).not.toBeVisible();
+				await expect(task.getByRole('button', { name: 'Change' })).toBeVisible();
+			});
+
 			test('should redirect to /projects/:projectId/boards/:boardId/columns/:columnId/tasks/:taskId/edit on edit button click', async ({ page }) => {
 				await page.goto(`/projects/${projectId}/boards/${boardId}`);
 
@@ -145,58 +205,119 @@ test.describe('Tasks', () => {
 		});
 	});
 
-	// test.describe('multiple tasks and columns exist', () => {
-	// 	let taskAId: number;
-	// 	let taskBId: number;
-	// 	let secondColumnId: number;
+	test.describe('multiple tasks and columns exist', () => {
+		let taskAId: number;
+		let taskBId: number;
+		let taskCId: number;
+		let taskDId: number;
+		let secondColumnId: number;
+		let thirdColumnId: number;
 
-	// 	test.beforeEach(async ({ request }) => {
-	// 		secondColumnId = await createColumn(request, authToken, boardId, { name: 'Column B' });
+		test.beforeEach(async ({ request }) => {
+			secondColumnId = await createColumn(request, authToken, boardId, { name: 'Column B' });
+			thirdColumnId = await createColumn(request, authToken, boardId, { name: 'Column C' });
 
-	// 		// Add tasks to column A
-	// 		taskAId = await createTask(request, authToken, columnId, { title: 'Task A', description: 'Description A' });
-	// 		taskBId = await createTask(request, authToken, columnId, { title: 'Task B', description: 'Description B' });
-	// 	});
+			// Add tasks to column A
+			taskAId = await createTask(request, authToken, columnId, { title: 'Task A', description: 'Description A' });
+			taskBId = await createTask(request, authToken, columnId, { title: 'Task B', description: 'Description B' });
 
-	// 	test('should move task to another column on drag-and-drop', async ({ page }) => {
-	// 		await page.goto(`/projects/${projectId}/boards/${boardId}`);
+			taskCId = await createTask(request, authToken, secondColumnId, { title: 'Task C', description: 'Description C' });
+			taskDId = await createTask(request, authToken, thirdColumnId, { title: 'Task D', description: 'Description D' });
 
-	// 		const columnList = page.locator('app-column-list');
-	// 		const columnA = columnList.locator('app-column-element').filter({ hasText: 'Column A' });
-	// 		const columnB = columnList.locator('app-column-element').filter({ hasText: 'Column B' });
+			await assignTask(request, authToken, taskAId, memberId);
+			await assignTask(request, authToken, taskBId, memberId);
+		});
 
-	// 		const taskA = columnA.locator('.cdk-drag').filter({ hasText: 'Task A' });
-	// 		await expect(taskA).toBeVisible();
-	// 		const taskAHandle = taskA.locator('.cdk-drag-handle');
-	// 		await expect(taskAHandle).toBeVisible();
+		test('should filter tasks by search term', async ({ page }) => {
+			await page.goto(`/projects/${projectId}/boards/${boardId}`);
 
-	// 		const taskListB = columnB.locator('app-task-list');
-	// 		await expect(taskListB).toBeVisible();
-	// 		const dropListB = taskListB.locator('.cdk-drop-list');
-	// 		await expect(dropListB).toBeVisible();
+			const columnList = page.locator('app-column-list');
 
-	// 		await taskAHandle.dragTo(dropListB);
+			const searchInput = columnList.getByLabel('Search');
 
-	// 		await expect(columnA.locator('app-task-element').filter({ hasText: 'Task A' })).not.toBeVisible();
-	// 		await expect(columnB.locator('app-task-element').filter({ hasText: 'Task A' })).toBeVisible();
-	// 	});
+			await searchInput.fill('Task A');
 
-	// 	test('should reorder task when dragged within the same column', async ({ page }) => {
-	// 		await page.goto(`/projects/${projectId}/boards/${boardId}`);
+			await expect(columnList.getByText('Task A')).toBeVisible();
+			await expect(columnList.getByText('Task B')).not.toBeVisible();
+			await expect(columnList.getByText('Task C')).not.toBeVisible();
+			await expect(columnList.getByText('Task D')).not.toBeVisible();
+		});
 
-	// 		const columnA = page.locator('app-column-list app-column-element').filter({ hasText: 'Column A' });
+		test('should filter tasks by assignee', async ({ page }) => {
+			await page.goto(`/projects/${projectId}/boards/${boardId}`);
 
-	// 		const taskList = columnA.locator('app-task-list');
-	// 		const dropList = taskList.locator('.cdk-drop-list');
+			const columnList = page.locator('app-column-list');
 
-	// 		const taskB = columnA.locator('.cdk-drag').filter({ hasText: 'Task B' });
+			await columnList.getByLabel('Assignee').selectOption({ label: 'alice' });
 
-	// 		await taskB.dragTo(dropList);
+			await expect(columnList.getByText('Task A')).toBeVisible();
+			await expect(columnList.getByText('Task B')).toBeVisible();
+			await expect(columnList.getByText('Task C')).not.toBeVisible();
+			await expect(columnList.getByText('Task D')).not.toBeVisible();
+		});
 
-	// 		const tasks = columnA.locator('app-task-element');
+		test('should clear filters on "Clear" button click', async ({ page }) => {
+			await page.goto(`/projects/${projectId}/boards/${boardId}`);
 
-	// 		await expect(tasks.first()).toHaveText('Task B');
-	// 		await expect(tasks.last()).toHaveText('Task A');
-	// 	});
-	// });
+			const columnList = page.locator('app-column-list');
+			const searchInput = columnList.getByLabel('Search');
+
+			await searchInput.fill('Task A');
+
+			await expect(columnList.getByText('Task A')).toBeVisible();
+			await expect(columnList.getByText('Task B')).not.toBeVisible();
+			await expect(columnList.getByText('Task C')).not.toBeVisible();
+			await expect(columnList.getByText('Task D')).not.toBeVisible();
+
+			await columnList.getByRole('button', { name: 'Clear' }).click();
+
+			await expect(searchInput).toHaveValue('');
+
+			await expect(columnList.getByText('Task A')).toBeVisible();
+			await expect(columnList.getByText('Task B')).toBeVisible();
+			await expect(columnList.getByText('Task C')).toBeVisible();
+			await expect(columnList.getByText('Task D')).toBeVisible();
+		});
+
+		// 	test('should move task to another column on drag-and-drop', async ({ page }) => {
+		// 		await page.goto(`/projects/${projectId}/boards/${boardId}`);
+
+		// 		const columnList = page.locator('app-column-list');
+		// 		const columnA = columnList.locator('app-column-element').filter({ hasText: 'Column A' });
+		// 		const columnB = columnList.locator('app-column-element').filter({ hasText: 'Column B' });
+
+		// 		const taskA = columnA.locator('.cdk-drag').filter({ hasText: 'Task A' });
+		// 		await expect(taskA).toBeVisible();
+		// 		const taskAHandle = taskA.locator('.cdk-drag-handle');
+		// 		await expect(taskAHandle).toBeVisible();
+
+		// 		const taskListB = columnB.locator('app-task-list');
+		// 		await expect(taskListB).toBeVisible();
+		// 		const dropListB = taskListB.locator('.cdk-drop-list');
+		// 		await expect(dropListB).toBeVisible();
+
+		// 		await taskAHandle.dragTo(dropListB);
+
+		// 		await expect(columnA.locator('app-task-element').filter({ hasText: 'Task A' })).not.toBeVisible();
+		// 		await expect(columnB.locator('app-task-element').filter({ hasText: 'Task A' })).toBeVisible();
+		// 	});
+
+		// 	test('should reorder task when dragged within the same column', async ({ page }) => {
+		// 		await page.goto(`/projects/${projectId}/boards/${boardId}`);
+
+		// 		const columnA = page.locator('app-column-list app-column-element').filter({ hasText: 'Column A' });
+
+		// 		const taskList = columnA.locator('app-task-list');
+		// 		const dropList = taskList.locator('.cdk-drop-list');
+
+		// 		const taskB = columnA.locator('.cdk-drag').filter({ hasText: 'Task B' });
+
+		// 		await taskB.dragTo(dropList);
+
+		// 		const tasks = columnA.locator('app-task-element');
+
+		// 		await expect(tasks.first()).toHaveText('Task B');
+		// 		await expect(tasks.last()).toHaveText('Task A');
+		// 	});
+	});
 });

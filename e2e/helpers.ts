@@ -76,6 +76,15 @@ export async function createTask(request: APIRequestContext, authToken: string, 
 	return id;
 }
 
+export async function assignTask(request: APIRequestContext, authToken: string, taskId: number, userId: number) {
+	const response = await request.put(`http://localhost:3000/api/tasks/${taskId}/assignee`, {
+		headers: { Authorization: `Bearer ${authToken}`, },
+		data: { userId },
+	});
+
+	expect(response.ok()).toBeTruthy();
+}
+
 export async function createComment(request: APIRequestContext, authToken: string, taskId: number, data = { content: 'Comment A' }) {
 	const response = await request.post(`http://localhost:3000/api/tasks/${taskId}/comments`, {
 		headers: { Authorization: `Bearer ${authToken}`, },

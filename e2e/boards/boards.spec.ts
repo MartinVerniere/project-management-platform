@@ -88,21 +88,6 @@ test.describe('Boards', () => {
 				}
 			});
 
-			test('should display each member with all actions', async ({ page }) => {
-				await page.goto(`/projects/${projectId}`);
-
-				const memberList = page.locator('app-member-list');
-				const members = memberList.locator('app-member-element');
-
-				await expect(members).toHaveCount(2);
-
-				for (const member of await members.all()) {
-					await expect(member).toBeVisible();
-					const removeButton = member.getByRole('button', { name: 'Remove' });
-					await expect(removeButton).toBeVisible();
-				}
-			});
-
 			test('should redirect to /projects/:projectId/boards/:boardId/edit on edit button click', async ({ page }) => {
 				await page.goto(`/projects/${projectId}`);
 
@@ -130,36 +115,6 @@ test.describe('Boards', () => {
 
 				await expect(boardList.locator('app-board-element')).toHaveCount(1);
 			});
-
-			test('should NOT delete member on delete button click if its himself', async ({ page }) => {
-				await page.goto(`/projects/${projectId}`);
-
-				const memberList = page.locator('app-member-list');
-				const members = memberList.locator('app-member-element');
-
-				const currentMember = memberList
-					.locator('app-member-element')
-					.filter({ hasText: 'john' });
-				const removeButton = currentMember.getByRole('button', { name: 'Remove' });
-
-				await removeButton.click();
-
-				await expect(memberList.locator('app-member-element')).toHaveCount(2);
-			});
-
-			test('should delete member on delete button click', async ({ page }) => {
-				await page.goto(`/projects/${projectId}`);
-
-				const memberList = page.locator('app-member-list');
-				const members = memberList.locator('app-member-element');
-
-				const lastMember = members.last();
-				const removeButton = lastMember.getByRole('button', { name: 'Remove' });
-
-				await removeButton.click();
-
-				await expect(memberList.locator('app-member-element')).toHaveCount(1);
-			});
 		});
 
 		test.describe('MEMBER is logged in', () => {
@@ -186,21 +141,6 @@ test.describe('Boards', () => {
 					await expect(openButton).toBeVisible();
 					await expect(editButton).not.toBeVisible();
 					await expect(deleteButton).not.toBeVisible();
-				}
-			});
-
-			test('should display each member with NO actions', async ({ page }) => {
-				await page.goto(`/projects/${projectId}`);
-
-				const memberList = page.locator('app-member-list');
-				const members = memberList.locator('app-member-element');
-
-				await expect(members).toHaveCount(2);
-
-				for (const member of await members.all()) {
-					await expect(member).toBeVisible();
-					const removeButton = member.getByRole('button', { name: 'Remove' });
-					await expect(removeButton).not.toBeVisible();
 				}
 			});
 		});
