@@ -1,18 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { registerUser, resetDatabase } from '../helpers';
 
 test.describe('Login', () => {
+	let userId = Number;
+	
 	test.beforeEach(async ({ request }) => {
-		let response = await request.delete('http://localhost:3000/api/test/reset');
-
-		response = await request.post('http://localhost:3000/api/auth/register', {
-			data: {
-				username: 'john',
-				email: 'john@test.com',
-				password: '12345678',
-			},
-		});
-
-		expect(response.ok()).toBeTruthy();
+		await resetDatabase(request);
+		userId = await registerUser(request, { username: 'john', email: 'john@test.com', password: '12345678' });
 	});
 
 	test('should display the login form', async ({ page }) => {
@@ -32,14 +26,14 @@ test.describe('Login', () => {
 		await expect(loginButton).toBeDisabled();
 	});
 
-	test('should show error with invalid credentials', async ({ page }) => {	
+	test('should show error with invalid credentials', async ({ page }) => {
 		await page.goto('/login');
-	
+
 		await page.getByLabel('Username').fill('john');
 		await page.getByLabel('Password').fill('wrong-password');
-	
+
 		await page.getByRole('button', { name: 'Login' }).click();
-	
+
 		await expect(page.getByText('Invalid username or password')).toBeVisible();
 		await expect(page).toHaveURL('/login');
 	});
@@ -60,12 +54,12 @@ test.describe('Login', () => {
 
 	test('should navigate to register page on register button click', async ({ page }) => {
 		await page.goto('/login');
-	
+
 		const registerButton = page.getByRole('button', { name: 'Register' });
 
 		await expect(registerButton).toBeVisible();
 		await registerButton.click();
-	
+
 		await expect(page).toHaveURL('/register');
 	});
 });

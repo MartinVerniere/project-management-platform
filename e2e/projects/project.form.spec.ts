@@ -1,25 +1,15 @@
 import { test, expect } from '@playwright/test';
+import { resetDatabase, registerUser, loginUser } from '../helpers';
 
 test.describe('Project form', () => {
 	let authToken: string;
 	let adminId: number;
 
 	test.beforeEach(async ({ page, request }) => {
-		const resetResponse = await request.delete('http://localhost:3000/api/test/reset');
+		await resetDatabase(request);
 
-		const registerResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'john', email: 'john@test.com', password: '12345678' },
-		});
-		expect(registerResponse.ok()).toBeTruthy();
-		const { id: registerAId } = await registerResponse.json();
-		adminId = registerAId;
-
-		const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-			data: { username: 'john', password: '12345678' },
-		});
-		expect(loginResponse.ok()).toBeTruthy();
-		const loginResponseJSON = await loginResponse.json();
-		authToken = loginResponseJSON.token;
+		adminId = await registerUser(request, { username: 'john', email: 'john@test.com', password: '12345678' });
+		authToken = await loginUser(request, { username: 'john', password: '12345678' });
 
 		await page.goto('/');
 		await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);

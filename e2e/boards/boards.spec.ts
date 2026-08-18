@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { resetDatabase, registerUser, loginUser, createProject, createBoard, addProjectMember } from '../helpers';
 
 test.describe('Boards', () => {
 	let authToken: string;
@@ -7,42 +8,13 @@ test.describe('Boards', () => {
 	let projectId: number;
 
 	test.beforeEach(async ({ page, request }) => {
-		const resetResponse = await request.delete('http://localhost:3000/api/test/reset');
+		await resetDatabase(request);
 
-		const registerResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'john', email: 'john@test.com', password: '12345678' },
-		});
-		expect(registerResponse.ok()).toBeTruthy();
-		const { id: registerAId } = await registerResponse.json();
-		adminId = registerAId;
-
-		const registerBResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'alice', email: 'alice@test.com', password: '12345678' },
-		});
-		expect(registerBResponse.ok()).toBeTruthy();
-		const { id: registerBId } = await registerBResponse.json();
-		memberId = registerBId;
-
-		const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-			data: { username: 'john', password: '12345678' },
-		});
-		expect(loginResponse.ok()).toBeTruthy();
-		const loginResponseJSON = await loginResponse.json();
-		authToken = loginResponseJSON.token;
-
-		const createProjectAresponse = await request.post('http://localhost:3000/api/projects', {
-			headers: { Authorization: `Bearer ${authToken}` },
-			data: { name: 'Project A', key: 'PRA', description: '' },
-		});
-		expect(createProjectAresponse.ok()).toBeTruthy();
-		const { id: projectAId } = await createProjectAresponse.json();
-		projectId = projectAId;
-
-		const addMemberResponse = await request.post(`http://localhost:3000/api/projects/${projectId}/members`, {
-			headers: { Authorization: `Bearer ${authToken}` },
-			data: { userId: memberId }
-		});
-		expect(addMemberResponse.ok()).toBeTruthy();
+		adminId = await registerUser(request, { username: 'john', email: 'john@test.com', password: '12345678' });
+		memberId = await registerUser(request, { username: 'alice', email: 'alice@test.com', password: '12345678' });
+		authToken = await loginUser(request, { username: 'john', password: '12345678' })
+		projectId = await createProject(request, authToken, { name: 'Project A', key: 'PRA', description: '' });
+		await addProjectMember(request, authToken, projectId, memberId);
 
 		await page.goto('/');
 		await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
@@ -85,30 +57,13 @@ test.describe('Boards', () => {
 		let boardId: number;
 
 		test.beforeEach(async ({ request }) => {
-			const createBoardAresponse = await request.post(`http://localhost:3000/api/projects/${projectId}/boards`, {
-				headers: { Authorization: `Bearer ${authToken}` },
-				data: { name: 'Board A' },
-			});
-			expect(createBoardAresponse.ok()).toBeTruthy();
-			const { id: boardAId } = await createBoardAresponse.json();
-			boardId = boardAId;
-
-			const createBoardBresponse = await request.post(`http://localhost:3000/api/projects/${projectId}/boards`, {
-				headers: { Authorization: `Bearer ${authToken}` },
-				data: { name: 'Board B' },
-			});
-			expect(createBoardBresponse.ok()).toBeTruthy();
-			const { id: boardBId } = await createBoardBresponse.json();
+			boardId = await createBoard(request, authToken, projectId, { name: 'Board A' });
+			await createBoard(request, authToken, projectId, { name: 'Board B' });
 		});
 
 		test.describe('ADMIN is logged in', () => {
 			test.beforeEach(async ({ page, request }) => {
-				const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-					data: { username: 'john', password: '12345678' },
-				});
-				expect(loginResponse.ok()).toBeTruthy();
-				const loginResponseJSON = await loginResponse.json();
-				authToken = loginResponseJSON.token;
+				authToken = await loginUser(request, { username: 'john', password: '12345678' });
 
 				await page.goto('/');
 				await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
@@ -209,15 +164,9 @@ test.describe('Boards', () => {
 
 		test.describe('MEMBER is logged in', () => {
 			test.beforeEach(async ({ page, request }) => {
-				const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-					data: { username: 'alice', password: '12345678' },
-				});
-				expect(loginResponse.ok()).toBeTruthy();
-				const loginResponseJSON = await loginResponse.json();
-				authToken = loginResponseJSON.token;
+				authToken = await loginUser(request, { username: 'alice', password: '12345678' });
 
 				await page.goto('/');
-
 				await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
 			});
 

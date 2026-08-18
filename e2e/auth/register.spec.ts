@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { resetDatabase } from '../helpers';
 
 test.describe('Register', () => {
 	test.beforeEach(async ({ request }) => {
-		const response = await request.delete('http://localhost:3000/api/test/reset');
-		expect(response.ok()).toBeTruthy();
+		await resetDatabase(request);
 	});
 
 	test('should display the register form', async ({ page }) => {

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { resetDatabase, registerUser, loginUser, createProject, addProjectMember, createBoard, createColumn, createTask } from '../helpers';
 
 test.describe('Tasks', () => {
 	let authToken: string;
@@ -9,58 +10,15 @@ test.describe('Tasks', () => {
 	let columnId: number;
 
 	test.beforeEach(async ({ page, request }) => {
-		const resetResponse = await request.delete('http://localhost:3000/api/test/reset');
+		await resetDatabase(request);
 
-		const registerResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'john', email: 'john@test.com', password: '12345678' },
-		});
-		expect(registerResponse.ok()).toBeTruthy();
-		const { id: registerAId } = await registerResponse.json();
-		adminId = registerAId;
-
-		const registerBResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'alice', email: 'alice@test.com', password: '12345678' },
-		});
-		expect(registerBResponse.ok()).toBeTruthy();
-		const { id: registerBId } = await registerBResponse.json();
-		memberId = registerBId;
-
-		const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-			data: { username: 'john', password: '12345678' },
-		});
-		expect(loginResponse.ok()).toBeTruthy();
-		const loginResponseJSON = await loginResponse.json();
-		authToken = loginResponseJSON.token;
-
-		const createProjectAresponse = await request.post('http://localhost:3000/api/projects', {
-			headers: { Authorization: `Bearer ${authToken}` },
-			data: { name: 'Project A', key: 'PRA', description: '' },
-		});
-		expect(createProjectAresponse.ok()).toBeTruthy();
-		const { id: projectAId } = await createProjectAresponse.json();
-		projectId = projectAId;
-
-		const addMemberResponse = await request.post(`http://localhost:3000/api/projects/${projectId}/members`, {
-			headers: { Authorization: `Bearer ${authToken}` },
-			data: { userId: memberId }
-		});
-		expect(addMemberResponse.ok()).toBeTruthy();
-
-		const createBoardAresponse = await request.post(`http://localhost:3000/api/projects/${projectId}/boards`, {
-			headers: { Authorization: `Bearer ${authToken}` },
-			data: { name: 'Board A' },
-		});
-		expect(createBoardAresponse.ok()).toBeTruthy();
-		const { id: boardAId } = await createBoardAresponse.json();
-		boardId = boardAId;
-
-		const createColumnAresponse = await request.post(`http://localhost:3000/api/boards/${boardId}/columns`, {
-			headers: { Authorization: `Bearer ${authToken}` },
-			data: { name: 'Column A' },
-		});
-		expect(createColumnAresponse.ok()).toBeTruthy();
-		const { id: columnAId } = await createColumnAresponse.json();
-		columnId = columnAId;
+		adminId = await registerUser(request, { username: 'john', email: 'john@test.com', password: '12345678' });
+		memberId = await registerUser(request, { username: 'alice', email: 'alice@test.com', password: '12345678' });
+		authToken = await loginUser(request, { username: 'john', password: '12345678' });
+		projectId = await createProject(request, authToken, { name: 'Project A', key: 'PRA', description: '' });
+		await addProjectMember(request, authToken, projectId, memberId);
+		boardId = await createBoard(request, authToken, projectId, { name: 'Board A' });
+		columnId = await createColumn(request, authToken, boardId, { name: 'Column A' });
 
 		await page.goto('/');
 		await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
@@ -90,30 +48,13 @@ test.describe('Tasks', () => {
 		let taskId: number;
 
 		test.beforeEach(async ({ request }) => {
-			const createTaskAresponse = await request.post(`http://localhost:3000/api/columns/${columnId}/tasks`, {
-				headers: { Authorization: `Bearer ${authToken}` },
-				data: { title: 'Task A', description: 'Desc A' },
-			});
-			expect(createTaskAresponse.ok()).toBeTruthy();
-			const { id: taskAId } = await createTaskAresponse.json();
-			taskId = taskAId;
-
-			const createTaskBresponse = await request.post(`http://localhost:3000/api/columns/${columnId}/tasks`, {
-				headers: { Authorization: `Bearer ${authToken}` },
-				data: { title: 'Task B', description: 'Desc B' },
-			});
-			expect(createTaskBresponse.ok()).toBeTruthy();
-			const { id: taskBId } = await createTaskBresponse.json();
+			taskId = await createTask(request, authToken, columnId, { title: 'Task A', description: 'Description A' });
+			await createTask(request, authToken, columnId, { title: 'Task B', description: 'Description B' });
 		});
 
 		test.describe('ADMIN is logged in', () => {
 			test.beforeEach(async ({ page, request }) => {
-				const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-					data: { username: 'john', password: '12345678' },
-				});
-				expect(loginResponse.ok()).toBeTruthy();
-				const loginResponseJSON = await loginResponse.json();
-				authToken = loginResponseJSON.token;
+				authToken = await loginUser(request, { username: 'john', password: '12345678' });
 
 				await page.goto('/');
 				await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
@@ -174,15 +115,9 @@ test.describe('Tasks', () => {
 
 		test.describe('MEMBER is logged in', () => {
 			test.beforeEach(async ({ page, request }) => {
-				const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-					data: { username: 'alice', password: '12345678' },
-				});
-				expect(loginResponse.ok()).toBeTruthy();
-				const loginResponseJSON = await loginResponse.json();
-				authToken = loginResponseJSON.token;
+				authToken = await loginUser(request, { username: 'alice', password: '12345678' });
 
 				await page.goto('/');
-
 				await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
 			});
 
@@ -216,30 +151,11 @@ test.describe('Tasks', () => {
 	// 	let secondColumnId: number;
 
 	// 	test.beforeEach(async ({ request }) => {
-	// 		const createColumnBresponse = await request.post(`http://localhost:3000/api/boards/${boardId}/columns`, {
-	// 			headers: { Authorization: `Bearer ${authToken}` },
-	// 			data: { name: 'Column B' },
-	// 		});
-	// 		expect(createColumnBresponse.ok()).toBeTruthy();
-	// 		const { id: columnBId } = await createColumnBresponse.json();
-	// 		secondColumnId = columnBId;
+	// 		secondColumnId = await createColumn(request, authToken, boardId, { name: 'Column B' });
 
 	// 		// Add tasks to column A
-	// 		const createTaskAresponse = await request.post(`http://localhost:3000/api/columns/${columnId}/tasks`, {
-	// 			headers: { Authorization: `Bearer ${authToken}` },
-	// 			data: { title: 'Task A', description: 'Desc A' },
-	// 		});
-	// 		expect(createTaskAresponse.ok()).toBeTruthy();
-	// 		const { id: idA } = await createTaskAresponse.json();
-	// 		taskAId = idA;
-
-	// 		const createTaskBresponse = await request.post(`http://localhost:3000/api/columns/${columnId}/tasks`, {
-	// 			headers: { Authorization: `Bearer ${authToken}` },
-	// 			data: { title: 'Task B', description: 'Desc B' },
-	// 		});
-	// 		expect(createTaskBresponse.ok()).toBeTruthy();
-	// 		const { id: idB } = await createTaskBresponse.json();
-	// 		taskBId = idB;
+	// 		taskAId = await createTask(request, authToken, columnId, { title: 'Task A', description: 'Description A' });
+	// 		taskBId = await createTask(request, authToken, columnId, { title: 'Task B', description: 'Description B' });
 	// 	});
 
 	// 	test('should move task to another column on drag-and-drop', async ({ page }) => {

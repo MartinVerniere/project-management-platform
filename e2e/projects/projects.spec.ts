@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { resetDatabase, registerUser, loginUser, createProject, addProjectMember } from '../helpers';
 
 test.describe('Projects', () => {
 	let authToken: string;
@@ -7,38 +8,14 @@ test.describe('Projects', () => {
 	let nonMemberId: number;
 
 	test.beforeEach(async ({ page, request }) => {
-		const resetResponse = await request.delete('http://localhost:3000/api/test/reset');
+		await resetDatabase(request);
 
-		const registerResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'john', email: 'john@test.com', password: '12345678' },
-		});
-		expect(registerResponse.ok()).toBeTruthy();
-		const { id: registerAId } = await registerResponse.json();
-		adminId = registerAId;
-
-		const registerBResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'alice', email: 'alice@test.com', password: '12345678' },
-		});
-		expect(registerBResponse.ok()).toBeTruthy();
-		const { id: registerBId } = await registerBResponse.json();
-		memberId = registerBId;
-
-		const registerCResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'martin', email: 'martin@test.com', password: '12345678' },
-		});
-		expect(registerCResponse.ok()).toBeTruthy();
-		const { id: registerCId } = await registerCResponse.json();
-		nonMemberId = registerCId;
-
-		const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-			data: { username: 'john', password: '12345678' },
-		});
-		expect(loginResponse.ok()).toBeTruthy();
-		const loginResponseJSON = await loginResponse.json();
-		authToken = loginResponseJSON.token;
+		adminId = await registerUser(request, { username: 'john', email: 'john@test.com', password: '12345678' });
+		memberId = await registerUser(request, { username: 'alice', email: 'alice@test.com', password: '12345678' });
+		nonMemberId = await registerUser(request, { username: 'martin', email: 'martin@test.com', password: '12345678' });
+		authToken = await loginUser(request, { username: 'john', password: '12345678' });
 
 		await page.goto('/');
-
 		await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
 	});
 
@@ -71,44 +48,17 @@ test.describe('Projects', () => {
 
 	test.describe('projects exist', () => {
 		test.beforeEach(async ({ request }) => {
-			const createProjectAresponse = await request.post('http://localhost:3000/api/projects', {
-				headers: { Authorization: `Bearer ${authToken}` },
-				data: { name: 'Project A', key: 'PRA', description: '' },
-			});
-			expect(createProjectAresponse.ok()).toBeTruthy();
-			const { id: projectAId } = await createProjectAresponse.json();
-
-			const createProjectBresponse = await request.post('http://localhost:3000/api/projects', {
-				headers: { Authorization: `Bearer ${authToken}` },
-				data: { name: 'Project B', key: 'PRB', description: '' },
-			});
-			expect(createProjectBresponse.ok()).toBeTruthy();
-			const { id: projectBId } = await createProjectBresponse.json();
-
-			const addMemberResponse = await request.post(`http://localhost:3000/api/projects/${projectAId}/members`, {
-				headers: { Authorization: `Bearer ${authToken}` },
-				data: { userId: memberId }
-			});
-			expect(addMemberResponse.ok()).toBeTruthy();
-
-			const addMemberResponseB = await request.post(`http://localhost:3000/api/projects/${projectBId}/members`, {
-				headers: { Authorization: `Bearer ${authToken}` },
-				data: { userId: memberId }
-			});
-			expect(addMemberResponseB.ok()).toBeTruthy();
+			const projectAId = await createProject(request, authToken, { name: 'Project A', key: 'PRA', description: '' });
+			const projectBId = await createProject(request, authToken, { name: 'Project B', key: 'PRB', description: '' });
+			await addProjectMember(request, authToken, projectAId, memberId);
+			await addProjectMember(request, authToken, projectBId, memberId);
 		});
 
 		test.describe('ADMIN is logged in', () => {
 			test.beforeEach(async ({ page, request }) => {
-				const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-					data: { username: 'john', password: '12345678' },
-				});
-				expect(loginResponse.ok()).toBeTruthy();
-				const loginResponseJSON = await loginResponse.json();
-				authToken = loginResponseJSON.token;
+				authToken = await loginUser(request, { username: 'john', password: '12345678' });
 
 				await page.goto('/');
-
 				await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
 			});
 
@@ -132,15 +82,9 @@ test.describe('Projects', () => {
 
 		test.describe('MEMBER is logged in', () => {
 			test.beforeEach(async ({ page, request }) => {
-				const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-					data: { username: 'alice', password: '12345678' },
-				});
-				expect(loginResponse.ok()).toBeTruthy();
-				const loginResponseJSON = await loginResponse.json();
-				authToken = loginResponseJSON.token;
+				authToken = await loginUser(request, { username: 'alice', password: '12345678' });
 
 				await page.goto('/');
-
 				await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
 			});
 
@@ -164,15 +108,9 @@ test.describe('Projects', () => {
 
 		test.describe('non-MEMBER is logged in', () => {
 			test.beforeEach(async ({ page, request }) => {
-				const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-					data: { username: 'martin', password: '12345678' },
-				});
-				expect(loginResponse.ok()).toBeTruthy();
-				const loginResponseJSON = await loginResponse.json();
-				authToken = loginResponseJSON.token;
+				authToken = await loginUser(request, { username: 'martin', password: '12345678' });
 
 				await page.goto('/');
-
 				await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
 			});
 

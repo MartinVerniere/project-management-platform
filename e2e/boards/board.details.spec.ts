@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { createBoard, createProject, loginUser, registerUser, resetDatabase } from '../helpers';
 
 test.describe('Projects', () => {
 	let authToken: string;
@@ -8,44 +9,13 @@ test.describe('Projects', () => {
 	let boardId: number;
 
 	test.beforeEach(async ({ page, request }) => {
-		const resetResponse = await request.delete('http://localhost:3000/api/test/reset');
+		await resetDatabase(request);
 
-		const registerResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'john', email: 'john@test.com', password: '12345678' },
-		});
-		expect(registerResponse.ok()).toBeTruthy();
-		const { id: registerAId } = await registerResponse.json();
-		adminId = registerAId;
-
-		const registerBResponse = await request.post('http://localhost:3000/api/auth/register', {
-			data: { username: 'alice', email: 'alice@test.com', password: '12345678' },
-		});
-		expect(registerBResponse.ok()).toBeTruthy();
-		const { id: registerBId } = await registerBResponse.json();
-		memberId = registerBId;
-
-		const loginResponse = await request.post('http://localhost:3000/api/auth/login', {
-			data: { username: 'john', password: '12345678' },
-		});
-		expect(loginResponse.ok()).toBeTruthy();
-		const loginResponseJSON = await loginResponse.json();
-		authToken = loginResponseJSON.token;
-
-		const createProjectAresponse = await request.post('http://localhost:3000/api/projects', {
-			headers: { Authorization: `Bearer ${authToken}` },
-			data: { name: 'Project A', key: 'PRA', description: '' },
-		});
-		expect(createProjectAresponse.ok()).toBeTruthy();
-		const { id: projectAId } = await createProjectAresponse.json();
-		projectId = projectAId;
-
-		const createBoardAresponse = await request.post(`http://localhost:3000/api/projects/${projectId}/boards`, {
-			headers: { Authorization: `Bearer ${authToken}` },
-			data: { name: 'Board A' },
-		});
-		expect(createBoardAresponse.ok()).toBeTruthy();
-		const { id: boardAId } = await createBoardAresponse.json();
-		boardId = boardAId;
+		adminId = await registerUser(request, { username: 'john', email: 'john@test.com', password: '12345678' });
+		memberId = await registerUser(request, { username: 'alice', email: 'alice@test.com', password: '12345678' });
+		authToken = await loginUser(request, { username: 'john', password: '12345678' });
+		projectId = await createProject(request, authToken, { name: 'Project A', key: 'PRA', description: '' });
+		boardId = await createBoard(request, authToken, projectId, { name: 'Board A' });
 
 		await page.goto('/');
 		await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
@@ -71,7 +41,7 @@ test.describe('Projects', () => {
 		const addColumnButton = boardElement.getByRole('button', { name: 'Add column' });
 
 		await addColumnButton.click();
-		
+
 		await expect(page).toHaveURL(`/projects/${projectId}/boards/${boardId}/columns/create`);
 	});
 
@@ -82,7 +52,7 @@ test.describe('Projects', () => {
 		const goBackButton = boardElement.getByRole('button', { name: 'Back to project' });
 
 		await goBackButton.click();
-		
+
 		await expect(page).toHaveURL(`/projects/${projectId}`);
 	});
 });
