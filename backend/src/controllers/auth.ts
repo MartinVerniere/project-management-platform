@@ -5,7 +5,7 @@ import { Router } from 'express';
 import { ApiError, tokenExtractor, userExtractor } from '../utils/middleware.js';
 import { SECRET } from '../utils/config.js';
 import { prisma } from '../prisma.js';
-import type { LoginResponse } from '../models/user.js';
+import type { LoginResponse, RegisterResponse } from '../models/user.js';
 import multer from "multer";
 import { supabase } from '../services/supabase.js';
 
@@ -69,7 +69,12 @@ authRouter.post('/register', upload.single('avatar'), async (request: Request, r
 		});
 	}
 
-	return response.status(201).json({ ...userCreated, avatarUrl });
+	const registerResponse: RegisterResponse = {
+		...userCreated,
+		avatarUrl
+	};
+
+	return response.status(201).json(registerResponse);
 });
 
 authRouter.post('/login', async (request: Request, response: Response) => {

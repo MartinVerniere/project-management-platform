@@ -14,7 +14,6 @@ export interface ProjectResponse {
     name: string;
     key: string;
     description: string | null;
-	
 }
 
 export interface ProjectDetailsResponse extends ProjectResponse {
