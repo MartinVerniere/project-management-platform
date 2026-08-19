@@ -1,6 +1,6 @@
-import { UserResponse } from "./user";
+import { UserDto } from "../../../../shared/models/user";
 
-export type CommentAuthor = UserResponse;
+export type CommentAuthor = UserDto;
 
 export interface CommentResponse {
 	id: number,
@@ -8,8 +8,8 @@ export interface CommentResponse {
 	user: CommentAuthor,
 }
 
-export interface UpdateCommentRequest {
+export interface AddCommentRequest {
 	content: string;
 }
 
-export type UpdateCommentResponse = CommentResponse;
+export type UpdateCommentRequest = AddCommentRequest;

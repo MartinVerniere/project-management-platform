@@ -1,15 +1,8 @@
-import type { BoardResponse } from "./board.js";
-
-export interface ColumnResponse {
-	id: number;
-	name: string;
-	boardId: number;
-	order: number;
-}
+import type { BoardDto } from "../../../shared/models/board.js";
 
 export interface ColumnWithBoardResponse {
 	id: number;
 	name: string;
-	board: BoardResponse;
+	board: BoardDto;
 	order: number;
 }

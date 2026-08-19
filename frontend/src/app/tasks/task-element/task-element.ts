@@ -2,10 +2,10 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { CommentList } from '../../comments/comment-list/comment-list';
-import { ProjectMemberResponse } from '../../models/project';
 import { TaskService } from '../../services/tasks/task-service';
-import { TaskResponse } from '../../models/task';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
+import { ProjectMemberDto } from '../../../../../shared/models/project';
+import { TaskDetailsDto } from '../../../../../shared/models/task';
 
 @Component({
 	selector: 'app-task-element',
@@ -16,11 +16,11 @@ import { CdkDragHandle } from '@angular/cdk/drag-drop';
 export class TaskElement {
 	taskService = inject(TaskService);
 
-	task = input.required<TaskResponse>();
+	task = input.required<TaskDetailsDto>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 	hasAdminPermissions = input.required<boolean>();
 
 	taskDeleted = output<void>();

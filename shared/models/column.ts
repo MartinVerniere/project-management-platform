@@ -1,4 +1,4 @@
-import { TaskDto } from "./task";
+import { TaskDetailsDto } from "./task";
 
 export interface ColumnDto {
 	id: number,
@@ -8,5 +8,5 @@ export interface ColumnDto {
 }
 
 export interface ColumnDetailsDto extends ColumnDto {
-	tasks: TaskDto[]
+	tasks: TaskDetailsDto[]
 }

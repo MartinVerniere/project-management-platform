@@ -1,7 +1,7 @@
 import { Component, input, output, signal } from '@angular/core';
 import { CommentElement } from '../comment-element/comment-element';
 import { CommentForm } from '../comment-form/comment-form';
-import { CommentResponse } from '../../models/comment';
+import { CommentDto } from '../../../../../shared/models/comment';
 
 @Component({
 	selector: 'app-comment-list',
@@ -10,7 +10,7 @@ import { CommentResponse } from '../../models/comment';
 	styleUrl: './comment-list.css',
 })
 export class CommentList {
-	commentList = input.required<CommentResponse[]>();
+	commentList = input.required<CommentDto[]>();
 	taskId = input.required<number>();
 	hasAdminPermissions = input.required<boolean>();
 

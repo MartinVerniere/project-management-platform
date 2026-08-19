@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ColumnModel } from '../../columns/column-form/column-form'
-import { TaskModel } from '../../tasks/task-form/task-form';
-import { AddTaskResponse, ChangeTaskOrderResponse, ColumnResponse, TaskOrderRequest, UpdateColumnRequest } from '../../models/column';
+import { TaskOrderRequest, UpdateColumnRequest } from '../../models/column';
+import { ColumnDetailsDto, ColumnDto } from '../../../../../shared/models/column';
+import { TaskDto } from '../../../../../shared/models/task';
+import { AddTaskRequest } from '../../models/task';
 
 const API_URL = 'http://localhost:3000/api/columns';
 
@@ -11,23 +12,23 @@ const API_URL = 'http://localhost:3000/api/columns';
 export class ColumnService {
 	private http = inject(HttpClient);
 
-	getColumn(columnId: number): Observable<ColumnResponse> {
-		return this.http.get<ColumnResponse>(`${API_URL}/${columnId}`);
+	getColumn(columnId: number): Observable<ColumnDto> {
+		return this.http.get<ColumnDto>(`${API_URL}/${columnId}`);
 	}
 
-	updateColumn(columnId: number, request: ColumnModel): Observable<UpdateColumnRequest> {
-		return this.http.put<UpdateColumnRequest>(`${API_URL}/${columnId}`, request);
+	updateColumn(columnId: number, request: UpdateColumnRequest): Observable<ColumnDto> {
+		return this.http.put<ColumnDto>(`${API_URL}/${columnId}`, request);
 	}
 
 	deleteColumn(columnId: number): Observable<void> {
 		return this.http.delete<void>(`${API_URL}/${columnId}`);
 	}
 
-	addTask(columnId: number, request: TaskModel): Observable<AddTaskResponse> {
-		return this.http.post<AddTaskResponse>(`${API_URL}/${columnId}/tasks`, request);
+	addTask(columnId: number, request: AddTaskRequest): Observable<TaskDto> {
+		return this.http.post<TaskDto>(`${API_URL}/${columnId}/tasks`, request);
 	}
 
-	changeTaskOrder(columnId: number, request: TaskOrderRequest): Observable<ChangeTaskOrderResponse> {
-		return this.http.put<ChangeTaskOrderResponse>(`${API_URL}/${columnId}/tasks/order`, request);
+	changeTaskOrder(columnId: number, request: TaskOrderRequest): Observable<ColumnDetailsDto> {
+		return this.http.put<ColumnDetailsDto>(`${API_URL}/${columnId}/tasks/order`, request);
 	}
 }

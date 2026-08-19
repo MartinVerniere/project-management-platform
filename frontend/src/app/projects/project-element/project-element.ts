@@ -2,9 +2,9 @@ import { Component, computed, inject, input, output, resource, signal } from '@a
 import { ProjectService } from '../../services/projects/project-service';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ProjectResponse } from '../../models/project';
 import { AuthService } from '../../services/auth/auth-service';
 import { firstValueFrom } from 'rxjs';
+import { ProjectDto } from '../../../../../shared/models/project';
 
 @Component({
 	selector: 'app-project-element',
@@ -16,7 +16,7 @@ export class ProjectElement {
 	projectService = inject(ProjectService);
 	authService = inject(AuthService);
 
-	project = input.required<ProjectResponse>();
+	project = input.required<ProjectDto>();
 	projectDeleted = output<void>();
 
 	members = resource({ loader: () => firstValueFrom(this.projectService.getMembers(this.project().id)) });

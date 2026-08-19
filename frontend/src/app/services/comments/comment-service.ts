@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CommentResponse, UpdateCommentRequest, UpdateCommentResponse } from '../../models/comment';
+import { UpdateCommentRequest } from '../../models/comment';
+import { CommentDto } from '../../../../../shared/models/comment';
 
 const API_URL = 'http://localhost:3000/api/comments';
 
@@ -9,12 +10,12 @@ const API_URL = 'http://localhost:3000/api/comments';
 export class CommentService {
 	private http = inject(HttpClient);
 
-	getComment(commentId: number): Observable<CommentResponse> {
-		return this.http.get<CommentResponse>(`${API_URL}/${commentId}`);
+	getComment(commentId: number): Observable<CommentDto> {
+		return this.http.get<CommentDto>(`${API_URL}/${commentId}`);
 	}
 
-	updateComment(commentId: number, request: UpdateCommentRequest): Observable<UpdateCommentResponse> {
-		return this.http.put<UpdateCommentResponse>(`${API_URL}/${commentId}`, request);
+	updateComment(commentId: number, request: UpdateCommentRequest): Observable<CommentDto> {
+		return this.http.put<CommentDto>(`${API_URL}/${commentId}`, request);
 	}
 
 	deleteComment(commentId: number): Observable<void> {

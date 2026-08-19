@@ -2,10 +2,10 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, input, output, signal } from "@angular/core";
 import { RouterLink, Router } from "@angular/router";
 import { TaskList } from "../../tasks/task-list/task-list";
-import { ProjectMemberResponse } from "../../models/project";
 import { ColumnService } from "../../services/columns/column-service";
-import { ColumnResponse } from "../../models/column";
 import { CdkDragHandle } from "@angular/cdk/drag-drop";
+import { ProjectMemberDto } from "../../../../../shared/models/project";
+import { ColumnDetailsDto } from "../../../../../shared/models/column";
 
 @Component({
 	selector: 'app-column-element',
@@ -17,10 +17,10 @@ export class ColumnElement {
 	router = inject(Router);
 	columnService = inject(ColumnService);
 
-	column = input.required<ColumnResponse>();
+	column = input.required<ColumnDetailsDto>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 	filtersActive = input.required<boolean>();
 	hasAdminPermissions = input.required<boolean>();
 

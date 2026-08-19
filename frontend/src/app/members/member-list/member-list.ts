@@ -1,8 +1,8 @@
 import { Component, computed, inject, input, output, signal } from "@angular/core";
 import { MemberForm } from "../member-form/member-form";
 import { MemberElement } from "../member-element/member-element";
-import { ProjectMemberResponse } from "../../models/project";
 import { AuthService } from "../../services/auth/auth-service";
+import { ProjectMemberDto } from "../../../../../shared/models/project";
 
 @Component({
 	selector: 'app-member-list',
@@ -14,7 +14,7 @@ export class MemberList {
 	authService = inject(AuthService);
 
 	projectId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 	hasAdminPermissions = input.required<boolean>();
 
 	memberAdded = output<void>();

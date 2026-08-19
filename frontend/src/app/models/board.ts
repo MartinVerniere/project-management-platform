@@ -1,11 +1,3 @@
-import { ColumnResponse } from "./column";
-
-export interface BoardResponse {
-	id: number,
-	name: string,
-	columns: ColumnResponse[]
-}
-
 interface ColumnOrderElement {
 	id: number,
 	order: number
@@ -20,8 +12,3 @@ export interface CreateBoardRequest {
 }
 
 export type UpdateBoardRequest = CreateBoardRequest;
-
-export type CreateBoardResponse = BoardResponse;
-export type UpdateBoardResponse = BoardResponse;
-export type CreateColumnResponse = BoardResponse;
-export type ColumnOrderResponse = BoardResponse;

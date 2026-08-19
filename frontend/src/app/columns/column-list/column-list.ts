@@ -5,8 +5,8 @@ import { BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TaskService } from "../../services/tasks/task-service";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from "@angular/cdk/drag-drop";
-import { ColumnResponse } from "../../models/column";
-import { ProjectMemberResponse } from "../../models/project";
+import { ProjectMemberDto } from "../../../../../shared/models/project";
+import { ColumnDetailsDto } from "../../../../../shared/models/column";
 
 @Component({
 	selector: 'app-column-list',
@@ -19,10 +19,10 @@ export class ColumnList {
 	boardService = inject(BoardService);
 	taskService = inject(TaskService);
 
-	columnList = input.required<ColumnResponse[]>();
+	columnList = input.required<ColumnDetailsDto[]>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
-	members = input.required<ProjectMemberResponse[]>();
+	members = input.required<ProjectMemberDto[]>();
 	hasAdminPermissions = input.required<boolean>();
 
 	columnListEdited = output<void>();
@@ -50,7 +50,7 @@ export class ColumnList {
 		}));
 	});
 
-	onMoveColumn(event: CdkDragDrop<ColumnResponse[]>) {
+	onMoveColumn(event: CdkDragDrop<ColumnDetailsDto[]>) {
 		// Case 1: Didnt move column
 		if (event.previousIndex === event.currentIndex) return;
 
