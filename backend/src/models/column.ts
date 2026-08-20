@@ -1,4 +1,4 @@
-import type { BoardDto } from "../../../shared/models/board.js";
+import type { BoardDto } from "@shared/models/board.js";
 
 export interface ColumnWithBoardResponse {
 	id: number;

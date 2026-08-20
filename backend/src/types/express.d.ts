@@ -3,9 +3,9 @@ import type { ColumnWithBoardResponse } from '../models/column.ts';
 import type { TaskWithColumnAndAssigneeResponse } from '../models/task.ts';
 import type { CommentWithTaskAndAuthorResponse } from '../models/comment.ts';
 import type { TokenPayload } from '../utils/middleware.ts';
-import type { UserDto } from '../../../shared/models/user.ts';
-import type { ProjectMemberDto, ProjectDetailsDto } from '../../../shared/models/project.ts';
-import type { BoardDetailsDto } from '../../../shared/models/board.ts';
+import type { UserDto } from '@shared/models/user.ts';
+import type { ProjectMemberDto, ProjectDetailsDto } from '@shared/models/project.ts';
+import type { BoardDetailsDto } from '@shared/models/board.ts';
 
 declare global {
 	namespace Express {

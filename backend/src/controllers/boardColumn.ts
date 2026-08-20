@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { tokenExtractor, userExtractor, columnExtractor, requireColumnMember, ApiError, requireColumnAdmin } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
-import type { ColumnDto } from "../../../shared/models/column.js";
+import type { ColumnDto } from "@shared/models/column.js";
 
 const boardColumnRouter = Router();
 

@@ -2,7 +2,7 @@ import { Router, type Request, type Response } from "express";
 import { ApiError, requireTaskAdmin, requireTaskMember, taskExtractor, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
 import type { BoardColumn } from "../generated/prisma/client.js";
-import type { TaskDto } from "../../../shared/models/task.js";
+import type { TaskDto } from "@shared/models/task.js";
 
 const taskRouter = Router();
 

@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { ApiError, commentExtractor, requireCommentEditor, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
-import type { CommentDto } from "../../../shared/models/comment.js";
+import type { CommentDto } from "@shared/models/comment.js";
 
 const commentRouter = Router();
 
@@ -16,7 +16,7 @@ commentRouter.get('/:id',
 			id: comment.id,
 			content: comment.content,
 			taskId: comment.task.id,
-			user: comment.user,
+			author: comment.author,
 		}
 
 		return response.status(200).json(responseComment);

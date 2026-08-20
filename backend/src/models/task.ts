@@ -1,4 +1,4 @@
-import type { UserDto } from "../../../shared/models/user.js";
+import type { UserDto } from "@shared/models/user.js";
 import type { ColumnWithBoardResponse } from "./column.js";
 
 export interface TaskWithColumnAndAssigneeResponse {

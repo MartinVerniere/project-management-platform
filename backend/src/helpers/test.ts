@@ -1,12 +1,12 @@
 import request from 'supertest';
 import { app } from "../app.js";
-import type { UserDto } from '../../../shared/models/user.js';
-import type { LoginDto } from '../../../shared/models/auth.js';
-import type { ProjectDto, ProjectMemberDto } from '../../../shared/models/project.js';
-import type { BoardDto } from '../../../shared/models/board.js';
-import type { ColumnDto } from '../../../shared/models/column.js';
-import type { TaskDto } from '../../../shared/models/task.js';
-import type { CommentDto } from '../../../shared/models/comment.js';
+import type { LoginDto } from '@shared/models/auth.js';
+import type { BoardDto } from '@shared/models/board.js';
+import type { ColumnDto } from '@shared/models/column.js';
+import type { CommentDto } from '@shared/models/comment.js';
+import type { ProjectDto, ProjectMemberDto } from '@shared/models/project.js';
+import type { TaskDto } from '@shared/models/task.js';
+import type { UserDto } from '@shared/models/user.js';
 
 export const registerUser = async (username: string, email: string, password: string): Promise<UserDto> => {
 	const response = await request(app)

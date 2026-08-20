@@ -7,8 +7,8 @@ import { SECRET } from '../utils/config.js';
 import { prisma } from '../prisma.js';
 import multer from "multer";
 import { supabase } from '../services/supabase.js';
-import type { UserDto } from '../../../shared/models/user.js';
-import type { LoginDto } from '../../../shared/models/auth.js';
+import type { UserDto } from '@shared/models/user.js';
+import type { LoginDto } from '@shared/models/auth.js';
 
 const authRouter: Router = Router();
 
