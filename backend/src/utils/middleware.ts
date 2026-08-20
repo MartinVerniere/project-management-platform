@@ -225,7 +225,7 @@ export const boardExtractor = async (
 									id: true,
 									content: true,
 									taskId: true,
-									user: {
+									author: {
 										select: {
 											id: true,
 											username: true,
