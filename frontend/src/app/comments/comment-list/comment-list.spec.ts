@@ -5,8 +5,8 @@ import { Component, input, output } from '@angular/core';
 import { CommentElement } from '../comment-element/comment-element';
 import { CommentForm } from '../comment-form/comment-form';
 import { By } from '@angular/platform-browser';
-import { CommentDto } from '@shared/models/comment';
-import { UserDto } from '@shared/models/user';
+import type { CommentDto } from '@shared/models/comment';
+import type { UserDto } from '@shared/models/user';
 
 @Component({
 	selector: 'app-comment-element',

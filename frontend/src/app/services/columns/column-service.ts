@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { TaskOrderRequest, UpdateColumnRequest } from '../../models/column';
 import { AddTaskRequest } from '../../models/task';
 import { ColumnDetailsDto, ColumnDto } from '@shared/models/column';
-import { TaskDto } from '@shared/models/task';
+import type { TaskDto } from '@shared/models/task';
 
 const API_URL = 'http://localhost:3000/api/columns';
 

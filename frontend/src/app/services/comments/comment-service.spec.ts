@@ -4,8 +4,8 @@ import { CommentService } from './comment-service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { CommentModel } from '../../comments/comment-form/comment-form';
-import { UserDto } from '@shared/models/user';
-import { CommentDto } from '@shared/models/comment';
+import type { UserDto } from '@shared/models/user';
+import type { CommentDto } from '@shared/models/comment';
 
 const john: UserDto = {
 	id: 1,

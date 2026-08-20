@@ -7,7 +7,7 @@ import { ProjectService } from '../../services/projects/project-service';
 import { Component, input, output } from '@angular/core';
 import { BoardElement } from '../board-element/board-element';
 import { By } from '@angular/platform-browser';
-import { BoardDto } from '@shared/models/board';
+import type { BoardDto } from '@shared/models/board';
 
 @Component({
 	selector: 'app-board-element',

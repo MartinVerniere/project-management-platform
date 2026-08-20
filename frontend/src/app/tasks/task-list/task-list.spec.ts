@@ -8,8 +8,8 @@ import { Component, input, output } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { TaskElement } from '../task-element/task-element';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { TaskDetailsDto } from '@shared/models/task';
-import { ProjectMemberDto } from '@shared/models/project';
+import type { TaskDetailsDto } from '@shared/models/task';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-task-element',

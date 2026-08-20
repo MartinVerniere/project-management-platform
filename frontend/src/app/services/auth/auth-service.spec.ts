@@ -3,8 +3,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { HttpTestingController, provideHttpClientTesting, TestRequest } from '@angular/common/http/testing';
 import { AuthService } from './auth-service';
-import { LoginDto } from '@shared/models/auth';
-import { UserDto } from '@shared/models/user';
+import type { LoginDto } from '@shared/models/auth';
+import type { UserDto } from '@shared/models/user';
 
 describe('AuthService', () => {
 	let service: AuthService;

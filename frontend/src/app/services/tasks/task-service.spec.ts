@@ -4,8 +4,8 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 import { TaskModel } from '../../tasks/task-form/task-form';
 import { TaskService } from './task-service';
-import { TaskDto } from '@shared/models/task';
-import { CommentDto } from '@shared/models/comment';
+import type { TaskDto } from '@shared/models/task';
+import type { CommentDto } from '@shared/models/comment';
 
 const taskA: TaskDto = {
 	id: 1,

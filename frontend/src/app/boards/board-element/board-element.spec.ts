@@ -4,7 +4,7 @@ import { BoardElement } from './board-element';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { BoardService } from '../../services/boards/board-service';
-import { BoardDto } from '@shared/models/board';
+import type { BoardDto } from '@shared/models/board';
 
 describe('BoardElement', () => {
 	let fixture: ComponentFixture<BoardElement>;

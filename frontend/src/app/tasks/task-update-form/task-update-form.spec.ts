@@ -4,7 +4,7 @@ import { TaskUpdateForm } from './task-update-form';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from '../../services/tasks/task-service';
-import { TaskDto } from '@shared/models/task';
+import type { TaskDto } from '@shared/models/task';
 
 describe('TaskUpdateForm', () => {
 	let fixture: ComponentFixture<TaskUpdateForm>;

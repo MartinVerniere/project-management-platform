@@ -4,8 +4,8 @@ import { MemberForm } from './member-form';
 import { of, throwError } from 'rxjs';
 import { ProjectService } from '../../services/projects/project-service';
 import { UserService } from '../../services/users/user-service';
-import { ProjectMemberDto } from '@shared/models/project';
-import { UserDto } from '@shared/models/user';
+import type { ProjectMemberDto } from '@shared/models/project';
+import type { UserDto } from '@shared/models/user';
 
 describe('MemberForm', () => {
 	let fixture: ComponentFixture<MemberForm>;

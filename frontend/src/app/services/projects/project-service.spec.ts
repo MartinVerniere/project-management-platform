@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { ProjectService } from './project-service';
-import { ProjectMemberDto } from '@shared/models/project';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 const memberA: ProjectMemberDto = {
 	id: 1,

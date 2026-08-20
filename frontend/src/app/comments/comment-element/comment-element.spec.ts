@@ -7,8 +7,8 @@ import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { CommentService } from '../../services/comments/comment-service';
 import { AuthService } from '../../services/auth/auth-service';
-import { CommentDto } from '@shared/models/comment';
-import { UserDto } from '@shared/models/user';
+import type { CommentDto } from '@shared/models/comment';
+import type { UserDto } from '@shared/models/user';
 
 @Component({
 	selector: 'app-comment-update-form',

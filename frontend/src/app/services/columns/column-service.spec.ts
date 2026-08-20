@@ -3,8 +3,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TaskModel } from '../../tasks/task-form/task-form';
 import { ColumnService } from './column-service';
-import { ColumnDto } from '@shared/models/column';
-import { TaskDto } from '@shared/models/task';
+import type { ColumnDto } from '@shared/models/column';
+import type { TaskDto } from '@shared/models/task';
 import { TaskOrderRequest } from '../../models/column';
 
 const columnA: ColumnDto = {

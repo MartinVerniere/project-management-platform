@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, input, output } from '@angular/core';
 import { ProjectElement } from '../project-element/project-element';
 import { By } from '@angular/platform-browser';
-import { ProjectDto } from '@shared/models/project';
+import type { ProjectDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-project-element',

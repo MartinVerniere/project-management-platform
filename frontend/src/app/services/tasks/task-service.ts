@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { UpdateTaskRequest } from '../../models/task';
 import { AddCommentRequest } from '../../models/comment';
 import { TaskDetailsDto, TaskDto } from '@shared/models/task';
-import { CommentDto } from '@shared/models/comment';
+import type { CommentDto } from '@shared/models/comment';
 
 const API_URL = 'http://localhost:3000/api/tasks';
 

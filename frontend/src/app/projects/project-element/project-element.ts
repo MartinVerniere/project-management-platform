@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth/auth-service';
 import { firstValueFrom } from 'rxjs';
-import { ProjectDto } from '@shared/models/project';
+import type { ProjectDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-project-element',

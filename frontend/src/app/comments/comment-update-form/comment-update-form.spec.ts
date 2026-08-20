@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommentUpdateForm } from './comment-update-form';
 import { CommentService } from '../../services/comments/comment-service';
 import { of, throwError } from 'rxjs';
-import { CommentDto } from '@shared/models/comment';
+import type { CommentDto } from '@shared/models/comment';
 
 describe('CommentUpdateForm', () => {
 	let fixture: ComponentFixture<CommentUpdateForm>;

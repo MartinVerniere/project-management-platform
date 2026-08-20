@@ -2,7 +2,7 @@ import { Component, computed, inject, input, output, signal } from "@angular/cor
 import { MemberForm } from "../member-form/member-form";
 import { MemberElement } from "../member-element/member-element";
 import { AuthService } from "../../services/auth/auth-service";
-import { ProjectMemberDto } from "@shared/models/project";
+import type { ProjectMemberDto } from "@shared/models/project";
 
 @Component({
 	selector: 'app-member-list',

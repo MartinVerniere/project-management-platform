@@ -3,7 +3,7 @@ import { CommentService } from '../../services/comments/comment-service';
 import { CommentModel } from '../comment-form/comment-form';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CommentDto } from '@shared/models/comment';
+import type { CommentDto } from '@shared/models/comment';
 
 @Component({
 	selector: 'app-comment-update-form',

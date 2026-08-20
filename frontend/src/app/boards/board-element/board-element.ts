@@ -2,7 +2,7 @@ import { Component, inject, input, output, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { HttpErrorResponse } from "@angular/common/http";
 import { BoardService } from "../../services/boards/board-service";
-import { BoardDto } from "@shared/models/board";
+import type { BoardDto } from "@shared/models/board";
 
 @Component({
 	selector: 'app-board-element',

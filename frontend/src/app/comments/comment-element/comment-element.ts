@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CommentService } from '../../services/comments/comment-service';
 import { CommentUpdateForm } from '../comment-update-form/comment-update-form';
 import { AuthService } from '../../services/auth/auth-service';
-import { CommentDto } from '@shared/models/comment';
+import type { CommentDto } from '@shared/models/comment';
 
 @Component({
 	selector: 'app-comment-element',

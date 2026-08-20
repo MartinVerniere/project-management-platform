@@ -4,8 +4,8 @@ import { MemberElement } from './member-element';
 import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth-service';
-import { UserDto } from '@shared/models/user';
-import { ProjectMemberDto } from '@shared/models/project';
+import type { UserDto } from '@shared/models/user';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 describe('MemberElement', () => {
 	let fixture: ComponentFixture<MemberElement>;

@@ -9,9 +9,9 @@ import { ColumnList } from '../../columns/column-list/column-list';
 import { By } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth/auth-service';
 import { ProjectService } from '../../services/projects/project-service';
-import { ColumnDetailsDto } from '@shared/models/column';
-import { ProjectMemberDto } from '@shared/models/project';
-import { UserDto } from '@shared/models/user';
+import type { ColumnDetailsDto } from '@shared/models/column';
+import type { ProjectMemberDto } from '@shared/models/project';
+import type { UserDto } from '@shared/models/user';
 
 @Component({
 	selector: 'app-column-list',

@@ -7,9 +7,9 @@ import { Component, output, input } from '@angular/core';
 import { TaskList } from '../../tasks/task-list/task-list';
 import { By } from '@angular/platform-browser';
 import { ColumnService } from '../../services/columns/column-service';
-import { TaskDetailsDto } from '@shared/models/task';
-import { ProjectMemberDto } from '@shared/models/project';
-import { ColumnDetailsDto } from '@shared/models/column';
+import type { TaskDetailsDto } from '@shared/models/task';
+import type { ProjectMemberDto } from '@shared/models/project';
+import type { ColumnDetailsDto } from '@shared/models/column';
 
 @Component({
 	selector: 'app-task-list',

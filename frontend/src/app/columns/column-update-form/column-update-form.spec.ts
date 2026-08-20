@@ -4,7 +4,7 @@ import { ColumnUpdateForm } from './column-update-form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { ColumnService } from '../../services/columns/column-service';
-import { ColumnDto } from '@shared/models/column';
+import type { ColumnDto } from '@shared/models/column';
 
 describe('ColumnUpdateForm', () => {
 	let fixture: ComponentFixture<ColumnUpdateForm>;

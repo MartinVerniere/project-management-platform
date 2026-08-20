@@ -9,8 +9,8 @@ import { ColumnElement } from '../column-element/column-element';
 import { By } from '@angular/platform-browser';
 import { TaskService } from '../../services/tasks/task-service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ColumnDetailsDto } from '@shared/models/column';
-import { ProjectMemberDto } from '@shared/models/project';
+import type { ColumnDetailsDto } from '@shared/models/column';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-column-element',

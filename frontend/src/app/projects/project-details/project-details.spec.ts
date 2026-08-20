@@ -10,8 +10,8 @@ import { MemberList } from '../../members/member-list/member-list';
 import { BoardList } from '../../boards/board-list/board-list';
 import { By } from '@angular/platform-browser';
 import { ProjectDetailsDto, ProjectMemberDto } from '@shared/models/project';
-import { UserDto } from '@shared/models/user';
-import { BoardDto } from '@shared/models/board';
+import type { UserDto } from '@shared/models/user';
+import type { BoardDto } from '@shared/models/board';
 
 @Component({
 	selector: 'app-member-list',

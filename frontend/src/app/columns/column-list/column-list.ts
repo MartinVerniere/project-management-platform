@@ -5,8 +5,8 @@ import { BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { TaskService } from "../../services/tasks/task-service";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from "@angular/cdk/drag-drop";
-import { ColumnDetailsDto } from "@shared/models/column";
-import { ProjectMemberDto } from "@shared/models/project";
+import type { ColumnDetailsDto } from "@shared/models/column";
+import type { ProjectMemberDto } from "@shared/models/project";
 
 @Component({
 	selector: 'app-column-list',

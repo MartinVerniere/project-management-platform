@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth-service';
-import { UserDto } from '@shared/models/user';
+import type { UserDto } from '@shared/models/user';
 import { ProjectDto, ProjectMemberDto } from '@shared/models/project';
 
 describe('ProjectElement', () => {

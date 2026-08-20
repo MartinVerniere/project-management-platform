@@ -6,8 +6,8 @@ import { By } from '@angular/platform-browser';
 import { MemberForm } from '../member-form/member-form';
 import { AuthService } from '../../services/auth/auth-service';
 import { of } from 'rxjs';
-import { ProjectMemberDto } from '@shared/models/project';
-import { UserDto } from '@shared/models/user';
+import type { ProjectMemberDto } from '@shared/models/project';
+import type { UserDto } from '@shared/models/user';
 
 @Component({
 	selector: 'app-member-element',

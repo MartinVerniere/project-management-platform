@@ -7,9 +7,9 @@ import { Component, input, output } from '@angular/core';
 import { CommentList } from '../../comments/comment-list/comment-list';
 import { By } from '@angular/platform-browser';
 import { TaskService } from '../../services/tasks/task-service';
-import { UserDto } from '@shared/models/user';
-import { TaskDetailsDto } from '@shared/models/task';
-import { ProjectMemberDto } from '@shared/models/project';
+import type { UserDto } from '@shared/models/user';
+import type { TaskDetailsDto } from '@shared/models/task';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-comment-list',
