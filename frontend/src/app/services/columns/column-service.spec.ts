@@ -3,25 +3,30 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TaskModel } from '../../tasks/task-form/task-form';
 import { ColumnService } from './column-service';
-import { ColumnResponse, TaskOrderRequest } from '../../models/column';
-import { TaskResponse } from '../../models/task';
+import { ColumnDto } from '@shared/models/column';
+import { TaskDto } from '@shared/models/task';
+import { TaskOrderRequest } from '../../models/column';
 
-const columnA: ColumnResponse = {
+const columnA: ColumnDto = {
 	id: 1,
 	name: "ToDo",
-	tasks: []
+	boardId: 1,
+	order: 0
 }
 
-const columnB: ColumnResponse = {
+const columnB: ColumnDto = {
 	id: 2,
 	name: "Finished",
-	tasks: []
+	boardId: 0,
+	order: 0
 }
 
-const taskA: TaskResponse = {
+const taskA: TaskDto = {
 	id: 1,
 	title: 'Title A',
-	comments: []
+	columnId: 1,
+	description: null,
+	order: 0
 }
 
 describe('ColumnService', () => {

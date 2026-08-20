@@ -3,18 +3,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColumnUpdateForm } from './column-update-form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { ColumnResponse } from '../../models/column';
 import { ColumnService } from '../../services/columns/column-service';
+import { ColumnDto } from '@shared/models/column';
 
 describe('ColumnUpdateForm', () => {
 	let fixture: ComponentFixture<ColumnUpdateForm>;
 	let component: ColumnUpdateForm;
 	let html: HTMLElement;
 
-	const currentColumn: ColumnResponse = {
+	const currentColumn: ColumnDto = {
 		id: 1,
 		name: "Column A",
-		tasks: []
+		boardId: 1,
+		order: 0
 	}
 
 	let columnServiceMock = {

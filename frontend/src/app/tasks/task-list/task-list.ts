@@ -3,8 +3,8 @@ import { TaskElement } from '../task-element/task-element';
 import { ColumnService } from '../../services/columns/column-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ProjectMemberDto } from '../../../../../shared/models/project';
-import { TaskDetailsDto } from '../../../../../shared/models/task';
+import { TaskDetailsDto } from '@shared/models/task';
+import { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-task-list',

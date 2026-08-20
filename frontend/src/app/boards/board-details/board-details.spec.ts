@@ -7,11 +7,11 @@ import { NEVER, of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { ColumnList } from '../../columns/column-list/column-list';
 import { By } from '@angular/platform-browser';
-import { ColumnResponse } from '../../models/column';
-import { ProjectMemberResponse } from '../../models/project';
 import { AuthService } from '../../services/auth/auth-service';
 import { ProjectService } from '../../services/projects/project-service';
-import { UserResponse } from '../../models/user';
+import { ColumnDetailsDto } from '@shared/models/column';
+import { ProjectMemberDto } from '@shared/models/project';
+import { UserDto } from '@shared/models/user';
 
 @Component({
 	selector: 'app-column-list',
@@ -19,10 +19,10 @@ import { UserResponse } from '../../models/user';
 	template: '',
 })
 class ColumnListStub {
-	columnList = input.required<ColumnResponse[]>();
+	columnList = input.required<ColumnDetailsDto[]>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
-	members = input.required<ProjectMemberResponse[]>();
+	members = input.required<ProjectMemberDto[]>();
 	hasAdminPermissions = input.required<boolean>();
 
 	columnListEdited = output<void>();
@@ -55,14 +55,14 @@ describe('BoardDetails', () => {
 		columns: [{ id: 1, name: 'Todo' }],
 	};
 
-	const me: UserResponse = {
+	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@test.com',
 		avatarUrl: '/images/default-avatar.png'
 	}
 
-	const members: ProjectMemberResponse[] = [
+	const members: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

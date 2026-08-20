@@ -4,8 +4,8 @@ import { RouterLink } from '@angular/router';
 import { CommentList } from '../../comments/comment-list/comment-list';
 import { TaskService } from '../../services/tasks/task-service';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
-import { ProjectMemberDto } from '../../../../../shared/models/project';
-import { TaskDetailsDto } from '../../../../../shared/models/task';
+import { TaskDetailsDto } from '@shared/models/task';
+import { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-task-element',

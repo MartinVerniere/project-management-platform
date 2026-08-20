@@ -4,8 +4,8 @@ import { RouterLink, Router } from "@angular/router";
 import { TaskList } from "../../tasks/task-list/task-list";
 import { ColumnService } from "../../services/columns/column-service";
 import { CdkDragHandle } from "@angular/cdk/drag-drop";
-import { ProjectMemberDto } from "../../../../../shared/models/project";
-import { ColumnDetailsDto } from "../../../../../shared/models/column";
+import { ColumnDetailsDto } from "@shared/models/column";
+import { ProjectMemberDto } from "@shared/models/project";
 
 @Component({
 	selector: 'app-column-element',

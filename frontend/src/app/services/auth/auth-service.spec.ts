@@ -3,8 +3,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { HttpTestingController, provideHttpClientTesting, TestRequest } from '@angular/common/http/testing';
 import { AuthService } from './auth-service';
-import { LoginResponse, RegisterResponse } from '../../models/auth';
-import { UserResponse } from '../../models/user';
+import { LoginDto } from '@shared/models/auth';
+import { UserDto } from '@shared/models/user';
 
 describe('AuthService', () => {
 	let service: AuthService;
@@ -33,7 +33,7 @@ describe('AuthService', () => {
 	});
 
 	it('should login correctly', () => {
-		const expectedResponse: LoginResponse = {
+		const expectedResponse: LoginDto = {
 			token: 'abc123',
 			user: {
 				id: 1,
@@ -56,7 +56,7 @@ describe('AuthService', () => {
 	});
 
 	it('should register correctly', () => {
-		const expectedResponse: RegisterResponse = {
+		const expectedResponse: UserDto = {
 			id: 1,
 			username: 'john',
 			email: 'john@test.com',
@@ -105,7 +105,7 @@ describe('AuthService', () => {
 		});
 
 		it('should me correctly', () => {
-			const expectedResponse: UserResponse = {
+			const expectedResponse: UserDto = {
 				id: 1,
 				username: 'john',
 				email: 'john@test.com',
@@ -122,7 +122,7 @@ describe('AuthService', () => {
 		});
 
 		it('should set user on initializeAuth when token is valid', () => {
-			const expectedResponse: UserResponse = {
+			const expectedResponse: UserDto = {
 				id: 1,
 				username: 'john',
 				email: 'john@test.com',

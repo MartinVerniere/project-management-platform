@@ -6,10 +6,10 @@ import { of } from 'rxjs';
 import { Component, output, input } from '@angular/core';
 import { TaskList } from '../../tasks/task-list/task-list';
 import { By } from '@angular/platform-browser';
-import { ProjectMemberResponse } from '../../models/project';
-import { ColumnResponse } from '../../models/column';
 import { ColumnService } from '../../services/columns/column-service';
-import { TaskResponse } from '../../models/task';
+import { TaskDetailsDto } from '@shared/models/task';
+import { ProjectMemberDto } from '@shared/models/project';
+import { ColumnDetailsDto } from '@shared/models/column';
 
 @Component({
 	selector: 'app-task-list',
@@ -17,11 +17,11 @@ import { TaskResponse } from '../../models/task';
 	template: '',
 })
 class TaskListStub {
-	taskList = input.required<TaskResponse[]>();
+	taskList = input.required<TaskDetailsDto[]>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 	filtersActive = input.required<boolean>();
 	hasAdminPermissions = input.required<boolean>();
 
@@ -49,16 +49,18 @@ describe('ColumnElement', () => {
 
 	let columnServiceMock = { deleteColumn: vi.fn() };
 
-	const column: ColumnResponse = {
+	const column: ColumnDetailsDto = {
 		id: 1,
 		name: 'Todo',
-		tasks: []
+		tasks: [],
+		boardId: 1,
+		order: 0
 	};
 
 	const projectId = 1;
 	const boardId = 1;
 
-	const memberList: ProjectMemberResponse[] = [
+	const memberList: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

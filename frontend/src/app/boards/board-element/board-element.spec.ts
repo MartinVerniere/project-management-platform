@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BoardElement } from './board-element';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { BoardResponse } from '../../models/board';
 import { BoardService } from '../../services/boards/board-service';
+import { BoardDto } from '@shared/models/board';
 
 describe('BoardElement', () => {
 	let fixture: ComponentFixture<BoardElement>;
@@ -24,10 +24,10 @@ describe('BoardElement', () => {
 		}
 	};
 
-	const board: BoardResponse = {
+	const board: BoardDto = {
 		id: 1,
 		name: 'Board A',
-		columns: [],
+		projectId: 0
 	};
 
 	const projectId: number = 1;

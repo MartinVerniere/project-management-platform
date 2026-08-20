@@ -2,9 +2,9 @@ import { HttpClient } from "@angular/common/http";
 import { Service, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ColumnOrderRequest, UpdateBoardRequest } from "../../models/board";
-import { BoardDetailsDto } from "../../../../../shared/models/board";
 import { AddColumnRequest } from "../../models/column";
-import { ColumnDto } from "../../../../../shared/models/column";
+import { BoardDetailsDto } from "@shared/models/board";
+import { ColumnDto } from "@shared/models/column";
 
 const API_URL = 'http://localhost:3000/api/boards';
 

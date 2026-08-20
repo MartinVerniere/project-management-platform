@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { ProjectService } from './project-service';
-import { ProjectMemberResponse } from '../../models/project';
+import { ProjectMemberDto } from '@shared/models/project';
 
-const memberA: ProjectMemberResponse = {
+const memberA: ProjectMemberDto = {
 	id: 1,
 	role: 'ADMIN',
 
@@ -16,7 +16,7 @@ const memberA: ProjectMemberResponse = {
 	},
 };
 
-const memberB: ProjectMemberResponse = {
+const memberB: ProjectMemberDto = {
 	id: 2,
 	role: 'MEMBER',
 
@@ -28,7 +28,7 @@ const memberB: ProjectMemberResponse = {
 	},
 };
 
-const memberC: ProjectMemberResponse = {
+const memberC: ProjectMemberDto = {
 	id: 3,
 	role: 'ADMIN',
 

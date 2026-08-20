@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TaskOrderRequest, UpdateColumnRequest } from '../../models/column';
-import { ColumnDetailsDto, ColumnDto } from '../../../../../shared/models/column';
-import { TaskDto } from '../../../../../shared/models/task';
 import { AddTaskRequest } from '../../models/task';
+import { ColumnDetailsDto, ColumnDto } from '@shared/models/column';
+import { TaskDto } from '@shared/models/task';
 
 const API_URL = 'http://localhost:3000/api/columns';
 

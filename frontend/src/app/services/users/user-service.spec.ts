@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { UserService } from './user-service';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { UserResponse } from '../../models/user';
+import { UserDto } from '@shared/models/user';
 
 const userA = {
 	id: 1,
@@ -42,7 +42,7 @@ describe('UserService', () => {
 	});
 
 	it('should get users', () => {
-		const expectedResponse: UserResponse[] = [userA, userB];
+		const expectedResponse: UserDto[] = [userA, userB];
 
 		service.getUsers().subscribe(users => { expect(users).toEqual(expectedResponse); });
 
@@ -54,7 +54,7 @@ describe('UserService', () => {
 	});
 
 	it('should get user by id', () => {
-		const expectedResponse: UserResponse = userA;
+		const expectedResponse: UserDto = userA;
 
 		service.getUser(1).subscribe(user => { expect(user).toEqual(expectedResponse); });
 

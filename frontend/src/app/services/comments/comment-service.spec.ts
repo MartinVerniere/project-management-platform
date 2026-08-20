@@ -4,25 +4,28 @@ import { CommentService } from './comment-service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { CommentModel } from '../../comments/comment-form/comment-form';
-import { CommentAuthor, CommentResponse } from '../../models/comment';
+import { UserDto } from '@shared/models/user';
+import { CommentDto } from '@shared/models/comment';
 
-const john: CommentAuthor = {
+const john: UserDto = {
 	id: 1,
 	username: 'john',
 	email: 'john@test.com',
 	avatarUrl: '/images/default-avatar.png'
 }
 
-const commentA: CommentResponse = {
+const commentA: CommentDto = {
 	id: 1,
 	content: 'Comment A',
-	user: john
+	author: john,
+	taskId: 1
 }
 
-const commentB: CommentResponse = {
+const commentB: CommentDto = {
 	id: 2,
 	content: 'A',
-	user: john
+	author: john,
+	taskId: 1
 }
 
 describe('CommentService', () => {

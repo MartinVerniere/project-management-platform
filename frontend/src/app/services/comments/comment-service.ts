@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UpdateCommentRequest } from '../../models/comment';
-import { CommentDto } from '../../../../../shared/models/comment';
+import { CommentDto } from '@shared/models/comment';
 
 const API_URL = 'http://localhost:3000/api/comments';
 

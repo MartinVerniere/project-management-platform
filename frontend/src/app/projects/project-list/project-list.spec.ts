@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, input, output } from '@angular/core';
 import { ProjectElement } from '../project-element/project-element';
 import { By } from '@angular/platform-browser';
-import { ProjectResponse } from '../../models/project';
+import { ProjectDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-project-element',
@@ -15,7 +15,7 @@ import { ProjectResponse } from '../../models/project';
 	template: '',
 })
 class ProjectElementStub {
-	project = input.required<ProjectResponse>();
+	project = input.required<ProjectDto>();
 
 	projectDeleted = output<void>();
 }
@@ -37,7 +37,7 @@ describe('ProjectList', () => {
 		}
 	}
 
-	const projects: ProjectResponse[] = [
+	const projects: ProjectDto[] = [
 		{
 			id: 1,
 			name: 'Project A',

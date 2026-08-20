@@ -4,7 +4,7 @@ import { FormField, form, required, submit } from "@angular/forms/signals";
 import { firstValueFrom } from "rxjs";
 import { ProjectService } from "../../services/projects/project-service";
 import { UserService } from "../../services/users/user-service";
-import { ProjectMemberDto } from "../../../../../shared/models/project";
+import { ProjectMemberDto } from "@shared/models/project";
 
 export interface MemberModel {
 	userId: string;

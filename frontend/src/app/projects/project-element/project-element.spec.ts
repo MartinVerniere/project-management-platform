@@ -4,9 +4,9 @@ import { ProjectElement } from './project-element';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
-import { ProjectMemberResponse, ProjectResponse } from '../../models/project';
-import { UserResponse } from '../../models/user';
 import { AuthService } from '../../services/auth/auth-service';
+import { UserDto } from '@shared/models/user';
+import { ProjectDto, ProjectMemberDto } from '@shared/models/project';
 
 describe('ProjectElement', () => {
 	let fixture: ComponentFixture<ProjectElement>;
@@ -30,21 +30,21 @@ describe('ProjectElement', () => {
 		}
 	};
 
-	const me: UserResponse = {
+	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@test.com',
 		avatarUrl: '/images/default-avatar.png'
 	}
 
-	const project: ProjectResponse = {
+	const project: ProjectDto = {
 		id: 1,
 		name: 'Project A',
 		key: 'PROA',
 		description: 'My project',
 	};
 
-	const members: ProjectMemberResponse[] = [
+	const members: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

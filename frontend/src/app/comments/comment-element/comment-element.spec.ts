@@ -5,10 +5,10 @@ import { Component, input, output } from '@angular/core';
 import { CommentUpdateForm } from '../comment-update-form/comment-update-form';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { CommentResponse } from '../../models/comment';
 import { CommentService } from '../../services/comments/comment-service';
 import { AuthService } from '../../services/auth/auth-service';
-import { UserResponse } from '../../models/user';
+import { CommentDto } from '@shared/models/comment';
+import { UserDto } from '@shared/models/user';
 
 @Component({
 	selector: 'app-comment-update-form',
@@ -16,7 +16,7 @@ import { UserResponse } from '../../models/user';
 	template: '',
 })
 class CommentUpdateFormStub {
-	comment = input.required<CommentResponse>();
+	comment = input.required<CommentDto>();
 
 	commentEdited = output<void>();
 	canceledCommentEdit = output<void>();
@@ -30,17 +30,18 @@ describe('CommentElement', () => {
 	let commentServiceMock = { deleteComment: vi.fn() };
 	let authServiceMock = { user: vi.fn() };
 
-	const me: UserResponse = {
+	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@test.com',
 		avatarUrl: '/images/default-avatar.png'
 	}
 
-	const comment: CommentResponse = {
+	const comment: CommentDto = {
 		id: 1,
 		content: 'Good',
-		user: me
+		author: me,
+		taskId: 1
 	};
 
 	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {

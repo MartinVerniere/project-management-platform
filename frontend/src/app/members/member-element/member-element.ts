@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { ProjectService } from '../../services/projects/project-service';
 import { AuthService } from '../../services/auth/auth-service';
-import { ProjectMemberDto } from '../../../../../shared/models/project';
+import { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-member-element',

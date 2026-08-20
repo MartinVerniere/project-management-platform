@@ -3,8 +3,8 @@ import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CreateProjectRequest, UpdateProjectRequest } from '../../models/project';
 import { CreateBoardRequest } from '../../models/board';
-import { ProjectDetailsDto, ProjectDto, ProjectMemberDto } from '../../../../../shared/models/project';
-import { BoardDetailsDto, BoardDto } from '../../../../../shared/models/board';
+import { ProjectDetailsDto, ProjectDto, ProjectMemberDto } from '@shared/models/project';
+import { BoardDto } from '@shared/models/board';
 
 const API_URL = 'http://localhost:3000/api/projects';
 

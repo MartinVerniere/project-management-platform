@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TaskDetailsDto, TaskDto } from '../../../../../shared/models/task';
 import { UpdateTaskRequest } from '../../models/task';
-import { CommentDto } from '../../../../../shared/models/comment';
 import { AddCommentRequest } from '../../models/comment';
+import { TaskDetailsDto, TaskDto } from '@shared/models/task';
+import { CommentDto } from '@shared/models/comment';
 
 const API_URL = 'http://localhost:3000/api/tasks';
 

@@ -5,7 +5,8 @@ import { Component, input, output } from '@angular/core';
 import { CommentElement } from '../comment-element/comment-element';
 import { CommentForm } from '../comment-form/comment-form';
 import { By } from '@angular/platform-browser';
-import { CommentAuthor, CommentResponse } from '../../models/comment';
+import { CommentDto } from '@shared/models/comment';
+import { UserDto } from '@shared/models/user';
 
 @Component({
 	selector: 'app-comment-element',
@@ -13,7 +14,7 @@ import { CommentAuthor, CommentResponse } from '../../models/comment';
 	template: '',
 })
 class CommentElementStub {
-	comment = input.required<CommentResponse>();
+	comment = input.required<CommentDto>();
 	hasAdminPermissions = input.required<boolean>();
 
 	commentEdited = output<void>();
@@ -36,23 +37,25 @@ describe('CommentList', () => {
 	let fixture: ComponentFixture<CommentList>;
 	let component: CommentList;
 
-	const commentAuthor: CommentAuthor = {
+	const commentAuthor: UserDto = {
 		id: 0,
 		username: 'john',
 		email: 'john@test.com',
 		avatarUrl: null
 	};
 
-	const commentList: CommentResponse[] = [
+	const commentList: CommentDto[] = [
 		{
 			id: 1,
 			content: 'Good',
-			user: commentAuthor
+			author: commentAuthor,
+			taskId: 1
 		},
 		{
 			id: 2,
 			content: 'Great',
-			user: commentAuthor
+			author: commentAuthor,
+			taskId: 1
 		}
 	]
 

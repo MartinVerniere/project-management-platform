@@ -4,10 +4,10 @@ import { Component, input, output } from '@angular/core';
 import { MemberElement } from '../member-element/member-element';
 import { By } from '@angular/platform-browser';
 import { MemberForm } from '../member-form/member-form';
-import { ProjectMemberResponse } from '../../models/project';
-import { UserResponse } from '../../models/user';
 import { AuthService } from '../../services/auth/auth-service';
 import { of } from 'rxjs';
+import { ProjectMemberDto } from '@shared/models/project';
+import { UserDto } from '@shared/models/user';
 
 @Component({
 	selector: 'app-member-element',
@@ -16,7 +16,7 @@ import { of } from 'rxjs';
 })
 class MemberElementStub {
 	projectId = input.required<number>();
-	member = input.required<ProjectMemberResponse>();
+	member = input.required<ProjectMemberDto>();
 	hasAdminPermissions = input.required<boolean>();
 
 	memberRemoved = output<void>();
@@ -29,7 +29,7 @@ class MemberElementStub {
 })
 class MemberFormStub {
 	projectId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 
 	memberAdded = output<void>();
 	canceledMemberAdd = output<void>();
@@ -42,14 +42,14 @@ describe('MemberList', () => {
 
 	const authServiceMock = { user: vi.fn() };
 
-	const me: UserResponse = {
+	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@email.com',
 		avatarUrl: '/images/default-avatar.png'
 	}
 
-	const memberList: ProjectMemberResponse[] = [
+	const memberList: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

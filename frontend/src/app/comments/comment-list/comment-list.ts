@@ -1,7 +1,7 @@
 import { Component, input, output, signal } from '@angular/core';
 import { CommentElement } from '../comment-element/comment-element';
 import { CommentForm } from '../comment-form/comment-form';
-import { CommentDto } from '../../../../../shared/models/comment';
+import { CommentDto } from '@shared/models/comment';
 
 @Component({
 	selector: 'app-comment-list',
