@@ -1,5 +1,5 @@
-import { BoardDto } from "./board";
-import { UserDto } from "./user";
+import type { BoardDto } from "./board.js";
+import type { UserDto } from "./user.js";
 
 type ProjectRole = 'ADMIN' | 'MEMBER';
 

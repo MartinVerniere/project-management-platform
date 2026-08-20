@@ -1,4 +1,4 @@
-import { UserDto } from "./user";
+import type { UserDto } from "./user.js";
 
 export interface CommentDto {
 	id: number,

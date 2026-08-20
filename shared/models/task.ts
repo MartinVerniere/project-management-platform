@@ -1,5 +1,5 @@
-import { CommentDto } from "./comment";
-import { UserDto } from "./user";
+import type { CommentDto } from "./comment.js";
+import type { UserDto } from "./user.js";
 
 export interface TaskDto {
 	id: number,

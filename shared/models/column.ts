@@ -1,4 +1,4 @@
-import { TaskDetailsDto } from "./task";
+import type { TaskDetailsDto } from "./task.js";
 
 export interface ColumnDto {
 	id: number,

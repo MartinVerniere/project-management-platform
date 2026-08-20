@@ -1,4 +1,4 @@
-import { UserDto } from "./user";
+import type { UserDto } from "./user.js";
 
 export interface LoginDto {
 	token: string;

@@ -1,4 +1,4 @@
-import { ColumnDetailsDto } from "./column";
+import type { ColumnDetailsDto } from "./column.js";
 
 export interface BoardDto {
 	id: number,
