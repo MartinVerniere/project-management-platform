@@ -8,35 +8,23 @@ describe('Login', () => {
 	let fixture: ComponentFixture<Login>;
 	let component: Login;
 	let router: Router;
-	let navigateSpy: any;
+	let navigateSpy: ReturnType<typeof vi.spyOn>;
 
-	let authServiceMock: { login: ReturnType<typeof vi.fn> }; // Injected service
+	const authServiceMock = { login: vi.fn() };
 
-	beforeEach(async () => {
-		authServiceMock = { login: vi.fn() };
-
-		await TestBed.configureTestingModule({
-			imports: [Login],
-			providers: [
-				{ provide: AuthService, useValue: authServiceMock },
-				provideRouter([])
-			]
-		}).compileComponents();
-
-		router = TestBed.inject(Router);
-		navigateSpy = vi.spyOn(router, 'navigate');
-
+	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(Login);
 		component = fixture.componentInstance;
 
-		await fixture.whenStable();
-	});
+		fixture.detectChanges();
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
+		if (shouldAwait) {
+			await fixture.whenStable();
+			fixture.detectChanges();
+		}
+	};
 
-	it('should login on submit', () => {
+	function setDefaultMockReturnValues() {
 		authServiceMock.login.mockReturnValue(of({
 			user: {
 				id: '1',
@@ -44,6 +32,37 @@ describe('Login', () => {
 				email: 'john@test.com'
 			}
 		}));
+	};
+
+	function setupRouter() {
+		router = TestBed.inject(Router);
+		navigateSpy = vi.spyOn(router, 'navigate');
+	};
+
+	beforeEach(async () => {
+		vi.clearAllMocks();
+
+		setDefaultMockReturnValues();
+
+		await TestBed.configureTestingModule({
+			imports: [Login],
+			providers: [
+				{ provide: AuthService, useValue: authServiceMock },
+				provideRouter([]),
+			]
+		}).compileComponents();
+
+		setupRouter();
+	});
+
+	it('should create', async () => {
+		await createComponent();
+
+		expect(component).toBeTruthy();
+	});
+
+	it('should login on submit', async () => {
+		await createComponent();
 
 		component.loginModel.set({
 			username: 'john',
@@ -60,7 +79,9 @@ describe('Login', () => {
 		expect(navigateSpy).toHaveBeenCalledWith(['/']);
 	});
 
-	it('should not submit when form is invalid', () => {
+	it('should not submit when form is invalid', async () => {
+		await createComponent();
+
 		component.loginModel.set({
 			username: '',
 			password: '',

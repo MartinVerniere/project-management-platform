@@ -8,12 +8,39 @@ describe('Register', () => {
 	let fixture: ComponentFixture<Register>;
 	let component: Register;
 	let router: Router;
-	let navigateSpy: any;
+	let navigateSpy: ReturnType<typeof vi.spyOn>;
 
-	let authServiceMock: { register: ReturnType<typeof vi.fn> }; // Injected service
+	const authServiceMock = { register: vi.fn() };
+
+	async function createComponent(shouldAwait: boolean = true) {
+		fixture = TestBed.createComponent(Register);
+		component = fixture.componentInstance;
+
+		fixture.detectChanges();
+
+		if (shouldAwait) {
+			await fixture.whenStable();
+			fixture.detectChanges();
+		}
+	};
+
+	function setDefaultMockReturnValues() {
+		authServiceMock.register.mockReturnValue(of({
+			id: '1',
+			username: 'john',
+			email: 'john@test.com',
+		}));
+	};
+
+	function setupRouter() {
+		router = TestBed.inject(Router);
+		navigateSpy = vi.spyOn(router, 'navigate');
+	};
 
 	beforeEach(async () => {
-		authServiceMock = { register: vi.fn() }
+		vi.clearAllMocks();
+
+		setDefaultMockReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [Register],
@@ -22,26 +49,18 @@ describe('Register', () => {
 				provideRouter([])
 			]
 		}).compileComponents();
-		
-		router = TestBed.inject(Router);
-		navigateSpy = vi.spyOn(router, 'navigate');
 
-		fixture = TestBed.createComponent(Register);
-		component = fixture.componentInstance;
-
-		await fixture.whenStable();
+		setupRouter();
 	});
 
-	it('should create', () => {
+	it('should create', async () => {
+		await createComponent();
+		
 		expect(component).toBeTruthy();
 	});
 
-	it('should register on submit', () => {
-		authServiceMock.register.mockReturnValue(of({
-			id: '1',
-			username: 'john',
-			email: 'john@test.com',
-		}));
+	it('should register on submit', async () => {
+		await createComponent();
 
 		const avatar = new File(['avatar'], 'avatar.png', {
 			type: 'image/png'
@@ -64,11 +83,13 @@ describe('Register', () => {
 		expect(formData.get('email')).toBe('john@test.com');
 		expect(formData.get('password')).toBe('123');
 		expect(formData.get('avatar')).toBe(avatar);
-	
+
 		expect(navigateSpy).toHaveBeenCalledWith(['/login']);
 	});
 
-	it('should not submit when form is invalid', () => {
+	it('should not submit when form is invalid', async () => {
+		await createComponent();
+		
 		component.registerModel.set({
 			username: '',
 			email: '',
