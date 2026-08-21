@@ -98,4 +98,14 @@ describe('BoardForm', () => {
 
 		expect(component.error()).not.toBe('');
 	});
+
+	it('should navigate to projects/:id when "Cancel" button clicked', async () => {
+		await createComponent();
+
+		component.onCancel();
+
+		await harness.fixture.whenStable();
+
+		expect(router.url).toBe('/projects/1');
+	});
 });

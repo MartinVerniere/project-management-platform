@@ -111,7 +111,7 @@ describe('BoardDetails', () => {
 						path: 'projects/:projectId/boards/:boardId',
 						component: BoardDetails,
 					},
-				], withComponentInputBinding()),
+				]),
 			]
 		}).overrideComponent(BoardDetails, {
 			remove: { imports: [ColumnList] },
