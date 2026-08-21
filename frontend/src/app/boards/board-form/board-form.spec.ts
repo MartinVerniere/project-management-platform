@@ -1,53 +1,55 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { BoardForm } from './board-form';
-import { ActivatedRoute, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 import { ProjectService } from '../../services/projects/project-service';
+import { Component } from '@angular/core';
+
+@Component({
+	standalone: true,
+	template: '',
+})
+class DummyComponent { }
 
 describe('BoardForm', () => {
-	let fixture: ComponentFixture<BoardForm>;
 	let component: BoardForm;
-	let html: HTMLElement;
+	let harness: RouterTestingHarness;
+	let router: Router;
 
-	let projectServiceMock = { createBoard: vi.fn() };
-	let routerMock = { navigate: vi.fn().mockResolvedValue(true) };
+	const projectServiceMock = { createBoard: vi.fn() };
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'id') return '1';
-					return null;
-				}
-			}
+	async function createComponent(shouldAwait = true) {
+		component = await harness.navigateByUrl('/projects/1/boards/create', BoardForm);
+
+		if (shouldAwait) {
+			await harness.fixture.whenStable();
+			harness.detectChanges();
 		}
 	}
 
-	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(BoardForm);
-		component = fixture.componentInstance;
-		html = fixture.nativeElement;
-
-		fixture.detectChanges();
-
-		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
-		}
+	function setDefaultReturnValues() {
+		projectServiceMock.createBoard.mockReturnValue(of({}));
 	}
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [BoardForm],
 			providers: [
 				{ provide: ProjectService, useValue: projectServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock },
-				{ provide: Router, useValue: routerMock }
+				provideRouter([
+					{ path: 'projects/:id/boards/create', component: BoardForm, },
+					{ path: 'projects/:id', component: DummyComponent, },
+				]),
 			]
 		}).compileComponents();
+
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	});
 
 	it('should create', async () => {
@@ -57,25 +59,23 @@ describe('BoardForm', () => {
 	});
 
 	it('should create board when valid form data, then redirect to /projects/projectId and clear form', async () => {
-		projectServiceMock.createBoard.mockReturnValue(of({}));
-
 		await createComponent();
 
 		component.boardModel.set({ name: 'Board A' });
 
 		await component.onSubmit(new Event('submit'));
 
+		await harness.fixture.whenStable();
+
 		expect(projectServiceMock.createBoard).toHaveBeenCalledWith(1, { name: 'Board A' });
-		expect(routerMock.navigate).toHaveBeenCalledWith(['/projects', 1]);
 		expect(component.boardModel()).toEqual({ name: '' });
+		expect(router.url).toBe('/projects/1');
 	});
 
 	it('should not create board when invalid form data', async () => {
 		await createComponent();
 
 		await component.onSubmit(new Event('submit'));
-
-		await fixture.whenStable();
 
 		expect(projectServiceMock.createBoard).not.toHaveBeenCalled();
 	});

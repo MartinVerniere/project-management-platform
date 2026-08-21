@@ -1,61 +1,67 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed } from '@angular/core/testing';
 import { BoardUpdateForm } from './board-update-form';
 import { of, throwError } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { BoardService } from '../../services/boards/board-service';
+import { BoardDetailsDto } from '@shared/models/board';
+import { Component } from '@angular/core';
+
+@Component({
+	standalone: true,
+	template: '',
+})
+class DummyComponent { }
 
 describe('BoardUpdateForm', () => {
-	let fixture: ComponentFixture<BoardUpdateForm>;
 	let component: BoardUpdateForm;
+	let harness: RouterTestingHarness;
+	let router: Router;
 
-	const currentBoard = {
+	const currentBoard: BoardDetailsDto = {
 		id: 1,
-		name: "Board A"
+		name: "Board A",
+		projectId: 1,
+		columns: []
 	}
 
 	const boardServiceMock = {
-		getBoard: vi.fn().mockReturnValue(of(currentBoard)),
-		updateBoard: vi.fn().mockReturnValue(of({}))
+		getBoard: vi.fn(),
+		updateBoard: vi.fn()
 	};
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					if (key === 'boardId') return '1';
-					return null;
-				}
-			}
-		}
-	}
-	
-	let routerMock = { navigate: vi.fn().mockResolvedValue(true) };
-
 	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(BoardUpdateForm);
-		component = fixture.componentInstance;
-
-		fixture.detectChanges();
+		component = await harness.navigateByUrl('/projects/1/boards/1/edit', BoardUpdateForm);
 
 		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
+			await harness.fixture.whenStable();
+			harness.detectChanges();
 		}
+	}
+
+	function setDefaultReturnValues() {
+		boardServiceMock.getBoard.mockReturnValue(of(currentBoard));
+		boardServiceMock.updateBoard.mockReturnValue(of({}));
 	}
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 
+		setDefaultReturnValues();
+
 		await TestBed.configureTestingModule({
 			imports: [BoardUpdateForm],
 			providers: [
 				{ provide: BoardService, useValue: boardServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock },
-				{ provide: Router, useValue: routerMock },
+				provideRouter([
+					{ path: 'projects/:projectId/boards/:boardId/edit', component: BoardUpdateForm },
+					{ path: 'projects/:id', component: DummyComponent },
+				]),
 			]
 		}).compileComponents();
+
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	});
 
 	it('should create', async () => {
@@ -83,9 +89,11 @@ describe('BoardUpdateForm', () => {
 
 		await component.onSubmit(new Event('submit'));
 
+		await harness.fixture.whenStable();
+
 		expect(boardServiceMock.updateBoard).toHaveBeenCalledWith(currentBoard.id, { name: 'Updated A' });
-		expect(routerMock.navigate).toHaveBeenCalledWith(['/projects', 1]);
 		expect(component.boardModel()).toEqual({ name: '' });
+		expect(router.url).toBe('/projects/1');
 	});
 
 	it('should not update board when invalid form data', async () => {
@@ -94,8 +102,6 @@ describe('BoardUpdateForm', () => {
 		component.resetForm(); //Clear name loaded from fetch
 
 		await component.onSubmit(new Event('submit'));
-
-		await fixture.whenStable();
 
 		expect(boardServiceMock.updateBoard).not.toHaveBeenCalled();
 	});

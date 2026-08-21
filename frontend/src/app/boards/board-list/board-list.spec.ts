@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BoardList } from './board-list';
 import { NEVER, of, throwError } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
 import { Component, input, output } from '@angular/core';
 import { BoardElement } from '../board-element/board-element';
@@ -29,29 +29,18 @@ describe('BoardList', () => {
 
 	const projectServiceMock = { getBoards: vi.fn() };
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'id') return '1';
-					return null;
-				}
-			}
-		}
-	}
-
 	const projectId = 1;
 
 	const boards: BoardDto[] = [
 		{
 			id: 1,
 			name: 'Board A',
-			projectId: 1
+			projectId
 		},
 		{
 			id: 2,
 			name: 'Board B',
-			projectId: 1
+			projectId
 		}
 	];
 
@@ -69,16 +58,22 @@ describe('BoardList', () => {
 			await fixture.whenStable();
 			fixture.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		projectServiceMock.getBoards.mockReturnValue(of(boards));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [BoardList],
 			providers: [
 				{ provide: ProjectService, useValue: projectServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock },
+				provideRouter([])
 			]
 		}).overrideComponent(BoardList, {
 			remove: { imports: [BoardElement] },
@@ -101,8 +96,6 @@ describe('BoardList', () => {
 	});
 
 	it('should render boards', async () => {
-		projectServiceMock.getBoards.mockReturnValue(of(boards));
-
 		await createComponent();
 
 		const children = fixture.debugElement.queryAll(By.directive(BoardElementStub));
@@ -131,24 +124,22 @@ describe('BoardList', () => {
 
 		const addBoardButton = Array
 			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Edit'));
+			.find(button => button.textContent?.includes('Add board'));
 
 		expect(addBoardButton).toBeUndefined();
 	});
 
 	it('should reload board list when BoardElement emits boardDeleted', async () => {
-		projectServiceMock.getBoards.mockReturnValue(of(boards));
-
 		await createComponent();
 
 		const child = fixture.debugElement
 			.query(By.directive(BoardElementStub))
 			.componentInstance as BoardElementStub;
 
-		const reloadSpy = vi.spyOn(component.boardList, 'reload');
-
 		child.boardDeleted.emit();
 
-		expect(reloadSpy).toHaveBeenCalled();
+		await fixture.whenStable();
+
+		expect(projectServiceMock.getBoards).toHaveBeenCalledTimes(2);
 	});
 });
