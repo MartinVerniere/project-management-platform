@@ -82,7 +82,12 @@ describe('MemberForm', () => {
 	it('should filter out users already in the project', async () => {
 		await createComponent();
 
-		expect(component.possibleUsers()).toEqual([{ id: 20, name: 'New User' }]);
+		expect(component.possibleUsers()).toEqual([{
+			id: 20,
+			username: 'New user',
+			email: 'newUser@email.com',
+			avatarUrl: '/images/default-avatar.png'
+		}]);
 	});
 
 	it('should add member and emit memberAdded', async () => {
