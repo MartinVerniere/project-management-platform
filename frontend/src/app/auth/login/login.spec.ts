@@ -1,26 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Login } from './login';
 import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth-service';
+import { Component } from '@angular/core';
+
+@Component({
+	standalone: true,
+	template: '',
+})
+class DummyComponent { }
 
 describe('Login', () => {
-	let fixture: ComponentFixture<Login>;
 	let component: Login;
+	let harness: RouterTestingHarness;
 	let router: Router;
-	let navigateSpy: ReturnType<typeof vi.spyOn>;
 
 	const authServiceMock = { login: vi.fn() };
 
 	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(Login);
-		component = fixture.componentInstance;
-
-		fixture.detectChanges();
+		component = await harness.navigateByUrl('/login', Login);
 
 		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
+			await harness.fixture.whenStable();
+			harness.detectChanges();
 		}
 	};
 
@@ -34,11 +38,6 @@ describe('Login', () => {
 		}));
 	};
 
-	function setupRouter() {
-		router = TestBed.inject(Router);
-		navigateSpy = vi.spyOn(router, 'navigate');
-	};
-
 	beforeEach(async () => {
 		vi.clearAllMocks();
 
@@ -48,11 +47,15 @@ describe('Login', () => {
 			imports: [Login],
 			providers: [
 				{ provide: AuthService, useValue: authServiceMock },
-				provideRouter([]),
+				provideRouter([
+					{ path: 'login', component: Login },
+					{ path: '', component: DummyComponent },
+				]),
 			]
 		}).compileComponents();
 
-		setupRouter();
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	});
 
 	it('should create', async () => {
@@ -71,12 +74,10 @@ describe('Login', () => {
 
 		component.onSubmit(new Event('submit'));
 
-		expect(authServiceMock.login).toHaveBeenCalledWith({
-			username: 'john',
-			password: '123',
-		});
+		await harness.fixture.whenStable();
 
-		expect(navigateSpy).toHaveBeenCalledWith(['/']);
+		expect(authServiceMock.login).toHaveBeenCalledWith({ username: 'john', password: '123' });
+		expect(router.url).toBe('/');
 	});
 
 	it('should not submit when form is invalid', async () => {

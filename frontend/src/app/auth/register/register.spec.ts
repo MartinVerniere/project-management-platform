@@ -1,26 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Register } from './register';
 import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth-service';
+import { Component } from '@angular/core';
+
+@Component({
+	standalone: true,
+	template: '',
+})
+class DummyComponent { }
 
 describe('Register', () => {
-	let fixture: ComponentFixture<Register>;
 	let component: Register;
+	let harness: RouterTestingHarness;
 	let router: Router;
-	let navigateSpy: ReturnType<typeof vi.spyOn>;
 
 	const authServiceMock = { register: vi.fn() };
 
 	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(Register);
-		component = fixture.componentInstance;
-
-		fixture.detectChanges();
+		component = await harness.navigateByUrl('/register', Register);
 
 		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
+			await harness.fixture.whenStable();
+			harness.detectChanges();
 		}
 	};
 
@@ -32,11 +36,6 @@ describe('Register', () => {
 		}));
 	};
 
-	function setupRouter() {
-		router = TestBed.inject(Router);
-		navigateSpy = vi.spyOn(router, 'navigate');
-	};
-
 	beforeEach(async () => {
 		vi.clearAllMocks();
 
@@ -46,16 +45,20 @@ describe('Register', () => {
 			imports: [Register],
 			providers: [
 				{ provide: AuthService, useValue: authServiceMock },
-				provideRouter([])
+				provideRouter([
+					{ path: 'register', component: Register },
+					{ path: 'login', component: DummyComponent },
+				]),
 			]
 		}).compileComponents();
 
-		setupRouter();
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	});
 
 	it('should create', async () => {
 		await createComponent();
-		
+
 		expect(component).toBeTruthy();
 	});
 
@@ -75,21 +78,22 @@ describe('Register', () => {
 
 		component.onSubmit(new Event('submit'));
 
+		await harness.fixture.whenStable();
+
 		expect(authServiceMock.register).toHaveBeenCalledTimes(1);
 		const formData = authServiceMock.register.mock.calls[0][0];
-
 		expect(formData).toBeInstanceOf(FormData);
 		expect(formData.get('username')).toBe('john');
 		expect(formData.get('email')).toBe('john@test.com');
 		expect(formData.get('password')).toBe('123');
 		expect(formData.get('avatar')).toBe(avatar);
 
-		expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+		expect(router.url).toBe('/login');
 	});
 
 	it('should not submit when form is invalid', async () => {
 		await createComponent();
-		
+
 		component.registerModel.set({
 			username: '',
 			email: '',
