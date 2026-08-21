@@ -4,7 +4,7 @@ import { FormField, form, required, submit } from "@angular/forms/signals";
 import { firstValueFrom } from "rxjs";
 import { ProjectService } from "../../services/projects/project-service";
 import { UserService } from "../../services/users/user-service";
-import { ProjectMemberResponse } from "../../models/project";
+import type { ProjectMemberDto } from "@shared/models/project";
 
 export interface MemberModel {
 	userId: string;
@@ -22,7 +22,7 @@ export class MemberForm {
 	userService = inject(UserService);
 
 	projectId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 
 	memberAdded = output<void>();
 	canceledMemberAdd = output<void>();

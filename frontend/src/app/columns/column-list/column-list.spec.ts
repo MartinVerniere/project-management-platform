@@ -9,8 +9,8 @@ import { ColumnElement } from '../column-element/column-element';
 import { By } from '@angular/platform-browser';
 import { TaskService } from '../../services/tasks/task-service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ProjectMemberResponse } from '../../models/project';
-import { ColumnResponse } from '../../models/column';
+import type { ColumnDetailsDto } from '@shared/models/column';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-column-element',
@@ -18,10 +18,10 @@ import { ColumnResponse } from '../../models/column';
 	template: '',
 })
 class ColumnElementStub {
-	column = input.required<ColumnResponse>();
+	column = input.required<ColumnDetailsDto>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 	filtersActive = input.required<boolean>();
 	hasAdminPermissions = input.required<boolean>();
 
@@ -52,24 +52,37 @@ describe('ColumnList', () => {
 		}
 	};
 
-	const columnList: ColumnResponse[] = [
+	const columnList: ColumnDetailsDto[] = [
 		{
-			id: 1, name: "Column A",
+			id: 1,
+			name: "Column A",
 			tasks: [
 				{
 					id: 1,
 					title: 'Task A',
-					comments: []
+					comments: [],
+					assignee: null,
+					description: null,
+					columnId: 1,
+					order: 0
 				}
-			]
+			],
+			boardId: 1,
+			order: 0
 		},
-		{ id: 2, name: "Column B", tasks: [] }
+		{
+			id: 2,
+			name: "Column B",
+			tasks: [],
+			boardId: 1,
+			order: 1
+		}
 	];
 
 	const projectId = 1;
 	const boardId = 1;
 
-	async function createComponent(shouldAwait: boolean = true, columnList: ColumnResponse[] = [], members: ProjectMemberResponse[] = [], hasAdminPermissions = true) {
+	async function createComponent(shouldAwait: boolean = true, columnList: ColumnDetailsDto[] = [], members: ProjectMemberDto[] = [], hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(ColumnList);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -143,9 +156,27 @@ describe('ColumnList', () => {
 				id: 1,
 				name: 'Todo',
 				tasks: [
-					{ id: 1, title: 'Login', comments: [] },
-					{ id: 2, title: 'Dashboard', comments: [] }
-				]
+					{
+						id: 1, 
+						title: 'Login', 
+						comments: [],
+						assignee: null,
+						description: null,
+						columnId: 1,
+						order: 0
+					},
+					{
+						id: 2, 
+						title: 'Dashboard', 
+						comments: [],
+						assignee: null,
+						description: null,
+						columnId: 1,
+						order: 1
+					}
+				],
+				boardId: 1,
+				order: 0
 			}
 		]);
 
@@ -170,7 +201,10 @@ describe('ColumnList', () => {
 							email: 'john@example.com',
 							avatarUrl: '/images/default-avatar.png'
 						},
-						comments: []
+						comments: [],
+						description: null,
+						columnId: 1,
+						order: 0
 					},
 					{
 						id: 2,
@@ -181,9 +215,14 @@ describe('ColumnList', () => {
 							email: 'mary@example.com',
 							avatarUrl: '/images/default-avatar.png'
 						},
-						comments: []
+						comments: [],
+						description: null,
+						columnId: 1,
+						order: 1
 					}
-				]
+				],
+				boardId: 1,
+				order: 0
 			}
 		]);
 
@@ -251,7 +290,7 @@ describe('ColumnList', () => {
 			container: container,
 			previousIndex: 1,
 			currentIndex: 0
-		} as CdkDragDrop<ColumnResponse[]>;
+		} as CdkDragDrop<ColumnDetailsDto[]>;
 
 		const expectedOrder = [
 			{ id: 2, order: 0 },

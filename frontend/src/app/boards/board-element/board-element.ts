@@ -2,7 +2,7 @@ import { Component, inject, input, output, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { HttpErrorResponse } from "@angular/common/http";
 import { BoardService } from "../../services/boards/board-service";
-import { BoardResponse } from "../../models/board";
+import type { BoardDto } from "@shared/models/board";
 
 @Component({
 	selector: 'app-board-element',
@@ -13,7 +13,7 @@ import { BoardResponse } from "../../models/board";
 export class BoardElement {
 	boardService = inject(BoardService);
 
-	board = input.required<BoardResponse>();
+	board = input.required<BoardDto>();
 	projectId = input.required<number>();
 	hasAdminPermissions = input.required<boolean>();
 

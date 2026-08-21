@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MemberElement } from './member-element';
 import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
-import { ProjectMemberResponse } from '../../models/project';
-import { UserResponse } from '../../models/user';
 import { AuthService } from '../../services/auth/auth-service';
+import type { UserDto } from '@shared/models/user';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 describe('MemberElement', () => {
 	let fixture: ComponentFixture<MemberElement>;
@@ -15,22 +15,17 @@ describe('MemberElement', () => {
 	let projectServiceMock = { removeMember: vi.fn() };
 	let authServiceMock = { user: vi.fn() };
 
-	const me: UserResponse = {
+	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@email.com',
 		avatarUrl: '/images/default-avatar.png'
 	}
 
-	const member: ProjectMemberResponse = {
+	const member: ProjectMemberDto = {
 		id: 1,
 		role: 'ADMIN',
-		user: {
-			id: 1,
-			username: 'john',
-			email: 'john@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		}
+		user: me
 	};
 
 	const projectId: number = 1;

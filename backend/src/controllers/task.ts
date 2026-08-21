@@ -1,8 +1,8 @@
 import { Router, type Request, type Response } from "express";
 import { ApiError, requireTaskAdmin, requireTaskMember, taskExtractor, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
-import type { TaskResponse } from "../models/task.js";
 import type { BoardColumn } from "../generated/prisma/client.js";
+import type { TaskDto } from "@shared/models/task.js";
 
 const taskRouter = Router();
 
@@ -14,13 +14,12 @@ taskRouter.get('/:id',
 	async (request: Request, response: Response) => {
 		const task = request.task!;
 
-		const taskResponse: TaskResponse = {
+		const taskResponse: TaskDto = {
 			id: task.id,
 			title: task.title,
-			description: task.description,
+			description: task.description || '',
 			columnId: task.column.id,
 			order: task.order,
-			assigneeId: task.assignee?.id || null
 		};
 
 		return response.status(200).json(taskResponse);

@@ -1,15 +1,9 @@
+import type { UserDto } from "@shared/models/user.js";
 import type { TaskWithColumnAndAssigneeResponse } from "./task.js";
 
-export interface CommentResponse {
-	id: number;
-	content: string;
-	taskId: number;
-	userId: number;
-}
-
-export interface CommentWithTaskResponse {
+export interface CommentWithTaskAndAuthorResponse {
 	id: number;
 	content: string;
 	task: TaskWithColumnAndAssigneeResponse;
-	userId: number;
+	author: UserDto;
 }

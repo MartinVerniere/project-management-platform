@@ -3,8 +3,8 @@ import { TaskElement } from '../task-element/task-element';
 import { ColumnService } from '../../services/columns/column-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ProjectMemberResponse } from '../../models/project';
-import { TaskResponse } from '../../models/task';
+import type { TaskDetailsDto } from '@shared/models/task';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-task-list',
@@ -15,11 +15,11 @@ import { TaskResponse } from '../../models/task';
 export class TaskList {
 	columnService = inject(ColumnService);
 
-	taskList = input.required<TaskResponse[]>();
+	taskList = input.required<TaskDetailsDto[]>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 	filtersActive = input.required<boolean>();
 	hasAdminPermissions = input.required<boolean>();
 
@@ -28,10 +28,10 @@ export class TaskList {
 
 	error = signal<string | null>(null);
 
-	onMoveTask(event: CdkDragDrop<TaskResponse[]>) {
+	onMoveTask(event: CdkDragDrop<TaskDetailsDto[]>) {
 		if (this.filtersActive()) return;
 
-		const task = event.item.data.task as TaskResponse;
+		const task = event.item.data.task as TaskDetailsDto;
 
 		// Case 1: Moved to different column
 		if (event.previousContainer !== event.container) {

@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { ApiError, commentExtractor, requireCommentEditor, tokenExtractor, userExtractor } from "../utils/middleware.js";
 import { prisma } from "../prisma.js";
-import type { CommentResponse } from "../models/comment.js";
+import type { CommentDto } from "@shared/models/comment.js";
 
 const commentRouter = Router();
 
@@ -12,11 +12,11 @@ commentRouter.get('/:id',
 	async (request: Request, response: Response) => {
 		const comment = request.comment!;
 
-		const responseComment: CommentResponse = {
+		const responseComment: CommentDto = {
 			id: comment.id,
 			content: comment.content,
 			taskId: comment.task.id,
-			userId: comment.userId
+			author: comment.author,
 		}
 
 		return response.status(200).json(responseComment);

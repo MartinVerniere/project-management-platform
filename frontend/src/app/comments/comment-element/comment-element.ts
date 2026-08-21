@@ -2,8 +2,8 @@ import { Component, computed, inject, input, output, signal } from '@angular/cor
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommentService } from '../../services/comments/comment-service';
 import { CommentUpdateForm } from '../comment-update-form/comment-update-form';
-import { CommentResponse } from '../../models/comment';
 import { AuthService } from '../../services/auth/auth-service';
+import type { CommentDto } from '@shared/models/comment';
 
 @Component({
 	selector: 'app-comment-element',
@@ -15,12 +15,12 @@ export class CommentElement {
 	commentService = inject(CommentService);
 	authService = inject(AuthService);
 
-	comment = input.required<CommentResponse>();
+	comment = input.required<CommentDto>();
 	hasAdminPermissions = input.required<boolean>();
 
 	hasCommentEditorPermissions = computed(() => {
 		const userId = this.authService.user()?.id;
-		return this.hasAdminPermissions() || this.comment().user.id === userId;
+		return this.hasAdminPermissions() || this.comment().author.id === userId;
 	});
 
 	commentEdited = output<void>();

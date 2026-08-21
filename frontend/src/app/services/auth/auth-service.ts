@@ -2,8 +2,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Service, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { LoginRequest, LoginResponse, RegisterResponse } from '../../models/auth';
-import { UserResponse } from '../../models/user';
+import { LoginRequest } from '../../models/auth';
+import type { UserDto } from '@shared/models/user';
+import type { LoginDto } from '@shared/models/auth';
 
 const API_URL = 'http://localhost:3000/api/auth';
 
@@ -13,7 +14,7 @@ export class AuthService {
 	private router: Router = inject(Router);
 
 	private authToken = signal<string | null>(null);
-	private currentUser = signal<UserResponse | null>(null);
+	private currentUser = signal<UserDto | null>(null);
 
 	isLoggedIn = computed(() => !!this.authToken());
 	user = this.currentUser.asReadonly();
@@ -39,17 +40,17 @@ export class AuthService {
 		});
 	}
 
-	login(request: LoginRequest): Observable<LoginResponse> {
-		return this.http.post<LoginResponse>(`${API_URL}/login`, request)
-			.pipe(tap((response: LoginResponse) => { this.setSession(response.token, response.user); }))
+	login(request: LoginRequest): Observable<LoginDto> {
+		return this.http.post<LoginDto>(`${API_URL}/login`, request)
+			.pipe(tap((response: LoginDto) => { this.setSession(response.token, response.user); }))
 	}
 
-	register(request: FormData): Observable<RegisterResponse> {
-		return this.http.post<RegisterResponse>(`${API_URL}/register`, request);
+	register(request: FormData): Observable<UserDto> {
+		return this.http.post<UserDto>(`${API_URL}/register`, request);
 	}
 
-	me(): Observable<UserResponse> {
-		return this.http.get<UserResponse>(`${API_URL}/me`);
+	me(): Observable<UserDto> {
+		return this.http.get<UserDto>(`${API_URL}/me`);
 	}
 
 	logout() {
@@ -60,7 +61,7 @@ export class AuthService {
 		this.router.navigate(['/login']);
 	}
 
-	private setSession(token: string, user: UserResponse) {
+	private setSession(token: string, user: UserDto) {
 		this.authToken.set(token);
 		this.currentUser.set(user);
 
@@ -68,5 +69,5 @@ export class AuthService {
 	}
 
 	getToken(): string | null { return this.authToken(); }
-	getCurrentUser(): UserResponse | null { return this.currentUser(); }
+	getCurrentUser(): UserDto | null { return this.currentUser(); }
 }

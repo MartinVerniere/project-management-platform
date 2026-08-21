@@ -4,7 +4,8 @@ import { MemberForm } from './member-form';
 import { of, throwError } from 'rxjs';
 import { ProjectService } from '../../services/projects/project-service';
 import { UserService } from '../../services/users/user-service';
-import { ProjectMemberResponse } from '../../models/project';
+import type { ProjectMemberDto } from '@shared/models/project';
+import type { UserDto } from '@shared/models/user';
 
 describe('MemberForm', () => {
 	let fixture: ComponentFixture<MemberForm>;
@@ -13,7 +14,7 @@ describe('MemberForm', () => {
 	const projectServiceMock = { addMember: vi.fn() };
 	const userServiceMock = { getUsers: vi.fn() };
 
-	const memberList: ProjectMemberResponse[] = [
+	const memberList: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',
@@ -26,14 +27,18 @@ describe('MemberForm', () => {
 		}
 	]
 
-	const users = [
+	const users: UserDto[] = [
 		{
 			id: 10,
-			name: 'Existing User'
+			username: 'user',
+			email: 'user@email.com',
+			avatarUrl: '/images/default-avatar.png'
 		},
 		{
 			id: 20,
-			name: 'New User'
+			username: 'New user',
+			email: 'newUser@email.com',
+			avatarUrl: '/images/default-avatar.png'
 		}
 	];
 
@@ -77,7 +82,12 @@ describe('MemberForm', () => {
 	it('should filter out users already in the project', async () => {
 		await createComponent();
 
-		expect(component.possibleUsers()).toEqual([{ id: 20, name: 'New User' }]);
+		expect(component.possibleUsers()).toEqual([{
+			id: 20,
+			username: 'New user',
+			email: 'newUser@email.com',
+			avatarUrl: '/images/default-avatar.png'
+		}]);
 	});
 
 	it('should add member and emit memberAdded', async () => {

@@ -201,6 +201,7 @@ export const boardExtractor = async (
 				select: {
 					id: true,
 					name: true,
+					boardId: true,
 					order: true,
 					tasks: {
 						orderBy: { order: "asc" },
@@ -208,6 +209,7 @@ export const boardExtractor = async (
 							id: true,
 							title: true,
 							description: true,
+							columnId: true,
 							order: true,
 							assignee: {
 								select: {
@@ -222,7 +224,8 @@ export const boardExtractor = async (
 								select: {
 									id: true,
 									content: true,
-									user: {
+									taskId: true,
+									author: {
 										select: {
 											id: true,
 											username: true,
@@ -415,9 +418,24 @@ export const commentExtractor = async (
 					column: {
 						include: { board: true },
 					},
-					assignee: true,
+					assignee: {
+						select: {
+							id: true,
+							username: true,
+							email: true,
+							avatarUrl: true,
+						}
+					},
 				},
 			},
+			author: {
+				select: {
+					id: true,
+					username: true,
+					email: true,
+					avatarUrl: true,
+				}
+			}
 		},
 	});
 	if (!comment) throw new ApiError(404, "COMMENT_NOT_FOUND", "Comment not found.");
@@ -435,7 +453,7 @@ export const requireCommentEditor = async (
 	const userId = request.user.id;
 	const comment = request.comment!;
 
-	const isCommentAuthor = comment.userId === userId;
+	const isCommentAuthor = comment.author.id === userId;
 
 	const membership = await prisma.projectMember.findUnique({
 		where: {

@@ -3,22 +3,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommentUpdateForm } from './comment-update-form';
 import { CommentService } from '../../services/comments/comment-service';
 import { of, throwError } from 'rxjs';
-import { CommentResponse } from '../../models/comment';
+import type { CommentDto } from '@shared/models/comment';
 
 describe('CommentUpdateForm', () => {
 	let fixture: ComponentFixture<CommentUpdateForm>;
 	let component: CommentUpdateForm;
 	let html: HTMLElement;
 
-	const currentComment: CommentResponse = {
+	const currentComment: CommentDto = {
 		id: 1,
 		content: 'Good',
-		user: {
+		taskId: 1,
+		author: {
 			id: 1,
 			username: 'john',
 			email: 'john@test.com',
 			avatarUrl: '/images/default-avatar.png'
-		}
+		},
 	};
 
 	let commentServiceMock = { updateComment: vi.fn().mockReturnValue(of({})) };

@@ -1,14 +1,5 @@
+import type { UserDto } from "@shared/models/user.js";
 import type { ColumnWithBoardResponse } from "./column.js";
-import type { UserResponse } from "./user.js";
-
-export interface TaskResponse {
-	id: number;
-	title: string;
-	description: string | null;
-	columnId: number;
-	order: number;
-	assigneeId: number | null;
-}
 
 export interface TaskWithColumnAndAssigneeResponse {
 	id: number;
@@ -16,5 +7,5 @@ export interface TaskWithColumnAndAssigneeResponse {
 	description: string | null;
 	column: ColumnWithBoardResponse;
 	order: number;
-	assignee: UserResponse | null;
+	assignee: UserDto | null;
 }

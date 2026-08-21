@@ -4,14 +4,14 @@ import { ProjectDetails } from './project-details';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
 import { NEVER, of, throwError } from 'rxjs';
-import { ProjectDetailsResponse, ProjectMemberResponse } from '../../models/project';
 import { Component, input, output } from '@angular/core';
-import { BoardResponse } from '../../models/board';
-import { UserResponse } from '../../models/user';
 import { AuthService } from '../../services/auth/auth-service';
 import { MemberList } from '../../members/member-list/member-list';
 import { BoardList } from '../../boards/board-list/board-list';
 import { By } from '@angular/platform-browser';
+import { ProjectDetailsDto, ProjectMemberDto } from '@shared/models/project';
+import type { UserDto } from '@shared/models/user';
+import type { BoardDto } from '@shared/models/board';
 
 @Component({
 	selector: 'app-member-list',
@@ -20,7 +20,7 @@ import { By } from '@angular/platform-browser';
 })
 class MemberListStub {
 	projectId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 	hasAdminPermissions = input.required<boolean>();
 
 	memberAdded = output<void>();
@@ -53,32 +53,32 @@ describe('ProjectDetails', () => {
 		}
 	}
 
-	const me: UserResponse = {
+	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@test.com',
 		avatarUrl: '/images/default-avatar.png'
 	}
 
-	const boards: BoardResponse[] = [
+	const boards: BoardDto[] = [
 		{
 			id: 1,
 			name: 'Board A',
-			columns: []
+			projectId: 1
 		},
 		{
 			id: 2,
 			name: 'Board B',
-			columns: []
+			projectId:1
 		},
 		{
 			id: 3,
 			name: 'Board C',
-			columns: []
+			projectId: 1
 		}
 	]
 
-	const members: ProjectMemberResponse[] = [
+	const members: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',
@@ -106,7 +106,7 @@ describe('ProjectDetails', () => {
 		}
 	]
 
-	const project: ProjectDetailsResponse = {
+	const project: ProjectDetailsDto = {
 		id: 1,
 		name: 'Project A',
 		key: 'PRA',

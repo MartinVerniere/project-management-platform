@@ -7,7 +7,7 @@ import { ProjectService } from '../../services/projects/project-service';
 import { Component, input, output } from '@angular/core';
 import { BoardElement } from '../board-element/board-element';
 import { By } from '@angular/platform-browser';
-import { BoardResponse } from '../../models/board';
+import type { BoardDto } from '@shared/models/board';
 
 @Component({
 	selector: 'app-board-element',
@@ -15,7 +15,7 @@ import { BoardResponse } from '../../models/board';
 	template: '',
 })
 class BoardElementStub {
-	board = input.required<BoardResponse>();
+	board = input.required<BoardDto>();
 	projectId = input.required<number>();
 	hasAdminPermissions = input.required<boolean>();
 
@@ -42,16 +42,16 @@ describe('BoardList', () => {
 
 	const projectId = 1;
 
-	const boards: BoardResponse[] = [
+	const boards: BoardDto[] = [
 		{
 			id: 1,
 			name: 'Board A',
-			columns: []
+			projectId: 1
 		},
 		{
 			id: 2,
 			name: 'Board B',
-			columns: []
+			projectId: 1
 		}
 	];
 

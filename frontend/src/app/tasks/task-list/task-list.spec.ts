@@ -8,8 +8,8 @@ import { Component, input, output } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { TaskElement } from '../task-element/task-element';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ProjectMemberResponse } from '../../models/project';
-import { TaskResponse } from '../../models/task';
+import type { TaskDetailsDto } from '@shared/models/task';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-task-element',
@@ -17,11 +17,11 @@ import { TaskResponse } from '../../models/task';
 	template: '',
 })
 class TaskElementStub {
-	task = input.required<TaskResponse>();
+	task = input.required<TaskDetailsDto>();
 	projectId = input.required<number>();
 	boardId = input.required<number>();
 	columnId = input.required<number>();
-	memberList = input.required<ProjectMemberResponse[]>();
+	memberList = input.required<ProjectMemberDto[]>();
 	hasAdminPermissions = input.required<boolean>();
 
 	taskDeleted = output<void>();
@@ -48,16 +48,32 @@ describe('TaskList', () => {
 		}
 	};
 
-	const taskList: TaskResponse[] = [
-		{ id: 1, title: "Task A", comments: [] },
-		{ id: 2, title: "Task B", comments: [] }
+	const taskList: TaskDetailsDto[] = [
+		{
+			id: 1,
+			title: "Task A",
+			comments: [],
+			assignee: null,
+			description: null,
+			columnId: 1,
+			order: 0
+		},
+		{
+			id: 2,
+			title: "Task B",
+			comments: [],
+			assignee: null,
+			description: null,
+			columnId: 1,
+			order: 1
+		}
 	];
 
 	const projectId = 1;
 	const boardId = 1;
 	const columnId = 1;
 
-	const memberList: ProjectMemberResponse[] = [
+	const memberList: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',
@@ -90,7 +106,7 @@ describe('TaskList', () => {
 		}
 	];
 
-	async function createComponent(shouldAwait = true, taskList: TaskResponse[] = [], filtersActive = false, hasAdminPermissions = true) {
+	async function createComponent(shouldAwait = true, taskList: TaskDetailsDto[] = [], filtersActive = false, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(TaskList);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
@@ -156,7 +172,7 @@ describe('TaskList', () => {
 			container: destinationContainer,
 			previousIndex: 1,
 			currentIndex: 0
-		} as CdkDragDrop<TaskResponse[]>;
+		} as CdkDragDrop<TaskDetailsDto[]>;
 
 		await createComponent(true, taskList);
 
@@ -177,7 +193,7 @@ describe('TaskList', () => {
 			container: container,
 			previousIndex: 1,
 			currentIndex: 0
-		} as CdkDragDrop<TaskResponse[]>;
+		} as CdkDragDrop<TaskDetailsDto[]>;
 
 		const expectedOrder = [
 			{ id: 2, order: 0 },
@@ -206,7 +222,7 @@ describe('TaskList', () => {
 			container: container,
 			previousIndex: 1,
 			currentIndex: 0
-		} as CdkDragDrop<TaskResponse[]>;
+		} as CdkDragDrop<TaskDetailsDto[]>;
 
 		columnServiceMock.changeTaskOrder.mockReturnValue(of({}));
 
@@ -231,7 +247,7 @@ describe('TaskList', () => {
 			container: destinationContainer,
 			previousIndex: 1,
 			currentIndex: 0
-		} as CdkDragDrop<TaskResponse[]>;
+		} as CdkDragDrop<TaskDetailsDto[]>;
 
 		await createComponent(true, taskList, true);
 

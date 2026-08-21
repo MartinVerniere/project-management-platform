@@ -3,21 +3,24 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { TaskModel } from '../../tasks/task-form/task-form';
-import { TaskResponse } from '../../models/task';
 import { TaskService } from './task-service';
-import { CommentResponse } from '../../models/comment';
+import type { TaskDto } from '@shared/models/task';
+import type { CommentDto } from '@shared/models/comment';
 
-const taskA: TaskResponse = {
+const taskA: TaskDto = {
 	id: 1,
 	title: 'Title A',
 	description: 'Description',
-	comments: []
+	columnId: 1,
+	order: 0
 }
 
-const taskB: TaskResponse = {
+const taskB: TaskDto = {
 	id: 2,
 	title: 'Title B',
-	comments: []
+	description: null,
+	columnId: 1,
+	order: 1
 }
 
 describe('TaskService', () => {
@@ -113,15 +116,16 @@ describe('TaskService', () => {
 	});
 
 	it('should add comment to task', () => {
-		const newComment: CommentResponse = {
+		const newComment: CommentDto = {
 			id: 1,
 			content: 'Good work!',
-			user: {
+			author: {
 				id: 1,
 				username: 'john',
 				email: 'john@test.com',
 				avatarUrl: '/images/default-avatar.png'
-			}
+			},
+			taskId: 1
 		}
 
 		service.addComment(taskA.id, newComment).subscribe();

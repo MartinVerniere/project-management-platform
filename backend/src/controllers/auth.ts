@@ -5,9 +5,10 @@ import { Router } from 'express';
 import { ApiError, tokenExtractor, userExtractor } from '../utils/middleware.js';
 import { SECRET } from '../utils/config.js';
 import { prisma } from '../prisma.js';
-import type { LoginResponse } from '../models/user.js';
 import multer from "multer";
 import { supabase } from '../services/supabase.js';
+import type { UserDto } from '@shared/models/user.js';
+import type { LoginDto } from '@shared/models/auth.js';
 
 const authRouter: Router = Router();
 
@@ -69,7 +70,12 @@ authRouter.post('/register', upload.single('avatar'), async (request: Request, r
 		});
 	}
 
-	return response.status(201).json({ ...userCreated, avatarUrl });
+	const registerResponse: UserDto = {
+		...userCreated,
+		avatarUrl
+	};
+
+	return response.status(201).json(registerResponse);
 });
 
 authRouter.post('/login', async (request: Request, response: Response) => {
@@ -87,7 +93,7 @@ authRouter.post('/login', async (request: Request, response: Response) => {
 	const payload = { id: user.id, username: user.username };
 	const token = jwt.sign(payload, SECRET, { expiresIn: '1h' });
 
-	const loginResponse: LoginResponse = {
+	const loginResponse: LoginDto = {
 		user: {
 			id: user.id,
 			username: user.username,

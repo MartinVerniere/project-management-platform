@@ -6,10 +6,10 @@ import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { CommentList } from '../../comments/comment-list/comment-list';
 import { By } from '@angular/platform-browser';
-import { ProjectMemberResponse } from '../../models/project';
-import { TaskResponse } from '../../models/task';
 import { TaskService } from '../../services/tasks/task-service';
-import { UserResponse } from '../../models/user';
+import type { UserDto } from '@shared/models/user';
+import type { TaskDetailsDto } from '@shared/models/task';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-comment-list',
@@ -47,14 +47,14 @@ describe('TaskElement', () => {
 		unassignTask: vi.fn()
 	};
 
-	const me: UserResponse = {
+	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@test.com',
 		avatarUrl: '/images/default-avatar.png'
 	}
 
-	const task: TaskResponse = {
+	const task: TaskDetailsDto = {
 		id: 1,
 		title: 'Task A',
 		description: 'Description',
@@ -62,21 +62,26 @@ describe('TaskElement', () => {
 			{
 				id: 1,
 				content: 'Good',
-				user: me
+				author: me,
+				taskId: 1
 			},
 			{
 				id: 2,
 				content: 'Great',
-				user: me
+				author: me,
+				taskId: 1
 			}
-		]
+		],
+		assignee: null,
+		columnId: 1,
+		order: 0
 	};
 
 	const projectId = 1;
 	const boardId = 1;
 	const columnId = 1;
 
-	const memberList: ProjectMemberResponse[] = [
+	const memberList: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',

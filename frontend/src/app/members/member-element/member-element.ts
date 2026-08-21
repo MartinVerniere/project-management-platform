@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { ProjectService } from '../../services/projects/project-service';
-import { ProjectMemberResponse } from '../../models/project';
 import { AuthService } from '../../services/auth/auth-service';
+import type { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
 	selector: 'app-member-element',
@@ -15,7 +15,7 @@ export class MemberElement {
 	authService = inject(AuthService);
 
 	projectId = input.required<number>();
-	member = input.required<ProjectMemberResponse>();
+	member = input.required<ProjectMemberDto>();
 	hasAdminPermissions = input.required<boolean>();
 
 	memberRemoved = output<void>();
