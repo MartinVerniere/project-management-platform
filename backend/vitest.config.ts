@@ -1,9 +1,12 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	test: {
 		setupFiles: ['./src/utils/config.ts'],
-		exclude: ['dist/**'],
+		exclude: [
+			...configDefaults.exclude,
+			'dist/**',
+		],
 		environment: 'node',
 		clearMocks: true,
 		fileParallelism: false,
