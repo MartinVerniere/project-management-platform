@@ -1,7 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed } from '@angular/core/testing';
 import { ProjectDetails } from './project-details';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
 import { NEVER, of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
@@ -12,6 +11,7 @@ import { By } from '@angular/platform-browser';
 import { ProjectDetailsDto, ProjectMemberDto } from '@shared/models/project';
 import type { UserDto } from '@shared/models/user';
 import type { BoardDto } from '@shared/models/board';
+import { RouterTestingHarness } from '@angular/router/testing';
 
 @Component({
 	selector: 'app-member-list',
@@ -38,27 +38,19 @@ class BoardListStub {
 }
 
 describe('ProjectDetails', () => {
-	let fixture: ComponentFixture<ProjectDetails>;
 	let component: ProjectDetails;
+	let harness: RouterTestingHarness;
 	let html: HTMLElement;
 
 	const projectServiceMock = { getProject: vi.fn() };
 	const authServiceMock = { user: vi.fn() };
-
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: () => '1'
-			}
-		}
-	}
 
 	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@test.com',
 		avatarUrl: '/images/default-avatar.png'
-	}
+	};
 
 	const boards: BoardDto[] = [
 		{
@@ -76,7 +68,7 @@ describe('ProjectDetails', () => {
 			name: 'Board C',
 			projectId: 1
 		}
-	]
+	];
 
 	const members: ProjectMemberDto[] = [
 		{
@@ -104,7 +96,7 @@ describe('ProjectDetails', () => {
 				avatarUrl: '/images/default-avatar.png'
 			}
 		}
-	]
+	];
 
 	const project: ProjectDetailsDto = {
 		id: 1,
@@ -116,45 +108,52 @@ describe('ProjectDetails', () => {
 	};
 
 	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(ProjectDetails);
-		component = fixture.componentInstance;
-		html = fixture.nativeElement;
-
-		fixture.detectChanges();
+		component = await harness.navigateByUrl('/projects/1', ProjectDetails);
+		html = harness.routeNativeElement!;
 
 		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
+			await harness.fixture.whenStable();
+			harness.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		projectServiceMock.getProject.mockReturnValue(of(project));
+		authServiceMock.user.mockReturnValue(me);
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [ProjectDetails],
 			providers: [
 				{ provide: ProjectService, useValue: projectServiceMock },
 				{ provide: AuthService, useValue: authServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock }
+				provideRouter([
+					{
+						path: 'projects/:id',
+						component: ProjectDetails,
+					},
+				]),
 			]
 		}).overrideComponent(ProjectDetails, {
 			remove: { imports: [MemberList, BoardList] },
 			add: { imports: [MemberListStub, BoardListStub] }
 		}).compileComponents();
+
+		harness = await RouterTestingHarness.create();
 	});
 
 	it('should create', async () => {
-		projectServiceMock.getProject.mockReturnValue(of(project));
-
 		await createComponent();
 
 		expect(component).toBeTruthy();
 	});
 
 	it('should load project', async () => {
-		projectServiceMock.getProject.mockReturnValue(of(project));
-
 		await createComponent();
 
 		expect(projectServiceMock.getProject).toHaveBeenCalledWith(1);
@@ -177,11 +176,9 @@ describe('ProjectDetails', () => {
 	});
 
 	it('should reload project after MemberList emits memberAdded', async () => {
-		projectServiceMock.getProject.mockReturnValue(of(project));
-
 		await createComponent();
 
-		const child = fixture.debugElement
+		const child = harness.routeDebugElement!
 			.query(By.directive(MemberListStub))
 			.componentInstance as MemberListStub;
 
@@ -193,11 +190,9 @@ describe('ProjectDetails', () => {
 	});
 
 	it('should reload project after MemberList emits memberRemoved', async () => {
-		projectServiceMock.getProject.mockReturnValue(of(project));
-
 		await createComponent();
 
-		const child = fixture.debugElement
+		const child = harness.routeDebugElement!
 			.query(By.directive(MemberListStub))
 			.componentInstance as MemberListStub;
 

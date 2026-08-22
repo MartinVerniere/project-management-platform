@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectElement } from './project-element';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth-service';
@@ -20,22 +20,12 @@ describe('ProjectElement', () => {
 
 	const authServiceMock = { user: vi.fn() };
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					return null;
-				}
-			}
-		}
-	};
-
 	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@test.com',
 		avatarUrl: '/images/default-avatar.png'
-	}
+	};
 
 	const project: ProjectDto = {
 		id: 1,
@@ -85,40 +75,42 @@ describe('ProjectElement', () => {
 			await fixture.whenStable();
 			fixture.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		authServiceMock.user.mockReturnValue(me);
+		projectServiceMock.getMembers.mockReturnValue(of(members));
+		projectServiceMock.deleteProject.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [ProjectElement],
 			providers: [
 				{ provide: ProjectService, useValue: projectServiceMock },
 				{ provide: AuthService, useValue: authServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock }
+				provideRouter([]),
 			]
 		}).compileComponents();
 	});
 
 	it('should create', async () => {
-		projectServiceMock.getMembers.mockReturnValue(of(members));
-
 		await createComponent();
 
 		expect(component).toBeTruthy();
 	});
 
 	it('should fetch project members', async () => {
-		projectServiceMock.getMembers.mockReturnValue(of(members));
-
 		await createComponent();
 
 		expect(projectServiceMock.getMembers).toHaveBeenCalledWith(project.id);
 	});
 
-	it('should render project information', async () => {
-		projectServiceMock.getMembers.mockReturnValue(of(members));
-	
+	it('should render project information', async () => {	
 		await createComponent();
 	
 		expect(html.textContent).toContain('Project A');
@@ -127,7 +119,6 @@ describe('ProjectElement', () => {
 	});
 
 	it('should not render "Delete" button if user doesnt have delete permissions', async () => {
-		projectServiceMock.getMembers.mockReturnValue(of(members));
 		authServiceMock.user.mockReturnValue({
 			id: 2,
 			username: 'alice',
@@ -145,10 +136,6 @@ describe('ProjectElement', () => {
 	});
 
 	it('should delete project and emit projectDeleted on clicking "Delete" button', async () => {
-		projectServiceMock.getMembers.mockReturnValue(of(members));
-		authServiceMock.user.mockReturnValue(me);
-		projectServiceMock.deleteProject.mockReturnValue(of({}));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.projectDeleted, 'emit');
