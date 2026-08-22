@@ -4,23 +4,28 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import type { UserDto } from '@shared/models/user';
 
-const userA = {
-	id: 1,
-	username: 'john',
-	email: 'john@email.com',
-	avatarUrl: '/images/default-avatar.png'
-}
-
-const userB = {
-	id: 2,
-	username: 'alice',
-	email: 'alice@email.com',
-	avatarUrl: '/images/default-avatar.png'
-}
-
 describe('UserService', () => {
 	let service: UserService;
 	let httpMock: HttpTestingController;
+
+	const userA: UserDto = {
+		id: 1,
+		username: 'john',
+		email: 'john@email.com',
+		avatarUrl: '/images/default-avatar.png'
+	}
+
+	const userB: UserDto = {
+		id: 2,
+		username: 'alice',
+		email: 'alice@email.com',
+		avatarUrl: '/images/default-avatar.png'
+	}
+
+	function setupService() {
+		httpMock = TestBed.inject(HttpTestingController);
+		service = TestBed.inject(UserService);
+	};
 
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -32,40 +37,39 @@ describe('UserService', () => {
 				provideHttpClientTesting(),
 			]
 		});
-
-		httpMock = TestBed.inject(HttpTestingController);
-		service = TestBed.inject(UserService);
 	});
 
 	it('should be created', () => {
+		setupService();
+
 		expect(service).toBeTruthy();
 	});
 
 	it('should get users', () => {
-		const expectedResponse: UserDto[] = [userA, userB];
+		const expectedResponse = [userA, userB];
 
-		service.getUsers().subscribe(users => { expect(users).toEqual(expectedResponse); });
+		setupService();
+
+		service.getUsers().subscribe(users => {
+			expect(users).toEqual(expectedResponse);
+		});
 
 		const request = httpMock.expectOne('http://localhost:3000/api/users');
-
 		expect(request.request.method).toBe('GET');
-
 		request.flush(expectedResponse);
 	});
 
 	it('should get user by id', () => {
-		const expectedResponse: UserDto = userA;
+		const expectedResponse = userA;
 
-		service.getUser(1).subscribe(user => { expect(user).toEqual(expectedResponse); });
+		setupService();
+
+		service.getUser(1).subscribe(user => {
+			expect(user).toEqual(expectedResponse);
+		});
 
 		const request = httpMock.expectOne('http://localhost:3000/api/users/1');
-
 		expect(request.request.method).toBe('GET');
-
 		request.flush(expectedResponse);
-	});
-
-	afterEach(() => {
-		httpMock.verify();
 	});
 });
