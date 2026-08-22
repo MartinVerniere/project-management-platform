@@ -77,6 +77,8 @@ describe('BoardForm', () => {
 
 		await component.onSubmit(new Event('submit'));
 
+		await harness.fixture.whenStable();
+
 		expect(projectServiceMock.createBoard).not.toHaveBeenCalled();
 	});
 
@@ -93,8 +95,9 @@ describe('BoardForm', () => {
 		await createComponent();
 
 		component.boardModel.set({ name: 'ERROR NAME' });
-
 		await component.onSubmit(new Event('submit'));
+		
+		await harness.fixture.whenStable();
 
 		expect(component.error()).not.toBe('');
 	});

@@ -1,54 +1,55 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed } from '@angular/core/testing';
 import { ColumnForm } from './column-form';
 import { BoardService } from '../../services/boards/board-service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { Component } from '@angular/core';
+
+@Component({
+	standalone: true,
+	template: '',
+})
+class DummyComponent { }
 
 describe('ColumnForm', () => {
-	let fixture: ComponentFixture<ColumnForm>;
 	let component: ColumnForm;
-	let html: HTMLElement;
+	let harness: RouterTestingHarness;
+	let router: Router;
 
 	let boardServiceMock = { createColumn: vi.fn() };
-	let routerMock = { navigate: vi.fn().mockResolvedValue(true) };
-
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					if (key === 'boardId') return '1';
-					return null;
-				}
-			}
-		}
-	}
 
 	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(ColumnForm);
-		component = fixture.componentInstance;
-		html = fixture.nativeElement;
-
-		fixture.detectChanges();
+		component = await harness.navigateByUrl('/projects/1/boards/1/columns/create', ColumnForm);
 
 		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
+			await harness.fixture.whenStable();
+			harness.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		boardServiceMock.createColumn.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [ColumnForm],
 			providers: [
 				{ provide: BoardService, useValue: boardServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock },
-				{ provide: Router, useValue: routerMock }
+				provideRouter([
+					{ path: 'projects/:projectId/boards/:boardId/columns/create', component: ColumnForm, },
+					{ path: 'projects/:projectId/boards/:boardId', component: DummyComponent, },
+				]),
 			]
 		}).compileComponents();
+
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	});
 
 	it('should create', async () => {
@@ -63,12 +64,13 @@ describe('ColumnForm', () => {
 		await createComponent();
 
 		component.columnModel.set({ name: 'Column A' });
-
 		await component.onSubmit(new Event('submit'));
 
+		await harness.fixture.whenStable();
+
 		expect(boardServiceMock.createColumn).toHaveBeenCalledWith(1, { name: 'Column A' });
-		expect(routerMock.navigate).toHaveBeenCalledWith(['/projects', 1, 'boards', 1]);
 		expect(component.columnModel()).toEqual({ name: '' });
+		expect(router.url).toBe('/projects/1/boards/1');
 	});
 
 	it('should not create column when invalid form data', async () => {
@@ -76,7 +78,7 @@ describe('ColumnForm', () => {
 
 		await component.onSubmit(new Event('submit'));
 
-		await fixture.whenStable();
+		await harness.fixture.whenStable();
 
 		expect(boardServiceMock.createColumn).not.toHaveBeenCalled();
 	});
@@ -94,7 +96,6 @@ describe('ColumnForm', () => {
 		await createComponent();
 
 		component.columnModel.set({ name: 'ERROR NAME' });
-
 		await component.onSubmit(new Event('submit'));
 
 		expect(component.error()).not.toBe('');

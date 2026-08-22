@@ -1,5 +1,4 @@
 import { Component, computed, inject, input, output, signal } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import { ColumnElement } from "../column-element/column-element";
 import { BoardService } from "../../services/boards/board-service";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -15,7 +14,6 @@ import type { ProjectMemberDto } from "@shared/models/project";
 	styleUrl: './column-list.css',
 })
 export class ColumnList {
-	route = inject(ActivatedRoute);
 	boardService = inject(BoardService);
 	taskService = inject(TaskService);
 

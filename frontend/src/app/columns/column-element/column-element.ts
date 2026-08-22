@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, input, output, signal } from "@angular/core";
-import { RouterLink, Router } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { TaskList } from "../../tasks/task-list/task-list";
 import { ColumnService } from "../../services/columns/column-service";
 import { CdkDragHandle } from "@angular/cdk/drag-drop";
@@ -14,7 +14,6 @@ import type { ProjectMemberDto } from "@shared/models/project";
 	styleUrl: './column-element.css',
 })
 export class ColumnElement {
-	router = inject(Router);
 	columnService = inject(ColumnService);
 
 	column = input.required<ColumnDetailsDto>();

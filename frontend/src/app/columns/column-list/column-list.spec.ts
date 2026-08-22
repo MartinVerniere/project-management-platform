@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ColumnList } from './column-list';
 import { BoardService } from '../../services/boards/board-service';
-import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { ColumnElement } from '../column-element/column-element';
@@ -40,54 +38,84 @@ describe('ColumnList', () => {
 	const boardServiceMock = { changeColumnOrder: vi.fn() };
 	const taskServiceMock = { moveTask: vi.fn() };
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					if (key === 'boardId') return '1';
-					return null;
-				}
-			}
-		}
-	};
+	const projectId = 1;
+	const boardId = 1;
 
 	const columnList: ColumnDetailsDto[] = [
 		{
 			id: 1,
-			name: "Column A",
+			name: 'Todo',
 			tasks: [
 				{
 					id: 1,
-					title: 'Task A',
+					title: 'Login',
+					assignee: {
+						id: 1,
+						username: 'john',
+						email: 'john@example.com',
+						avatarUrl: '/images/default-avatar.png'
+					},
 					comments: [],
-					assignee: null,
 					description: null,
 					columnId: 1,
 					order: 0
+				},
+				{
+					id: 2,
+					title: 'Dashboard',
+					assignee: {
+						id: 2,
+						username: 'mary',
+						email: 'mary@example.com',
+						avatarUrl: '/images/default-avatar.png'
+					},
+					comments: [],
+					description: null,
+					columnId: 1,
+					order: 1
 				}
 			],
-			boardId: 1,
+			boardId,
 			order: 0
 		},
 		{
 			id: 2,
-			name: "Column B",
+			name: "Done",
 			tasks: [],
 			boardId: 1,
 			order: 1
 		}
 	];
 
-	const projectId = 1;
-	const boardId = 1;
+	const members: ProjectMemberDto[] = [
+		{
+			id: 0,
+			role: 'ADMIN',
+			user: {
+				id: 1,
+				username: 'john',
+				email: 'john@example.com',
+				avatarUrl: '/images/default-avatar.png'
+			}
+		},
+		{
+			id: 1,
+			role: 'MEMBER',
+			user: {
+				id: 2,
+				username: 'mary',
+				email: 'mary@example.com',
+				avatarUrl: '/images/default-avatar.png'
+			}
+		}
+	]
 
-	async function createComponent(shouldAwait: boolean = true, columnList: ColumnDetailsDto[] = [], members: ProjectMemberDto[] = [], hasAdminPermissions = true) {
+	async function createComponent(shouldAwait: boolean = true, columns = columnList, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(ColumnList);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
 
-		fixture.componentRef.setInput('columnList', columnList);
+		fixture.componentRef.setInput('columnList', columns);
 		fixture.componentRef.setInput('projectId', projectId);
 		fixture.componentRef.setInput('boardId', boardId);
 		fixture.componentRef.setInput('members', members);
@@ -99,17 +127,23 @@ describe('ColumnList', () => {
 			await fixture.whenStable();
 			fixture.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		boardServiceMock.changeColumnOrder.mockReturnValue(of({}));
+		taskServiceMock.moveTask.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [ColumnList],
 			providers: [
 				{ provide: BoardService, useValue: boardServiceMock },
 				{ provide: TaskService, useValue: taskServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock },
 			]
 		}).overrideComponent(ColumnList, {
 			remove: {
@@ -122,13 +156,13 @@ describe('ColumnList', () => {
 	});
 
 	it('should create', async () => {
-		await createComponent(true, columnList);
+		await createComponent();
 
 		expect(component).toBeTruthy();
 	});
 
 	it('should render columns', async () => {
-		await createComponent(true, columnList);
+		await createComponent();
 
 		const children = fixture.debugElement.queryAll(By.directive(ColumnElementStub));
 
@@ -136,13 +170,13 @@ describe('ColumnList', () => {
 	});
 
 	it('should render empty message when no column exists', async () => {
-		await createComponent(true);
+		await createComponent(true, []);
 
 		expect(html.textContent).toContain('No columns yet!');
 	});
 
 	it('should update searchTerm when search input changes', async () => {
-		await createComponent(true, columnList);
+		await createComponent();
 
 		const event = { target: { value: 'search term' } } as unknown as Event;
 		component.onSearchChange(event);
@@ -151,34 +185,7 @@ describe('ColumnList', () => {
 	});
 
 	it('should filter tasks by search term', async () => {
-		await createComponent(true, [
-			{
-				id: 1,
-				name: 'Todo',
-				tasks: [
-					{
-						id: 1, 
-						title: 'Login', 
-						comments: [],
-						assignee: null,
-						description: null,
-						columnId: 1,
-						order: 0
-					},
-					{
-						id: 2, 
-						title: 'Dashboard', 
-						comments: [],
-						assignee: null,
-						description: null,
-						columnId: 1,
-						order: 1
-					}
-				],
-				boardId: 1,
-				order: 0
-			}
-		]);
+		await createComponent();
 
 		component.searchTerm.set('log');
 
@@ -187,44 +194,7 @@ describe('ColumnList', () => {
 	});
 
 	it('should filter tasks by assignee', async () => {
-		await createComponent(true, [
-			{
-				id: 1,
-				name: 'Todo',
-				tasks: [
-					{
-						id: 1,
-						title: 'Login',
-						assignee: {
-							id: 1,
-							username: 'john',
-							email: 'john@example.com',
-							avatarUrl: '/images/default-avatar.png'
-						},
-						comments: [],
-						description: null,
-						columnId: 1,
-						order: 0
-					},
-					{
-						id: 2,
-						title: 'Dashboard',
-						assignee: {
-							id: 2,
-							username: 'mary',
-							email: 'mary@example.com',
-							avatarUrl: '/images/default-avatar.png'
-						},
-						comments: [],
-						description: null,
-						columnId: 1,
-						order: 1
-					}
-				],
-				boardId: 1,
-				order: 0
-			}
-		]);
+		await createComponent();
 
 		component.selectedAssigneeId.set(2);
 
@@ -233,21 +203,21 @@ describe('ColumnList', () => {
 	});
 
 	it('should set filtersActive to true when searchTerm is set', async () => {
-		await createComponent(true, columnList);
+		await createComponent();
 
 		component.searchTerm.set('abc');
 		expect(component.filtersActive()).toBe(true);
 	});
 
 	it('should set filtersActive to true when selectedAssigneeId is set', async () => {
-		await createComponent(true, columnList);
+		await createComponent();
 
 		component.selectedAssigneeId.set(2);
 		expect(component.filtersActive()).toBe(true);
 	});
 
 	it('should update selectedAssigneeId when assignee changes', async () => {
-		await createComponent(true, columnList);
+		await createComponent();
 
 		const event = { target: { value: '2' } } as unknown as Event;
 		component.onAssigneeChange(event);
@@ -256,7 +226,7 @@ describe('ColumnList', () => {
 	});
 
 	it('should set selectedAssigneeId to null when assignee value is empty', async () => {
-		await createComponent(true, columnList);
+		await createComponent();
 
 		component.selectedAssigneeId.set(2);
 
@@ -267,7 +237,7 @@ describe('ColumnList', () => {
 	});
 
 	it('should clear filters when "Clear filters" is selected', async () => {
-		await createComponent(true, columnList);
+		await createComponent();
 
 		const event = { target: { value: 'search term' } } as unknown as Event;
 		component.onSearchChange(event);
@@ -299,7 +269,7 @@ describe('ColumnList', () => {
 
 		boardServiceMock.changeColumnOrder.mockReturnValue(of({}));
 
-		await createComponent(true, columnList);
+		await createComponent();
 
 		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
@@ -313,7 +283,7 @@ describe('ColumnList', () => {
 	it('should move task to destination column when task is dragged and emit columnListEdited', async () => {
 		taskServiceMock.moveTask.mockReturnValue(of({}));
 
-		await createComponent(true, columnList);
+		await createComponent();
 
 		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
@@ -336,7 +306,7 @@ describe('ColumnList', () => {
 			}
 		})));
 
-		await createComponent(true, columnList);
+		await createComponent();
 
 		const emitSpy = vi.spyOn(component.columnListEdited, 'emit');
 
@@ -351,7 +321,7 @@ describe('ColumnList', () => {
 	});
 
 	it('should emit columnListEdited when one of the ColumnElement emits columnElementEdited', async () => {
-		await createComponent(true, columnList);
+		await createComponent();
 
 		const child = fixture.debugElement
 			.query(By.directive(ColumnElementStub))
