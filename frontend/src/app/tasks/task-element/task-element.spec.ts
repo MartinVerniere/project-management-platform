@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TaskElement } from './task-element';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { CommentList } from '../../comments/comment-list/comment-list';
@@ -10,6 +9,7 @@ import { TaskService } from '../../services/tasks/task-service';
 import type { UserDto } from '@shared/models/user';
 import type { TaskDetailsDto } from '@shared/models/task';
 import type { ProjectMemberDto } from '@shared/models/project';
+import { CommentDto } from '@shared/models/comment';
 
 @Component({
 	selector: 'app-comment-list',
@@ -17,7 +17,7 @@ import type { ProjectMemberDto } from '@shared/models/project';
 	template: '',
 })
 class CommentListStub {
-	commentList = input.required<Comment[]>();
+	commentList = input.required<CommentDto[]>();
 	taskId = input.required<number>();
 	hasAdminPermissions = input.required<boolean>();
 
@@ -29,57 +29,35 @@ describe('TaskElement', () => {
 	let component: TaskElement;
 	let html: HTMLElement;
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					if (key === 'boardId') return '1';
-					return null;
-				}
-			}
-		}
-	};
-
 	let taskServiceMock = {
 		deleteTask: vi.fn(),
 		assignTask: vi.fn(),
 		unassignTask: vi.fn()
 	};
 
+	const projectId = 1;
+	const boardId = 1;
+	const columnId = 1;
+
 	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@test.com',
 		avatarUrl: '/images/default-avatar.png'
-	}
+	};
 
 	const task: TaskDetailsDto = {
 		id: 1,
 		title: 'Task A',
 		description: 'Description',
 		comments: [
-			{
-				id: 1,
-				content: 'Good',
-				author: me,
-				taskId: 1
-			},
-			{
-				id: 2,
-				content: 'Great',
-				author: me,
-				taskId: 1
-			}
+			{ id: 1, content: 'Good', author: me, taskId: 1 },
+			{ id: 2, content: 'Great', author: me, taskId: 1 }
 		],
 		assignee: null,
-		columnId: 1,
+		columnId,
 		order: 0
 	};
-
-	const projectId = 1;
-	const boardId = 1;
-	const columnId = 1;
 
 	const memberList: ProjectMemberDto[] = [
 		{
@@ -90,22 +68,12 @@ describe('TaskElement', () => {
 		{
 			id: 2,
 			role: 'MEMBER',
-			user: {
-				id: 3,
-				username: 'martin',
-				email: 'martin@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 3, username: 'martin', email: 'martin@example.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 3,
 			role: 'MEMBER',
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 2, username: 'alice', email: 'alice@example.com', avatarUrl: '/images/default-avatar.png' }
 		}
 	];
 
@@ -127,16 +95,24 @@ describe('TaskElement', () => {
 			await fixture.whenStable();
 			fixture.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		taskServiceMock.deleteTask.mockReturnValue(of({}));
+		taskServiceMock.assignTask.mockReturnValue(of({}));
+		taskServiceMock.unassignTask.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [TaskElement],
 			providers: [
 				{ provide: TaskService, useValue: taskServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock }
+				provideRouter([]),
 			]
 		}).overrideComponent(TaskElement, {
 			remove: { imports: [CommentList] },
@@ -170,8 +146,6 @@ describe('TaskElement', () => {
 	});
 
 	it('should remove task and emit taskRemoved when "Delete" button is clicked', async () => {
-		taskServiceMock.deleteTask.mockReturnValue(of({}));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.taskDeleted, 'emit');
@@ -227,8 +201,6 @@ describe('TaskElement', () => {
 	});
 
 	it('should assign task to selected user, emit taskAssigneeEdited and hide form when request succeeds', async () => {
-		taskServiceMock.assignTask.mockReturnValue(of({}));
-
 		await createComponent();
 
 		component.selectedAssigneeId.set(2);
@@ -245,8 +217,6 @@ describe('TaskElement', () => {
 	});
 
 	it('should unassign task, emit taskAssigneeEdited and hide form when no assignee is selected', async () => {
-		taskServiceMock.unassignTask.mockReturnValue(of({}));
-
 		await createComponent();
 
 		component.selectedAssigneeId.set(null);

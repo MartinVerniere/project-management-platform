@@ -1,15 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed } from '@angular/core/testing';
 import { TaskUpdateForm } from './task-update-form';
 import { of, throwError } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { TaskService } from '../../services/tasks/task-service';
 import type { TaskDto } from '@shared/models/task';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { Component } from '@angular/core';
+
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('TaskUpdateForm', () => {
-	let fixture: ComponentFixture<TaskUpdateForm>;
 	let component: TaskUpdateForm;
-	let html: HTMLElement;
+	let harness: RouterTestingHarness;
+	let router: Router;
+
+	let taskServiceMock = {
+		getTask: vi.fn(),
+		updateTask: vi.fn()
+	};
 
 	const currentTask: TaskDto = {
 		id: 1,
@@ -19,51 +27,38 @@ describe('TaskUpdateForm', () => {
 		order: 0
 	};
 
-	let taskServiceMock = {
-		getTask: vi.fn().mockReturnValue(of(currentTask)),
-		updateTask: vi.fn().mockReturnValue(of({}))
-	};
-
-	let routerMock = { navigate: vi.fn().mockResolvedValue(true) };
-
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					if (key === 'boardId') return '1';
-					if (key === 'columnId') return '1';
-					if (key === 'taskId') return '1';
-					return null;
-				}
-			}
-		}
-	};
-
-	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(TaskUpdateForm);
-		component = fixture.componentInstance;
-		html = fixture.nativeElement;
-
-		fixture.detectChanges();
+	async function createComponent(shouldAwait = true) {
+		component = await harness.navigateByUrl('/projects/1/boards/1/columns/1/tasks/1/edit', TaskUpdateForm);
 
 		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
+			await harness.fixture.whenStable();
+			harness.detectChanges();
 		}
+	};
+
+	function setDefaultReturnValues() {
+		taskServiceMock.getTask.mockReturnValue(of(currentTask));
+		taskServiceMock.updateTask.mockReturnValue(of({}));
 	}
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 
+		setDefaultReturnValues();
+
 		await TestBed.configureTestingModule({
 			imports: [TaskUpdateForm],
 			providers: [
 				{ provide: TaskService, useValue: taskServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock },
-				{ provide: Router, useValue: routerMock },
+				provideRouter([
+					{ path: 'projects/:projectId/boards/:boardId/columns/:columnId/tasks/:taskId/edit', component: TaskUpdateForm },
+					{ path: 'projects/:id/boards/:boardId', component: DummyComponent },
+				]),
 			]
 		}).compileComponents();
+
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	});
 
 	it('should create', async () => {
@@ -88,22 +83,24 @@ describe('TaskUpdateForm', () => {
 		await createComponent();
 
 		component.taskModel.set({ title: 'Updated A', description: 'Desc' });
-
 		await component.onSubmit(new Event('submit'));
 
+		await harness.fixture.whenStable();
+		harness.detectChanges();
+
 		expect(taskServiceMock.updateTask).toHaveBeenCalledWith(currentTask.id, { title: 'Updated A', description: 'Desc' });
-		expect(routerMock.navigate).toHaveBeenCalledWith(['/projects', 1, 'boards', 1]);
 		expect(component.taskModel()).toEqual({ title: '', description: '' });
+		expect(router.url).toBe('/projects/1/boards/1');
 	});
 
 	it('should not update board when invalid form data', async () => {
 		await createComponent();
 
 		component.resetForm(); //Clear information loaded from fetch
-
 		await component.onSubmit(new Event('submit'));
 
-		await fixture.whenStable();
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(taskServiceMock.updateTask).not.toHaveBeenCalled();
 	});
@@ -121,8 +118,10 @@ describe('TaskUpdateForm', () => {
 		await createComponent();
 
 		component.taskModel.set({ title: 'ERROR NAME', description: '' });
-
 		await component.onSubmit(new Event('submit'));
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(component.error()).not.toBe('');
 	});

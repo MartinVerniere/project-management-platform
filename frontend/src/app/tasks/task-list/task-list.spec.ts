@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TaskList } from './task-list';
 import { ColumnService } from '../../services/columns/column-service';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { Component, input, output } from '@angular/core';
 import { By } from '@angular/platform-browser';
@@ -36,17 +35,9 @@ describe('TaskList', () => {
 
 	const columnServiceMock = { changeTaskOrder: vi.fn() };
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					if (key === 'boardId') return '1';
-					return null;
-				}
-			}
-		}
-	};
+	const projectId = 1;
+	const boardId = 1;
+	const columnId = 1;
 
 	const taskList: TaskDetailsDto[] = [
 		{
@@ -55,7 +46,7 @@ describe('TaskList', () => {
 			comments: [],
 			assignee: null,
 			description: null,
-			columnId: 1,
+			columnId,
 			order: 0
 		},
 		{
@@ -64,60 +55,41 @@ describe('TaskList', () => {
 			comments: [],
 			assignee: null,
 			description: null,
-			columnId: 1,
+			columnId,
 			order: 1
 		}
 	];
-
-	const projectId = 1;
-	const boardId = 1;
-	const columnId = 1;
 
 	const memberList: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',
-			user: {
-				id: 1,
-				username: 'john',
-				email: 'john@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 1, username: 'john', email: 'john@example.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 2,
 			role: 'MEMBER',
-			user: {
-				id: 3,
-				username: 'martin',
-				email: 'martin@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 3, username: 'martin', email: 'martin@example.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 3,
 			role: 'MEMBER',
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 2, username: 'alice', email: 'alice@example.com', avatarUrl: '/images/default-avatar.png' }
 		}
 	];
 
-	async function createComponent(shouldAwait = true, taskList: TaskDetailsDto[] = [], filtersActive = false, hasAdminPermissions = true) {
+	async function createComponent(shouldAwait = true, filtersActive = false, tasks = taskList) {
 		fixture = TestBed.createComponent(TaskList);
 		component = fixture.componentInstance;
 		html = fixture.nativeElement;
 
-		fixture.componentRef.setInput('taskList', taskList);
+		fixture.componentRef.setInput('taskList', tasks);
 		fixture.componentRef.setInput('projectId', projectId);
 		fixture.componentRef.setInput('boardId', boardId);
 		fixture.componentRef.setInput('columnId', columnId);
 		fixture.componentRef.setInput('memberList', memberList);
 		fixture.componentRef.setInput('filtersActive', filtersActive);
-		fixture.componentRef.setInput('hasAdminPermissions', hasAdminPermissions);
+		fixture.componentRef.setInput('hasAdminPermissions', true);
 
 		fixture.detectChanges();
 
@@ -125,16 +97,22 @@ describe('TaskList', () => {
 			await fixture.whenStable();
 			fixture.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		columnServiceMock.changeTaskOrder.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [TaskList],
 			providers: [
 				{ provide: ColumnService, useValue: columnServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock },
+				provideRouter([])
 			]
 		}).overrideComponent(TaskList, {
 			remove: { imports: [TaskElement] },
@@ -143,13 +121,13 @@ describe('TaskList', () => {
 	});
 
 	it('should create', async () => {
-		await createComponent(true, taskList);
+		await createComponent();
 
 		expect(component).toBeTruthy();
 	});
 
 	it('should render tasks', async () => {
-		await createComponent(true, taskList);
+		await createComponent();
 
 		const children = fixture.debugElement.queryAll(By.directive(TaskElementStub));
 
@@ -157,7 +135,7 @@ describe('TaskList', () => {
 	});
 
 	it('should render empty message when no task exists', async () => {
-		await createComponent(true);
+		await createComponent();
 
 		expect(html.textContent).toContain('No tasks yet!');
 	});
@@ -174,7 +152,7 @@ describe('TaskList', () => {
 			currentIndex: 0
 		} as CdkDragDrop<TaskDetailsDto[]>;
 
-		await createComponent(true, taskList);
+		await createComponent();
 
 		const emitSpy = vi.spyOn(component.moveTaskToColumn, 'emit');
 
@@ -200,9 +178,7 @@ describe('TaskList', () => {
 			{ id: 1, order: 1 }
 		];
 
-		columnServiceMock.changeTaskOrder.mockReturnValue(of({}));
-
-		await createComponent(true, taskList);
+		await createComponent();
 
 		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
 
@@ -226,7 +202,7 @@ describe('TaskList', () => {
 
 		columnServiceMock.changeTaskOrder.mockReturnValue(of({}));
 
-		await createComponent(true, taskList, true);
+		await createComponent(true, true);
 
 		const emitSpy = vi.spyOn(component.taskListEdited, 'emit');
 
@@ -249,7 +225,7 @@ describe('TaskList', () => {
 			currentIndex: 0
 		} as CdkDragDrop<TaskDetailsDto[]>;
 
-		await createComponent(true, taskList, true);
+		await createComponent(true, true);
 
 		const emitSpy = vi.spyOn(component.moveTaskToColumn, 'emit');
 
@@ -260,7 +236,7 @@ describe('TaskList', () => {
 	});
 
 	it('should emit taskListEdited when TaskElement emits taskDeleted', async () => {
-		await createComponent(true, taskList);
+		await createComponent();
 
 		const child = fixture.debugElement
 			.query(By.directive(TaskElementStub))
@@ -274,7 +250,7 @@ describe('TaskList', () => {
 	});
 
 	it('should emit taskListEdited when TaskElement emits taskCommentsEdited', async () => {
-		await createComponent(true, taskList);
+		await createComponent();
 
 		const child = fixture.debugElement
 			.query(By.directive(TaskElementStub))
@@ -288,7 +264,7 @@ describe('TaskList', () => {
 	});
 
 	it('should emit taskListEdited when TaskElement emits taskAssigneeEdited', async () => {
-		await createComponent(true, taskList);
+		await createComponent();
 
 		const child = fixture.debugElement
 			.query(By.directive(TaskElementStub))
