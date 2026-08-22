@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MemberElement } from './member-element';
 import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
-import { AuthService } from '../../services/auth/auth-service';
 import type { UserDto } from '@shared/models/user';
 import type { ProjectMemberDto } from '@shared/models/project';
 
@@ -13,14 +12,13 @@ describe('MemberElement', () => {
 	let html: HTMLElement;
 
 	let projectServiceMock = { removeMember: vi.fn() };
-	let authServiceMock = { user: vi.fn() };
 
 	const me: UserDto = {
 		id: 1,
 		username: 'john',
 		email: 'john@email.com',
 		avatarUrl: '/images/default-avatar.png'
-	}
+	};
 
 	const member: ProjectMemberDto = {
 		id: 1,
@@ -45,48 +43,39 @@ describe('MemberElement', () => {
 			await fixture.whenStable();
 			fixture.detectChanges();
 		}
-	}
+	};
 
+	function setDefaultReturnValues() {
+		projectServiceMock.removeMember.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [MemberElement],
 			providers: [
 				{ provide: ProjectService, useValue: projectServiceMock },
-				{ provide: AuthService, useValue: authServiceMock },
 			]
 		}).compileComponents();
 	});
 
 	it('should create', async () => {
-		authServiceMock.user.mockReturnValue(me);
-		projectServiceMock.removeMember.mockReturnValue(of({}));
-
 		await createComponent();
 
 		expect(component).toBeTruthy();
 	});
 
 	it('should render member information', async () => {
-		authServiceMock.user.mockReturnValue(me);
-		projectServiceMock.removeMember.mockReturnValue(of({}));
-
 		await createComponent();
 
 		expect(html.textContent).toContain('john');
 	});
 
 	it('should not render "Remove" button when user doesnt have admin permissions', async () => {
-		authServiceMock.user.mockReturnValue({
-			id: 2,
-			username: 'alice',
-			email: 'alice@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		});
-
-		await createComponent();
+		await createComponent(true, false);
 
 		const removeButton = Array
 			.from(html.querySelectorAll('button'))
@@ -96,9 +85,6 @@ describe('MemberElement', () => {
 	})
 
 	it('should remove member and emit removedMember when "Remove" button clicked', async () => {
-		authServiceMock.user.mockReturnValue(me);
-		projectServiceMock.removeMember.mockReturnValue(of({}));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.memberRemoved, 'emit');
@@ -110,7 +96,6 @@ describe('MemberElement', () => {
 		expect(removeButton).toBeTruthy();
 
 		removeButton!.click();
-
 		await fixture.whenStable();
 
 		expect(projectServiceMock.removeMember).toHaveBeenCalledWith(1, 1);

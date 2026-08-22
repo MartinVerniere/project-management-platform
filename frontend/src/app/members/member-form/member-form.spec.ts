@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MemberForm } from './member-form';
 import { of, throwError } from 'rxjs';
 import { ProjectService } from '../../services/projects/project-service';
@@ -10,6 +9,7 @@ import type { UserDto } from '@shared/models/user';
 describe('MemberForm', () => {
 	let fixture: ComponentFixture<MemberForm>;
 	let component: MemberForm;
+	let html: HTMLElement;
 
 	const projectServiceMock = { addMember: vi.fn() };
 	const userServiceMock = { getUsers: vi.fn() };
@@ -25,13 +25,13 @@ describe('MemberForm', () => {
 				avatarUrl: '/images/default-avatar.png'
 			}
 		}
-	]
+	];
 
 	const users: UserDto[] = [
 		{
 			id: 10,
-			username: 'user',
-			email: 'user@email.com',
+			username: 'john',
+			email: 'john@email.com',
 			avatarUrl: '/images/default-avatar.png'
 		},
 		{
@@ -47,6 +47,7 @@ describe('MemberForm', () => {
 	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(MemberForm);
 		component = fixture.componentInstance;
+		html = fixture.nativeElement;
 
 		fixture.componentRef.setInput('projectId', projectId);
 		fixture.componentRef.setInput('memberList', memberList);
@@ -57,12 +58,17 @@ describe('MemberForm', () => {
 			await fixture.whenStable();
 			fixture.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		projectServiceMock.addMember.mockReturnValue(of({}));
+		userServiceMock.getUsers.mockReturnValue(of(users));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 
-		userServiceMock.getUsers.mockReturnValue(of(users));
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [MemberForm],
@@ -91,8 +97,6 @@ describe('MemberForm', () => {
 	});
 
 	it('should add member and emit memberAdded', async () => {
-		projectServiceMock.addMember.mockReturnValue(of({}));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.memberAdded, 'emit');
@@ -138,7 +142,15 @@ describe('MemberForm', () => {
 
 		const emitSpy = vi.spyOn(component.canceledMemberAdd, 'emit');
 
-		component.onCancel();
+		const cancelButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Cancel'));
+
+		expect(cancelButton).toBeTruthy();
+
+		cancelButton!.click();
+
+		await fixture.whenStable();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});

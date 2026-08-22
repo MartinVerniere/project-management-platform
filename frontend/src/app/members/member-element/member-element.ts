@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { ProjectService } from '../../services/projects/project-service';
-import { AuthService } from '../../services/auth/auth-service';
 import type { ProjectMemberDto } from '@shared/models/project';
 
 @Component({
@@ -12,7 +11,6 @@ import type { ProjectMemberDto } from '@shared/models/project';
 })
 export class MemberElement {
 	projectService = inject(ProjectService);
-	authService = inject(AuthService);
 
 	projectId = input.required<number>();
 	member = input.required<ProjectMemberDto>();
@@ -21,14 +19,6 @@ export class MemberElement {
 	memberRemoved = output<void>();
 
 	error = signal<string | null>(null);
-	
-	hasDeletePermission = computed(() => {
-		const userId = this.authService.user()?.id;
-
-		if (!userId) return false;
-
-		return this.member().user.id === userId && this.member().role === 'ADMIN';
-	});
 
 	onRemoveMember(userId: number) {
 		this.projectService.removeMember(this.projectId(), userId).subscribe({

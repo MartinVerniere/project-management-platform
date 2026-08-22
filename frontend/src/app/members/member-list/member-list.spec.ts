@@ -4,8 +4,6 @@ import { Component, input, output } from '@angular/core';
 import { MemberElement } from '../member-element/member-element';
 import { By } from '@angular/platform-browser';
 import { MemberForm } from '../member-form/member-form';
-import { AuthService } from '../../services/auth/auth-service';
-import { of } from 'rxjs';
 import type { ProjectMemberDto } from '@shared/models/project';
 import type { UserDto } from '@shared/models/user';
 
@@ -39,8 +37,6 @@ describe('MemberList', () => {
 	let fixture: ComponentFixture<MemberList>;
 	let component: MemberList;
 	let html: HTMLElement;
-
-	const authServiceMock = { user: vi.fn() };
 
 	const me: UserDto = {
 		id: 1,
@@ -91,9 +87,6 @@ describe('MemberList', () => {
 
 		await TestBed.configureTestingModule({
 			imports: [MemberList],
-			providers: [
-				{ provide: AuthService, useValue: authServiceMock }
-			]
 		}).overrideComponent(MemberList, {
 			remove: { imports: [MemberElement, MemberForm] },
 			add: { imports: [MemberElementStub, MemberFormStub] }
@@ -114,36 +107,44 @@ describe('MemberList', () => {
 		expect(children).toHaveLength(2);
 	});
 
-	it('should not render "Add member" button when user doesnt have add permissions', async () => {
-		authServiceMock.user.mockReturnValue(of({
-			id: 12,
-			username: 'alice',
-			email: 'alice@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		}));
-
-		await createComponent();
+	it('should not render "Add member" button when user doesnt have admin permissions', async () => {
+		await createComponent(true, false);
 
 		const addButton = Array
 			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Remove from project'));
+			.find(button => button.textContent?.includes('Add member'));
 
 		expect(addButton).toBeUndefined();
 	})
 
-	it('should enable add member form on click', async () => {
+	it('should enable add member form on "Add member" button click', async () => {
 		await createComponent();
 
-		component.onEnableAddMember();
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add member'));
+
+		expect(addButton).toBeTruthy();
+
+		addButton!.click();
+
+		await fixture.whenStable();
 
 		expect(component.addMemberFormEnabled()).toBe(true);
 	});
 
-	it('should disable add member form on cancel', async () => {
+	it('should disable add member form when MemberFormStub emits canceledMemberAdd', async () => {
 		await createComponent();
 
 		component.onEnableAddMember();
-		component.onCancelAddMember();
+
+		fixture.detectChanges();
+
+		const child = fixture.debugElement
+			.query(By.directive(MemberFormStub))
+			.componentInstance as MemberFormStub;
+
+		child.canceledMemberAdd.emit();
 
 		expect(component.addMemberFormEnabled()).toBe(false);
 	});
