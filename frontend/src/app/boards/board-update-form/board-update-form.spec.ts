@@ -7,11 +7,7 @@ import { BoardService } from '../../services/boards/board-service';
 import { BoardDetailsDto } from '@shared/models/board';
 import { Component } from '@angular/core';
 
-@Component({
-	standalone: true,
-	template: '',
-})
-class DummyComponent { }
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('BoardUpdateForm', () => {
 	let component: BoardUpdateForm;
@@ -86,10 +82,10 @@ describe('BoardUpdateForm', () => {
 		await createComponent();
 
 		component.boardModel.set({ name: 'Updated A' });
-
 		await component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(boardServiceMock.updateBoard).toHaveBeenCalledWith(currentBoard.id, { name: 'Updated A' });
 		expect(component.boardModel()).toEqual({ name: '' });
@@ -100,8 +96,10 @@ describe('BoardUpdateForm', () => {
 		await createComponent();
 
 		component.resetForm(); //Clear name loaded from fetch
-
 		await component.onSubmit(new Event('submit'));
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(boardServiceMock.updateBoard).not.toHaveBeenCalled();
 	});
@@ -119,8 +117,10 @@ describe('BoardUpdateForm', () => {
 		await createComponent();
 
 		component.boardModel.set({ name: 'ERROR NAME' });
-
 		await component.onSubmit(new Event('submit'));
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(component.error()).not.toBe('');
 	});
@@ -131,6 +131,7 @@ describe('BoardUpdateForm', () => {
 		component.onCancel();
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(router.url).toBe('/projects/1');
 	});

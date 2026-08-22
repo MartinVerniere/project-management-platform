@@ -7,11 +7,7 @@ import { of, throwError } from 'rxjs';
 import { ProjectService } from '../../services/projects/project-service';
 import { Component } from '@angular/core';
 
-@Component({
-	standalone: true,
-	template: '',
-})
-class DummyComponent { }
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('BoardForm', () => {
 	let component: BoardForm;
@@ -31,7 +27,7 @@ describe('BoardForm', () => {
 
 	function setDefaultReturnValues() {
 		projectServiceMock.createBoard.mockReturnValue(of({}));
-	}
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
@@ -42,8 +38,8 @@ describe('BoardForm', () => {
 			providers: [
 				{ provide: ProjectService, useValue: projectServiceMock },
 				provideRouter([
-					{ path: 'projects/:id/boards/create', component: BoardForm, },
-					{ path: 'projects/:id', component: DummyComponent, },
+					{ path: 'projects/:id/boards/create', component: BoardForm },
+					{ path: 'projects/:id', component: DummyComponent },
 				]),
 			]
 		}).compileComponents();
@@ -96,7 +92,7 @@ describe('BoardForm', () => {
 
 		component.boardModel.set({ name: 'ERROR NAME' });
 		await component.onSubmit(new Event('submit'));
-		
+
 		await harness.fixture.whenStable();
 
 		expect(component.error()).not.toBe('');
