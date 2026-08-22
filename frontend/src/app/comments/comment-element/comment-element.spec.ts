@@ -60,8 +60,15 @@ describe('CommentElement', () => {
 		}
 	};
 
+	function setDefaultReturnValues() {
+		commentServiceMock.deleteComment.mockReturnValue(of({}));
+		authServiceMock.user.mockReturnValue(me); 
+	};
+
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [CommentElement],
@@ -88,12 +95,12 @@ describe('CommentElement', () => {
 	});
 
 	it('should not render "Edit" nor "Delete" buttons when user doesnt have comment editor permissions', async () => {
-		authServiceMock.user.mockReturnValue(of({
+		authServiceMock.user.mockReturnValue({
 			id: 2,
 			username: 'alice',
 			email: 'alice@test.com',
 			avatarUrl: '/images/default-avatar.png'
-		}));
+		});
 
 		await createComponent(true, false);
 
@@ -110,8 +117,6 @@ describe('CommentElement', () => {
 	});
 
 	it('should emit commentEdited when CommentUpdateForm emits commentEdited, and hide the form', async () => {
-		authServiceMock.user.mockReturnValue(of({ me }));
-
 		await createComponent();
 
 		component.onEnableEditComment();
@@ -131,9 +136,6 @@ describe('CommentElement', () => {
 	});
 
 	it('should remove comment and emit commentDeleted when "Delete" button is clicked', async () => {
-		commentServiceMock.deleteComment.mockReturnValue(of({}));
-		authServiceMock.user.mockReturnValue(of({ me }));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.commentDeleted, 'emit');
@@ -153,8 +155,6 @@ describe('CommentElement', () => {
 	});
 
 	it('should hide comment update form when CommentUpdateForm emits canceledCommentEdit', async () => {
-		authServiceMock.user.mockReturnValue(of({ me }));
-
 		await createComponent();
 
 		component.onEnableEditComment();

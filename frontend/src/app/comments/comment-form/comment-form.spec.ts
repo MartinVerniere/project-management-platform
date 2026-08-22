@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CommentForm } from './comment-form';
 import { TaskService } from '../../services/tasks/task-service';
 import { of, throwError } from 'rxjs';
@@ -24,10 +23,16 @@ describe('CommentForm', () => {
 			await fixture.whenStable();
 			fixture.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		taskServiceMock.addComment.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [CommentForm],
@@ -44,8 +49,6 @@ describe('CommentForm', () => {
 	});
 
 	it('should add comment and emit commentAdded on valid data', async () => {
-		taskServiceMock.addComment.mockReturnValue(of({}));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.commentAdded, 'emit');
@@ -59,7 +62,7 @@ describe('CommentForm', () => {
 		expect(component.commentModel()).toEqual({ content: '' });
 	});
 
-	it('should set error when adding member fails', async () => {
+	it('should set error when adding comment fails', async () => {
 		taskServiceMock.addComment.mockReturnValue(throwError(() => ({
 			error: {
 				error: {

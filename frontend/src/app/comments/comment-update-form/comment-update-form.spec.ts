@@ -22,7 +22,7 @@ describe('CommentUpdateForm', () => {
 		},
 	};
 
-	let commentServiceMock = { updateComment: vi.fn().mockReturnValue(of({})) };
+	let commentServiceMock = { updateComment: vi.fn() };
 
 	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(CommentUpdateForm);
@@ -37,10 +37,16 @@ describe('CommentUpdateForm', () => {
 			await fixture.whenStable();
 			fixture.detectChanges();
 		}
-	}
+	};
+
+	function setDefaultReturnValues() {
+		commentServiceMock.updateComment.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [CommentUpdateForm],
@@ -74,7 +80,7 @@ describe('CommentUpdateForm', () => {
 		expect(emitSpy).toHaveBeenCalled();
 	});
 
-	it('should set error when updating board fails', async () => {
+	it('should set error when updating comment fails', async () => {
 		commentServiceMock.updateComment.mockReturnValue(throwError(() => ({
 			error: {
 				error: {
@@ -105,8 +111,6 @@ describe('CommentUpdateForm', () => {
 		expect(cancelButton).toBeTruthy();
 
 		cancelButton!.click();
-
-		component.onCancel();
 
 		await fixture.whenStable();
 
