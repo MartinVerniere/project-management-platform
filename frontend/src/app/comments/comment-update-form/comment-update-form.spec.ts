@@ -65,10 +65,23 @@ describe('CommentUpdateForm', () => {
 	it('should update comment when valid form data, then emit commentEdited', async () => {
 		await createComponent();
 
-		component.commentModel.set({ content: 'Updated Good' });
 		const emitSpy = vi.spyOn(component.commentEdited, 'emit');
 
-		await component.onSubmit(new Event('submit'));
+		component.commentModel.set({ content: 'Updated Good' });
+
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const updateButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Edit comment'));
+
+		expect(updateButton).toBeTruthy();
+
+		updateButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(commentServiceMock.updateComment).toHaveBeenCalledWith(currentComment.id, { content: 'Updated Good' });
 		expect(emitSpy).toHaveBeenCalled();
@@ -88,7 +101,19 @@ describe('CommentUpdateForm', () => {
 
 		component.commentModel.set({ content: 'ERROR CONTENT' });
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const updateButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Edit comment'));
+
+		expect(updateButton).toBeTruthy();
+
+		updateButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(component.error()).not.toBe('');
 	});

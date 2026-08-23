@@ -114,11 +114,11 @@ describe('BoardList', () => {
 	it('should not render "Add board" button when user doesnt have admin permissions', async () => {
 		await createComponent(true, false);
 
-		const addBoardButton = Array
+		const addButton = Array
 			.from(html.querySelectorAll('button'))
 			.find(button => button.textContent?.includes('Add board'));
 
-		expect(addBoardButton).toBeUndefined();
+		expect(addButton).toBeUndefined();
 	});
 
 	it('should reload board list when BoardElement emits boardDeleted', async () => {

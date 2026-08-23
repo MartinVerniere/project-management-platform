@@ -64,7 +64,17 @@ describe('ColumnForm', () => {
 		await createComponent();
 
 		component.columnModel.set({ name: 'Column A' });
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create column'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -77,7 +87,17 @@ describe('ColumnForm', () => {
 	it('should not create column when invalid form data', async () => {
 		await createComponent();
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create column'));
+
+		expect(createButton).toBeTruthy();
+		expect(createButton!.disabled).toBe(true); 
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -85,7 +105,7 @@ describe('ColumnForm', () => {
 		expect(boardServiceMock.createColumn).not.toHaveBeenCalled();
 	});
 
-	it('should set error when creating board fails', async () => {
+	it('should set error when creating column fails', async () => {
 		boardServiceMock.createColumn.mockReturnValue(throwError(() => ({
 			error: {
 				error: {
@@ -98,7 +118,17 @@ describe('ColumnForm', () => {
 		await createComponent();
 
 		component.columnModel.set({ name: 'ERROR NAME' });
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create column'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
 
 		expect(component.error()).not.toBe('');
 	});

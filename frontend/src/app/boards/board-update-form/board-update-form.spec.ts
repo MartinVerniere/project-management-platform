@@ -86,7 +86,17 @@ describe('BoardUpdateForm', () => {
 		await createComponent();
 
 		component.boardModel.set({ name: 'Updated A' });
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const updateButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Update board'));
+
+		expect(updateButton).toBeTruthy();
+
+		updateButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -100,7 +110,18 @@ describe('BoardUpdateForm', () => {
 		await createComponent();
 
 		component.resetForm(); //Clear name loaded from fetch
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const updateButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Update board'));
+
+		expect(updateButton).toBeTruthy();
+		expect(updateButton!.disabled).toBe(true); 
+
+		updateButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -121,7 +142,17 @@ describe('BoardUpdateForm', () => {
 		await createComponent();
 
 		component.boardModel.set({ name: 'ERROR NAME' });
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const updateButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Update board'));
+
+		expect(updateButton).toBeTruthy(); 
+
+		updateButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();

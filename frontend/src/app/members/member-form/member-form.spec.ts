@@ -88,7 +88,19 @@ describe('MemberForm', () => {
 
 		component.memberModel.set({ userId: '20' });
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add member'));
+
+		expect(addButton).toBeTruthy();
+
+		addButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(projectServiceMock.addMember).toHaveBeenCalledWith(1, 20);
 		expect(emitSpy).toHaveBeenCalled();
@@ -109,7 +121,19 @@ describe('MemberForm', () => {
 
 		component.memberModel.set({ userId: '20' });
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add member'));
+
+		expect(addButton).toBeTruthy();
+
+		addButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(component.error()).toBe('Error message');
 	});
@@ -117,8 +141,20 @@ describe('MemberForm', () => {
 	it('should not add member when no user is selected', async () => {
 		await createComponent();
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
 
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add member'));
+
+		expect(addButton).toBeTruthy();
+		expect(addButton!.disabled).toBe(true);
+
+		addButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 		expect(projectServiceMock.addMember).not.toHaveBeenCalled();
 	});
 

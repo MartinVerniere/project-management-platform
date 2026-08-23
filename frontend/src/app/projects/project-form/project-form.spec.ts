@@ -69,7 +69,16 @@ describe('ProjectForm', () => {
 			description: ''
 		});
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges();
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create project'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -82,7 +91,17 @@ describe('ProjectForm', () => {
 	it('should not create project when invalid form data', async () => {
 		await createComponent();
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create project'));
+
+		expect(createButton).toBeTruthy();
+		expect(createButton!.disabled).toBe(true); 
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();

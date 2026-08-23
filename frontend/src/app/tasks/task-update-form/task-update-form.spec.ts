@@ -81,7 +81,17 @@ describe('TaskUpdateForm', () => {
 		await createComponent();
 
 		component.taskModel.set({ title: 'Updated A', description: 'Desc' });
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const updateButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Update task'));
+
+		expect(updateButton).toBeTruthy();
+
+		updateButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -95,7 +105,18 @@ describe('TaskUpdateForm', () => {
 		await createComponent();
 
 		component.resetForm(); //Clear information loaded from fetch
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const updateButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Update task'));
+
+		expect(updateButton).toBeTruthy();
+		expect(updateButton!.disabled).toBe(true); 
+
+		updateButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -116,7 +137,17 @@ describe('TaskUpdateForm', () => {
 		await createComponent();
 
 		component.taskModel.set({ title: 'ERROR NAME', description: '' });
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const updateButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Update task'));
+
+		expect(updateButton).toBeTruthy();
+
+		updateButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();

@@ -6,6 +6,7 @@ import { of, throwError } from 'rxjs';
 describe('CommentForm', () => {
 	let fixture: ComponentFixture<CommentForm>;
 	let component: CommentForm;
+	let html: HTMLElement;
 
 	const taskServiceMock = { addComment: vi.fn() };
 
@@ -14,6 +15,7 @@ describe('CommentForm', () => {
 	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(CommentForm);
 		component = fixture.componentInstance;
+		html = fixture.nativeElement;
 
 		fixture.componentRef.setInput('taskId', taskId);
 
@@ -55,7 +57,19 @@ describe('CommentForm', () => {
 
 		component.commentModel.set({ content: 'Good' });
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const createButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add comment'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(taskServiceMock.addComment).toHaveBeenCalledWith(1, { content: 'Good' });
 		expect(emitSpy).toHaveBeenCalled();
@@ -76,7 +90,19 @@ describe('CommentForm', () => {
 
 		component.commentModel.set({ content: 'ERROR' });
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const createButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add comment'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(component.error()).toBe('Error message');
 	});

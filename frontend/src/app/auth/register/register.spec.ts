@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Register } from './register';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -72,7 +72,16 @@ describe('Register', () => {
 			avatar: avatar
 		});
 
-		component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const registerButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Register'));
+
+		expect(registerButton).toBeTruthy();
+
+		registerButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -98,7 +107,20 @@ describe('Register', () => {
 			avatar: null
 		});
 
-		component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const registerButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Register'));
+
+		expect(registerButton).toBeTruthy();
+		expect(registerButton!.disabled).toBe(true); 
+
+		registerButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(authServiceMock.register).not.toHaveBeenCalled();
 	});

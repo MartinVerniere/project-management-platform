@@ -63,7 +63,16 @@ describe('BoardForm', () => {
 
 		component.boardModel.set({ name: 'Board A' });
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges();
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create board'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -76,7 +85,17 @@ describe('BoardForm', () => {
 	it('should not create board when invalid form data', async () => {
 		await createComponent();
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges();
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create board'));
+
+		expect(createButton).toBeTruthy();
+		expect(createButton!.disabled).toBe(true);
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -97,7 +116,17 @@ describe('BoardForm', () => {
 		await createComponent();
 
 		component.boardModel.set({ name: 'ERROR NAME' });
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create board'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();

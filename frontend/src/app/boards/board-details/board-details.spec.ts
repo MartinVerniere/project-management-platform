@@ -160,11 +160,11 @@ describe('BoardDetails', () => {
 		});
 		await createComponent();
 
-		const addColumnButton = Array
+		const addButton = Array
 			.from(html.querySelectorAll('button'))
 			.find(button => button.textContent?.includes('Add column'));
 
-		expect(addColumnButton).toBeUndefined();
+		expect(addButton).toBeUndefined();
 	});
 
 	it('should reload board when ColumnList emits columnListEdited', async () => {

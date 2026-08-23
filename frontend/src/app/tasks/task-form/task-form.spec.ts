@@ -62,7 +62,17 @@ describe('TaskForm', () => {
 		await createComponent();
 
 		component.taskModel.set({ title: 'Task A', description: 'Desc' });
-		await component.onSubmit(new Event('submit'));
+
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create task'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -75,7 +85,17 @@ describe('TaskForm', () => {
 	it('should not create task when invalid form data', async () => {
 		await createComponent();
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create task'));
+
+		expect(createButton).toBeTruthy();
+		expect(createButton!.disabled).toBe(true); 
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -96,7 +116,17 @@ describe('TaskForm', () => {
 		await createComponent();
 
 		component.taskModel.set({ title: 'ERROR NAME', description: '' });
-		await component.onSubmit(new Event('submit'));
+		
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create task'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();

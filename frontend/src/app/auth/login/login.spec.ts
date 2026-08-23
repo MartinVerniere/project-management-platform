@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Login } from './login';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -66,7 +66,16 @@ describe('Login', () => {
 			password: '123',
 		});
 
-		component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const loginButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Login'));
+
+		expect(loginButton).toBeTruthy();
+
+		loginButton!.click();
 
 		await harness.fixture.whenStable();
 		harness.detectChanges();
@@ -83,7 +92,20 @@ describe('Login', () => {
 			password: '',
 		});
 
-		component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const loginButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Login'));
+
+		expect(loginButton).toBeTruthy();
+		expect(loginButton!.disabled).toBe(true); 
+
+		loginButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(authServiceMock.login).not.toHaveBeenCalled();
 	});
