@@ -22,7 +22,7 @@ describe('CommentForm', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

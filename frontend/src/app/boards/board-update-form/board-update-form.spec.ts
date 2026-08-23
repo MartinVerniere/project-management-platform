@@ -14,16 +14,16 @@ describe('BoardUpdateForm', () => {
 	let harness: RouterTestingHarness;
 	let router: Router;
 
+	const boardServiceMock = {
+		getBoard: vi.fn(),
+		updateBoard: vi.fn()
+	};	
+	
 	const currentBoard: BoardDetailsDto = {
 		id: 1,
 		name: "Board A",
 		projectId: 1,
 		columns: []
-	}
-
-	const boardServiceMock = {
-		getBoard: vi.fn(),
-		updateBoard: vi.fn()
 	};
 
 	async function createComponent(shouldAwait: boolean = true) {
@@ -32,13 +32,18 @@ describe('BoardUpdateForm', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
-	}
+		};
+	};
 
 	function setDefaultReturnValues() {
 		boardServiceMock.getBoard.mockReturnValue(of(currentBoard));
 		boardServiceMock.updateBoard.mockReturnValue(of({}));
-	}
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
@@ -56,8 +61,7 @@ describe('BoardUpdateForm', () => {
 			]
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
-		router = TestBed.inject(Router);
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {

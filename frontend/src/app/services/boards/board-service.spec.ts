@@ -11,31 +11,14 @@ describe('BoardService', () => {
 	let service: BoardService;
 	let httpMock: HttpTestingController;
 
-	const boardA: BoardDetailsDto = {
-		id: 1,
-		name: "Board A",
-		columns: [],
-		projectId: 1
-	}
-
-	const boardB: BoardDetailsDto = {
-		id: 2,
-		name: "Board B",
-		columns: [],
-		projectId: 1
-	}
-
-	const column1: ColumnDto = {
-		id: 1,
-		name: "ToDo",
-		order: 1,
-		boardId: 1
-	}
+	const boardA: BoardDetailsDto = { id: 1, name: "Board A", columns: [], projectId: 1 };
+	const boardB: BoardDetailsDto = { id: 2, name: "Board B", columns: [], projectId: 1 };
+	const column1: ColumnDto = { id: 1, name: "ToDo", order: 1, boardId: 1 };
 
 	function setupService() {
 		httpMock = TestBed.inject(HttpTestingController);
 		service = TestBed.inject(BoardService);
-	}
+	};
 
 	beforeEach(() => {
 		vi.clearAllMocks();

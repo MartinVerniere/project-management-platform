@@ -15,11 +15,7 @@ describe('BoardElement', () => {
 
 	const projectId: number = 1;
 
-	const board: BoardDto = {
-		id: 1,
-		name: 'Board A',
-		projectId
-	};
+	const board: BoardDto = { id: 1, name: 'Board A', projectId };
 
 	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(BoardElement);
@@ -35,7 +31,7 @@ describe('BoardElement', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

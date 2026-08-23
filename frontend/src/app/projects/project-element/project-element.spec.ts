@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ProjectElement } from './project-element';
 import { provideRouter } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
@@ -20,19 +19,9 @@ describe('ProjectElement', () => {
 
 	const authServiceMock = { user: vi.fn() };
 
-	const me: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@test.com',
-		avatarUrl: '/images/default-avatar.png'
-	};
+	const me: UserDto = { id: 1, username: 'john', email: 'john@test.com', avatarUrl: '/images/default-avatar.png' };
 
-	const project: ProjectDto = {
-		id: 1,
-		name: 'Project A',
-		key: 'PROA',
-		description: 'My project',
-	};
+	const project: ProjectDto = { id: 1, name: 'Project A', key: 'PROA', description: 'My project' };
 
 	const members: ProjectMemberDto[] = [
 		{
@@ -43,22 +32,12 @@ describe('ProjectElement', () => {
 		{
 			id: 2,
 			role: 'MEMBER',
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@test.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 2, username: 'alice', email: 'alice@test.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 3,
 			role: 'MEMBER',
-			user: {
-				id: 3,
-				username: 'martin',
-				email: 'martin@test.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 3, username: 'martin', email: 'martin@test.com', avatarUrl: '/images/default-avatar.png' }
 		}
 	];
 
@@ -74,7 +53,7 @@ describe('ProjectElement', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {
@@ -110,9 +89,9 @@ describe('ProjectElement', () => {
 		expect(projectServiceMock.getMembers).toHaveBeenCalledWith(project.id);
 	});
 
-	it('should render project information', async () => {	
+	it('should render project information', async () => {
 		await createComponent();
-	
+
 		expect(html.textContent).toContain('Project A');
 		expect(html.textContent).toContain('PROA');
 		expect(html.textContent).toContain('My project');

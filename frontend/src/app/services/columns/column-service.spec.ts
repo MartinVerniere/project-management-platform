@@ -11,32 +11,14 @@ describe('ColumnService', () => {
 	let service: ColumnService;
 	let httpMock: HttpTestingController;
 
-	const columnA: ColumnDto = {
-		id: 1,
-		name: "ToDo",
-		boardId: 1,
-		order: 0
-	}
-
-	const columnB: ColumnDto = {
-		id: 2,
-		name: "Finished",
-		boardId: 0,
-		order: 0
-	}
-
-	const taskA: TaskDto = {
-		id: 1,
-		title: 'Title A',
-		columnId: 1,
-		description: null,
-		order: 0
-	}
+	const columnA: ColumnDto = { id: 1, name: "ToDo", boardId: 1, order: 0 };
+	const columnB: ColumnDto = { id: 2, name: "Finished", boardId: 0, order: 0 };
+	const taskA: TaskDto = { id: 1, title: 'Title A', columnId: columnA.id, description: null, order: 0 };
 
 	function setupService() {
 		httpMock = TestBed.inject(HttpTestingController);
 		service = TestBed.inject(ColumnService);
-	}
+	};
 
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -79,7 +61,7 @@ describe('ColumnService', () => {
 
 		const request = httpMock.expectOne(`http://localhost:3000/api/columns/${columnB.id}`);
 		expect(request.request.method).toBe('PUT');
-		expect(request.request.body).toEqual(updatedColumn); 
+		expect(request.request.body).toEqual(updatedColumn);
 		request.flush({});
 	});
 
@@ -105,7 +87,7 @@ describe('ColumnService', () => {
 
 		const request = httpMock.expectOne(`http://localhost:3000/api/columns/${columnA.id}/tasks`);
 		expect(request.request.method).toBe('POST');
-		expect(request.request.body).toEqual(newTask); 
+		expect(request.request.body).toEqual(newTask);
 		request.flush(expectedResponse);
 	});
 
@@ -123,7 +105,7 @@ describe('ColumnService', () => {
 
 		const request = httpMock.expectOne(`http://localhost:3000/api/columns/${columnA.id}/tasks/order`);
 		expect(request.request.method).toBe('PUT');
-		expect(request.request.body).toEqual(taskOrder); 
+		expect(request.request.body).toEqual(taskOrder);
 		request.flush({});
 	});
 });

@@ -13,6 +13,7 @@ import { ProjectService } from '../../services/projects/project-service';
 import type { ColumnDetailsDto } from '@shared/models/column';
 import type { ProjectMemberDto } from '@shared/models/project';
 import type { UserDto } from '@shared/models/user';
+import { BoardDetailsDto } from '@shared/models/board';
 
 @Component({
 	selector: 'app-column-list',
@@ -38,18 +39,16 @@ describe('BoardDetails', () => {
 	const projectServiceMock = { getMembers: vi.fn() };
 	const authServiceMock = { user: vi.fn() };
 
-	const board = {
+	const board: BoardDetailsDto = {
 		id: 1,
 		name: 'Board A',
-		columns: [{ id: 1, name: 'Todo' }],
+		columns: [
+			{ id: 1, name: 'Todo', tasks: [], boardId: 1, order: 0 }
+		],
+		projectId: 1
 	};
 
-	const me: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@test.com',
-		avatarUrl: '/images/default-avatar.png'
-	};
+	const me: UserDto = { id: 1, username: 'john', email: 'john@test.com', avatarUrl: '/images/default-avatar.png' };
 
 	const members: ProjectMemberDto[] = [
 		{
@@ -60,22 +59,12 @@ describe('BoardDetails', () => {
 		{
 			id: 2,
 			role: 'MEMBER',
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@test.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 2, username: 'alice', email: 'alice@test.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 3,
 			role: 'MEMBER',
-			user: {
-				id: 3,
-				username: 'martin',
-				email: 'martin@test.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 3, username: 'martin', email: 'martin@test.com', avatarUrl: '/images/default-avatar.png' }
 		}
 	];
 
@@ -86,13 +75,18 @@ describe('BoardDetails', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {
 		boardServiceMock.getBoard.mockReturnValue(of(board));
 		projectServiceMock.getMembers.mockReturnValue(of(members));
 		authServiceMock.user.mockReturnValue(me);
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		// router = TestBed.inject(Router);
 	};
 
 	beforeEach(async () => {
@@ -107,10 +101,7 @@ describe('BoardDetails', () => {
 				{ provide: ProjectService, useValue: projectServiceMock },
 				{ provide: AuthService, useValue: authServiceMock },
 				provideRouter([
-					{
-						path: 'projects/:projectId/boards/:boardId',
-						component: BoardDetails,
-					},
+					{ path: 'projects/:projectId/boards/:boardId', component: BoardDetails },
 				]),
 			]
 		}).overrideComponent(BoardDetails, {
@@ -118,7 +109,7 @@ describe('BoardDetails', () => {
 			add: { imports: [ColumnListStub] }
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {

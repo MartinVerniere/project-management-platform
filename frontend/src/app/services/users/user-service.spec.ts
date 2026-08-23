@@ -8,19 +8,8 @@ describe('UserService', () => {
 	let service: UserService;
 	let httpMock: HttpTestingController;
 
-	const userA: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@email.com',
-		avatarUrl: '/images/default-avatar.png'
-	}
-
-	const userB: UserDto = {
-		id: 2,
-		username: 'alice',
-		email: 'alice@email.com',
-		avatarUrl: '/images/default-avatar.png'
-	}
+	const userA: UserDto = { id: 1, username: 'john', email: 'john@email.com', avatarUrl: '/images/default-avatar.png' };
+	const userB: UserDto = { id: 2, username: 'alice', email: 'alice@email.com', avatarUrl: '/images/default-avatar.png' };
 
 	function setupService() {
 		httpMock = TestBed.inject(HttpTestingController);

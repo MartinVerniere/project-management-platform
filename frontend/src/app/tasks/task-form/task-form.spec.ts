@@ -21,11 +21,16 @@ describe('TaskForm', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {
 		columnServiceMock.addTask.mockReturnValue(of({}));
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	};
 
 	beforeEach(async () => {
@@ -44,8 +49,7 @@ describe('TaskForm', () => {
 			]
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
-		router = TestBed.inject(Router);
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {

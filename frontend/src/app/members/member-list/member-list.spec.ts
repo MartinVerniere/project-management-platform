@@ -38,12 +38,7 @@ describe('MemberList', () => {
 	let component: MemberList;
 	let html: HTMLElement;
 
-	const me: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@email.com',
-		avatarUrl: '/images/default-avatar.png'
-	}
+	const me: UserDto = { id: 1, username: 'john', email: 'john@email.com', avatarUrl: '/images/default-avatar.png' }
 
 	const memberList: ProjectMemberDto[] = [
 		{
@@ -54,12 +49,7 @@ describe('MemberList', () => {
 		{
 			id: 2,
 			role: 'MEMBER',
-			user: {
-				id: 12,
-				username: 'alice',
-				email: 'alice@email.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 12, username: 'alice', email: 'alice@email.com', avatarUrl: '/images/default-avatar.png' }
 		}
 	];
 
@@ -79,7 +69,7 @@ describe('MemberList', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	}
 
 	beforeEach(async () => {

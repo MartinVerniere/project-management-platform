@@ -27,18 +27,8 @@ describe('ProjectList', () => {
 	const projectServiceMock = { getProjects: vi.fn() };
 
 	const projects: ProjectDto[] = [
-		{
-			id: 1,
-			name: 'Project A',
-			key: 'PROA',
-			description: null,
-		},
-		{
-			id: 2,
-			name: 'Project B',
-			key: 'PROB',
-			description: null,
-		}
+		{ id: 1, name: 'Project A', key: 'PROA', description: null },
+		{ id: 2, name: 'Project B', key: 'PROB', description: null }
 	];
 
 	async function createComponent(shouldAwait: boolean = true) {
@@ -51,7 +41,7 @@ describe('ProjectList', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

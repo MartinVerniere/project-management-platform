@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CommentUpdateForm } from './comment-update-form';
 import { CommentService } from '../../services/comments/comment-service';
 import { of, throwError } from 'rxjs';
@@ -14,12 +13,7 @@ describe('CommentUpdateForm', () => {
 		id: 1,
 		content: 'Good',
 		taskId: 1,
-		author: {
-			id: 1,
-			username: 'john',
-			email: 'john@test.com',
-			avatarUrl: '/images/default-avatar.png'
-		},
+		author: { id: 1, username: 'john', email: 'john@test.com', avatarUrl: '/images/default-avatar.png' },
 	};
 
 	let commentServiceMock = { updateComment: vi.fn() };
@@ -36,7 +30,7 @@ describe('CommentUpdateForm', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

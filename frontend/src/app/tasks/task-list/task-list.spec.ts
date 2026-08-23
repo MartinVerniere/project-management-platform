@@ -40,24 +40,8 @@ describe('TaskList', () => {
 	const columnId = 1;
 
 	const taskList: TaskDetailsDto[] = [
-		{
-			id: 1,
-			title: "Task A",
-			comments: [],
-			assignee: null,
-			description: null,
-			columnId,
-			order: 0
-		},
-		{
-			id: 2,
-			title: "Task B",
-			comments: [],
-			assignee: null,
-			description: null,
-			columnId,
-			order: 1
-		}
+		{ id: 1, title: "Task A", comments: [], assignee: null, description: null, columnId, order: 0 },
+		{ id: 2, title: "Task B", comments: [], assignee: null, description: null, columnId, order: 1 }
 	];
 
 	const memberList: ProjectMemberDto[] = [
@@ -96,7 +80,7 @@ describe('TaskList', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

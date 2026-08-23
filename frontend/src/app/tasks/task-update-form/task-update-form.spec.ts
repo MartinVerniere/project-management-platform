@@ -19,13 +19,7 @@ describe('TaskUpdateForm', () => {
 		updateTask: vi.fn()
 	};
 
-	const currentTask: TaskDto = {
-		id: 1,
-		title: "Task A",
-		description: '',
-		columnId: 1,
-		order: 0
-	};
+	const currentTask: TaskDto = { id: 1, title: "Task A", description: '', columnId: 1, order: 0 };
 
 	async function createComponent(shouldAwait = true) {
 		component = await harness.navigateByUrl('/projects/1/boards/1/columns/1/tasks/1/edit', TaskUpdateForm);
@@ -33,13 +27,18 @@ describe('TaskUpdateForm', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {
 		taskServiceMock.getTask.mockReturnValue(of(currentTask));
 		taskServiceMock.updateTask.mockReturnValue(of({}));
-	}
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
@@ -57,8 +56,7 @@ describe('TaskUpdateForm', () => {
 			]
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
-		router = TestBed.inject(Router);
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {

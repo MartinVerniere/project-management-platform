@@ -10,26 +10,9 @@ describe('CommentService', () => {
 	let service: CommentService;
 	let httpMock: HttpTestingController;
 
-	const john: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@test.com',
-		avatarUrl: '/images/default-avatar.png'
-	}
-
-	const commentA: CommentDto = {
-		id: 1,
-		content: 'Comment A',
-		author: john,
-		taskId: 1
-	}
-
-	const commentB: CommentDto = {
-		id: 2,
-		content: 'A',
-		author: john,
-		taskId: 1
-	}
+	const john: UserDto = { id: 1, username: 'john', email: 'john@test.com', avatarUrl: '/images/default-avatar.png' };
+	const commentA: CommentDto = { id: 1, content: 'Comment A', author: john, taskId: 1 };
+	const commentB: CommentDto = { id: 2, content: 'A', author: john, taskId: 1 };
 
 	function setupService() {
 		httpMock = TestBed.inject(HttpTestingController);

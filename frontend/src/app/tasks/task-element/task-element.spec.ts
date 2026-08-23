@@ -39,12 +39,7 @@ describe('TaskElement', () => {
 	const boardId = 1;
 	const columnId = 1;
 
-	const me: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@test.com',
-		avatarUrl: '/images/default-avatar.png'
-	};
+	const me: UserDto = { id: 1, username: 'john', email: 'john@test.com', avatarUrl: '/images/default-avatar.png' };
 
 	const task: TaskDetailsDto = {
 		id: 1,
@@ -94,7 +89,7 @@ describe('TaskElement', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

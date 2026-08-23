@@ -22,11 +22,16 @@ describe('BoardForm', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
+		};
 	}
 
 	function setDefaultReturnValues() {
 		projectServiceMock.createBoard.mockReturnValue(of({}));
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	};
 
 	beforeEach(async () => {
@@ -44,8 +49,7 @@ describe('BoardForm', () => {
 			]
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
-		router = TestBed.inject(Router);
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {

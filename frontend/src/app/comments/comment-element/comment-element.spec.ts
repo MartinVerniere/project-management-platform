@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CommentElement } from './comment-element';
 import { Component, input, output } from '@angular/core';
 import { CommentUpdateForm } from '../comment-update-form/comment-update-form';
@@ -30,19 +29,8 @@ describe('CommentElement', () => {
 	let commentServiceMock = { deleteComment: vi.fn() };
 	let authServiceMock = { user: vi.fn() };
 
-	const me: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@test.com',
-		avatarUrl: '/images/default-avatar.png'
-	}
-
-	const comment: CommentDto = {
-		id: 1,
-		content: 'Good',
-		author: me,
-		taskId: 1
-	};
+	const me: UserDto = { id: 1, username: 'john', email: 'john@test.com', avatarUrl: '/images/default-avatar.png' };
+	const comment: CommentDto = { id: 1, content: 'Good', author: me, taskId: 1 };
 
 	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(CommentElement);
@@ -62,7 +50,7 @@ describe('CommentElement', () => {
 
 	function setDefaultReturnValues() {
 		commentServiceMock.deleteComment.mockReturnValue(of({}));
-		authServiceMock.user.mockReturnValue(me); 
+		authServiceMock.user.mockReturnValue(me);
 	};
 
 	beforeEach(async () => {

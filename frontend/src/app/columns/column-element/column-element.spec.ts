@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ColumnElement } from './column-element';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
@@ -39,44 +38,23 @@ describe('ColumnElement', () => {
 	const projectId = 1;
 	const boardId = 1;
 
-	const column: ColumnDetailsDto = {
-		id: 1,
-		name: 'Todo',
-		tasks: [],
-		boardId,
-		order: 0
-	};
+	const column: ColumnDetailsDto = { id: 1, name: 'Todo', tasks: [], boardId, order: 0 };
 
 	const memberList: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',
-			user: {
-				id: 1,
-				username: 'john',
-				email: 'john@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 1, username: 'john', email: 'john@example.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 2,
 			role: 'MEMBER',
-			user: {
-				id: 3,
-				username: 'martin',
-				email: 'martin@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 3, username: 'martin', email: 'martin@example.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 3,
 			role: 'MEMBER',
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 2, username: 'alice', email: 'alice@example.com', avatarUrl: '/images/default-avatar.png' }
 		}
 	];
 
@@ -99,7 +77,7 @@ describe('ColumnElement', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

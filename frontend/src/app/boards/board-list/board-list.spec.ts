@@ -32,16 +32,8 @@ describe('BoardList', () => {
 	const projectId = 1;
 
 	const boards: BoardDto[] = [
-		{
-			id: 1,
-			name: 'Board A',
-			projectId
-		},
-		{
-			id: 2,
-			name: 'Board B',
-			projectId
-		}
+		{ id: 1, name: 'Board A', projectId },
+		{ id: 2, name: 'Board B', projectId }
 	];
 
 	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
@@ -57,7 +49,7 @@ describe('BoardList', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

@@ -15,38 +15,20 @@ describe('ProjectService', () => {
 	const memberA: ProjectMemberDto = {
 		id: 1,
 		role: 'ADMIN',
-
-		user: {
-			id: 1,
-			username: 'john',
-			email: 'john@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		},
+		user: { id: 1, username: 'john', email: 'john@email.com', avatarUrl: '/images/default-avatar.png' }
 	};
 
 	const memberB: ProjectMemberDto = {
 		id: 2,
 		role: 'MEMBER',
-
-		user: {
-			id: 2,
-			username: 'alice',
-			email: 'alice@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		},
+		user: { id: 2, username: 'alice', email: 'alice@email.com', avatarUrl: '/images/default-avatar.png' }
 	};
 
 	const memberC: ProjectMemberDto = {
 		id: 3,
 		role: 'ADMIN',
-
-		user: {
-			id: 3,
-			username: 'martin',
-			email: 'martin@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		},
-	}
+		user: { id: 3, username: 'martin', email: 'martin@email.com', avatarUrl: '/images/default-avatar.png' }
+	};
 
 	const projectA: ProjectDetailsDto = {
 		id: 1,
@@ -64,7 +46,7 @@ describe('ProjectService', () => {
 		description: 'Project B',
 		members: [memberC],
 		boards: []
-	}
+	};
 
 	function setupService() {
 		httpMock = TestBed.inject(HttpTestingController);

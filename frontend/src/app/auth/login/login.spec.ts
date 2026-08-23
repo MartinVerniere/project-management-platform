@@ -6,11 +6,7 @@ import { of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth-service';
 import { Component } from '@angular/core';
 
-@Component({
-	standalone: true,
-	template: '',
-})
-class DummyComponent { }
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('Login', () => {
 	let component: Login;
@@ -25,17 +21,16 @@ describe('Login', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultMockReturnValues() {
-		authServiceMock.login.mockReturnValue(of({
-			user: {
-				id: '1',
-				username: 'john',
-				email: 'john@test.com'
-			}
-		}));
+		authServiceMock.login.mockReturnValue(of({ user: { id: '1', username: 'john', email: 'john@test.com' } }));
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	};
 
 	beforeEach(async () => {
@@ -54,8 +49,7 @@ describe('Login', () => {
 			]
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
-		router = TestBed.inject(Router);
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {

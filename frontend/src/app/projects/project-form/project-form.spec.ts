@@ -6,11 +6,7 @@ import { of } from 'rxjs';
 import { Component } from '@angular/core';
 import { RouterTestingHarness } from '@angular/router/testing';
 
-@Component({
-	standalone: true,
-	template: '',
-})
-class DummyComponent { }
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('ProjectForm', () => {
 	let component: ProjectForm;
@@ -25,12 +21,17 @@ describe('ProjectForm', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
-	}
+		};
+	};
 
 	function setDefaultReturnValues() {
 		projectServiceMock.createProject.mockReturnValue(of({}));
-	}
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
@@ -48,8 +49,7 @@ describe('ProjectForm', () => {
 			]
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
-		router = TestBed.inject(Router);
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {

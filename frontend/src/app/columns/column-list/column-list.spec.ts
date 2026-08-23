@@ -49,12 +49,7 @@ describe('ColumnList', () => {
 				{
 					id: 1,
 					title: 'Login',
-					assignee: {
-						id: 1,
-						username: 'john',
-						email: 'john@example.com',
-						avatarUrl: '/images/default-avatar.png'
-					},
+					assignee: { id: 1, username: 'john', email: 'john@example.com', avatarUrl: '/images/default-avatar.png' },
 					comments: [],
 					description: null,
 					columnId: 1,
@@ -63,12 +58,7 @@ describe('ColumnList', () => {
 				{
 					id: 2,
 					title: 'Dashboard',
-					assignee: {
-						id: 2,
-						username: 'mary',
-						email: 'mary@example.com',
-						avatarUrl: '/images/default-avatar.png'
-					},
+					assignee: { id: 2, username: 'alice', email: 'alice@example.com', avatarUrl: '/images/default-avatar.png' },
 					comments: [],
 					description: null,
 					columnId: 1,
@@ -91,24 +81,14 @@ describe('ColumnList', () => {
 		{
 			id: 0,
 			role: 'ADMIN',
-			user: {
-				id: 1,
-				username: 'john',
-				email: 'john@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 1, username: 'john', email: 'john@example.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 1,
 			role: 'MEMBER',
-			user: {
-				id: 2,
-				username: 'mary',
-				email: 'mary@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 2, username: 'alice', email: 'alice@example.com', avatarUrl: '/images/default-avatar.png' }
 		}
-	]
+	];
 
 	async function createComponent(shouldAwait: boolean = true, columns = columnList, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(ColumnList);
@@ -146,12 +126,8 @@ describe('ColumnList', () => {
 				{ provide: TaskService, useValue: taskServiceMock },
 			]
 		}).overrideComponent(ColumnList, {
-			remove: {
-				imports: [ColumnElement],
-			},
-			add: {
-				imports: [ColumnElementStub],
-			}
+			remove: { imports: [ColumnElement] },
+			add: { imports: [ColumnElementStub] }
 		}).compileComponents();
 	});
 

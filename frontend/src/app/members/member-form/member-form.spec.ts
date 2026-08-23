@@ -18,28 +18,13 @@ describe('MemberForm', () => {
 		{
 			id: 1,
 			role: 'ADMIN',
-			user: {
-				id: 10,
-				username: 'john',
-				email: 'john@email.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 10, username: 'john', email: 'john@email.com', avatarUrl: '/images/default-avatar.png' }
 		}
 	];
 
 	const users: UserDto[] = [
-		{
-			id: 10,
-			username: 'john',
-			email: 'john@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		},
-		{
-			id: 20,
-			username: 'New user',
-			email: 'newUser@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		}
+		{ id: 10, username: 'john', email: 'john@email.com', avatarUrl: '/images/default-avatar.png' },
+		{ id: 20, username: 'New user', email: 'newUser@email.com', avatarUrl: '/images/default-avatar.png' }
 	];
 
 	const projectId = 1;
@@ -57,7 +42,7 @@ describe('MemberForm', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

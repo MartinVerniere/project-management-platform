@@ -45,29 +45,12 @@ describe('ProjectDetails', () => {
 	const projectServiceMock = { getProject: vi.fn() };
 	const authServiceMock = { user: vi.fn() };
 
-	const me: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@test.com',
-		avatarUrl: '/images/default-avatar.png'
-	};
+	const me: UserDto = { id: 1, username: 'john', email: 'john@test.com', avatarUrl: '/images/default-avatar.png' };
 
 	const boards: BoardDto[] = [
-		{
-			id: 1,
-			name: 'Board A',
-			projectId: 1
-		},
-		{
-			id: 2,
-			name: 'Board B',
-			projectId:1
-		},
-		{
-			id: 3,
-			name: 'Board C',
-			projectId: 1
-		}
+		{ id: 1, name: 'Board A', projectId: 1 },
+		{ id: 2, name: 'Board B', projectId: 1 },
+		{ id: 3, name: 'Board C', projectId: 1 }
 	];
 
 	const members: ProjectMemberDto[] = [
@@ -79,22 +62,12 @@ describe('ProjectDetails', () => {
 		{
 			id: 2,
 			role: 'MEMBER',
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@test.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 2, username: 'alice', email: 'alice@test.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 3,
 			role: 'MEMBER',
-			user: {
-				id: 3,
-				username: 'martin',
-				email: 'martin@test.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 3, username: 'martin', email: 'martin@test.com', avatarUrl: '/images/default-avatar.png' }
 		}
 	];
 
@@ -114,12 +87,17 @@ describe('ProjectDetails', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {
 		projectServiceMock.getProject.mockReturnValue(of(project));
 		authServiceMock.user.mockReturnValue(me);
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		// router = TestBed.inject(Router);
 	};
 
 	beforeEach(async () => {
@@ -144,7 +122,7 @@ describe('ProjectDetails', () => {
 			add: { imports: [MemberListStub, BoardListStub] }
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {

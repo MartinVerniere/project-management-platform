@@ -6,26 +6,12 @@ import type { TaskDto } from '@shared/models/task';
 import { UpdateTaskRequest } from '../../models/task';
 import { AddCommentRequest } from '../../models/comment';
 
-
 describe('TaskService', () => {
 	let service: TaskService;
 	let httpMock: HttpTestingController;
 
-	const taskA: TaskDto = {
-		id: 1,
-		title: 'Title A',
-		description: 'Description',
-		columnId: 1,
-		order: 0
-	}
-
-	const taskB: TaskDto = {
-		id: 2,
-		title: 'Title B',
-		description: null,
-		columnId: 1,
-		order: 1
-	}
+	const taskA: TaskDto = { id: 1, title: 'Title A', description: 'Description', columnId: 1, order: 0 };
+	const taskB: TaskDto = { id: 2, title: 'Title B', description: null, columnId: 1, order: 1 };
 
 	function setupService() {
 		httpMock = TestBed.inject(HttpTestingController);
@@ -73,7 +59,7 @@ describe('TaskService', () => {
 
 		const request = httpMock.expectOne(`http://localhost:3000/api/tasks/${taskB.id}`);
 		expect(request.request.method).toBe('PUT');
-		expect(request.request.body).toEqual(updatedTask); 
+		expect(request.request.body).toEqual(updatedTask);
 		request.flush({});
 	});
 
@@ -132,7 +118,7 @@ describe('TaskService', () => {
 
 		const request = httpMock.expectOne(`http://localhost:3000/api/tasks/${taskA.id}/comments`);
 		expect(request.request.method).toBe('POST');
-		expect(request.request.body).toEqual(newComment); 
+		expect(request.request.body).toEqual(newComment);
 		request.flush({});
 	});
 }); 

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CommentList } from './comment-list';
 import { Component, input, output } from '@angular/core';
 import { CommentElement } from '../comment-element/comment-element';
@@ -38,27 +37,12 @@ describe('CommentList', () => {
 	let component: CommentList;
 	let html: HTMLElement;
 
-	const commentAuthor: UserDto = {
-		id: 0,
-		username: 'john',
-		email: 'john@test.com',
-		avatarUrl: null
-	};
+	const commentAuthor: UserDto = { id: 0, username: 'john', email: 'john@test.com', avatarUrl: null };
 
 	const commentList: CommentDto[] = [
-		{
-			id: 1,
-			content: 'Good',
-			author: commentAuthor,
-			taskId: 1
-		},
-		{
-			id: 2,
-			content: 'Great',
-			author: commentAuthor,
-			taskId: 1
-		}
-	]
+		{ id: 1, content: 'Good', author: commentAuthor, taskId: 1 },
+		{ id: 2, content: 'Great', author: commentAuthor, taskId: 1 }
+	];
 
 	const taskId = 1;
 
@@ -76,7 +60,7 @@ describe('CommentList', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	}
 
 	beforeEach(async () => {

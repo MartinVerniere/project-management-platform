@@ -6,11 +6,7 @@ import { of, throwError } from 'rxjs';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Component } from '@angular/core';
 
-@Component({
-	standalone: true,
-	template: '',
-})
-class DummyComponent { }
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('ColumnForm', () => {
 	let component: ColumnForm;
@@ -25,11 +21,16 @@ describe('ColumnForm', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {
 		boardServiceMock.createColumn.mockReturnValue(of({}));
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	};
 
 	beforeEach(async () => {
@@ -48,8 +49,7 @@ describe('ColumnForm', () => {
 			]
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
-		router = TestBed.inject(Router);
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {

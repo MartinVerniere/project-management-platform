@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MemberElement } from './member-element';
 import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
@@ -13,19 +12,8 @@ describe('MemberElement', () => {
 
 	let projectServiceMock = { removeMember: vi.fn() };
 
-	const me: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@email.com',
-		avatarUrl: '/images/default-avatar.png'
-	};
-
-	const member: ProjectMemberDto = {
-		id: 1,
-		role: 'ADMIN',
-		user: me
-	};
-
+	const me: UserDto = { id: 1, username: 'john', email: 'john@email.com', avatarUrl: '/images/default-avatar.png' };
+	const member: ProjectMemberDto = { id: 1, role: 'ADMIN', user: me };
 	const projectId: number = 1;
 
 	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
@@ -42,7 +30,7 @@ describe('MemberElement', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {

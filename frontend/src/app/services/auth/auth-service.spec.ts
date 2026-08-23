@@ -15,7 +15,7 @@ describe('AuthService', () => {
 	function setupService() {
 		httpMock = TestBed.inject(HttpTestingController);
 		service = TestBed.inject(AuthService);
-	}
+	};
 
 	beforeEach(() => {
 		vi.clearAllMocks();

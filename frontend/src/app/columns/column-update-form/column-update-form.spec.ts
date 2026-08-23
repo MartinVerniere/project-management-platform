@@ -7,28 +7,19 @@ import type { ColumnDto } from '@shared/models/column';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Component } from '@angular/core';
 
-@Component({
-	standalone: true,
-	template: '',
-})
-class DummyComponent { }
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('ColumnUpdateForm', () => {
 	let component: ColumnUpdateForm;
 	let harness: RouterTestingHarness;
 	let router: Router;
 
-	const currentColumn: ColumnDto = {
-		id: 1,
-		name: "Column A",
-		boardId: 1,
-		order: 0
-	}
-
 	let columnServiceMock = {
 		getColumn: vi.fn(),
 		updateColumn: vi.fn()
 	};
+
+	const currentColumn: ColumnDto = { id: 1, name: "Column A", boardId: 1, order: 0 };
 
 	async function createComponent(shouldAwait: boolean = true) {
 		component = await harness.navigateByUrl('/projects/1/boards/1/columns/1/edit', ColumnUpdateForm);
@@ -36,12 +27,17 @@ describe('ColumnUpdateForm', () => {
 		if (shouldAwait) {
 			await harness.fixture.whenStable();
 			harness.detectChanges();
-		}
+		};
 	};
 
 	function setDefaultReturnValues() {
 		columnServiceMock.getColumn.mockReturnValue(of(currentColumn));
 		columnServiceMock.updateColumn.mockReturnValue(of({}));
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
 	};
 
 	beforeEach(async () => {
@@ -60,8 +56,7 @@ describe('ColumnUpdateForm', () => {
 			]
 		}).compileComponents();
 
-		harness = await RouterTestingHarness.create();
-		router = TestBed.inject(Router);
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {
