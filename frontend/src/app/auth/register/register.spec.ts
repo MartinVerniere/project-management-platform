@@ -75,6 +75,7 @@ describe('Register', () => {
 		component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(authServiceMock.register).toHaveBeenCalledTimes(1);
 		const formData = authServiceMock.register.mock.calls[0][0];

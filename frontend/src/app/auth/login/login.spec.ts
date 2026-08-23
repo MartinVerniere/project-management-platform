@@ -69,6 +69,7 @@ describe('Login', () => {
 		component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(authServiceMock.login).toHaveBeenCalledWith({ username: 'john', password: '123' });
 		expect(router.url).toBe('/');

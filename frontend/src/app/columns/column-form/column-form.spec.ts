@@ -67,6 +67,7 @@ describe('ColumnForm', () => {
 		await component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(boardServiceMock.createColumn).toHaveBeenCalledWith(1, { name: 'Column A' });
 		expect(component.columnModel()).toEqual({ name: '' });
@@ -79,6 +80,7 @@ describe('ColumnForm', () => {
 		await component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(boardServiceMock.createColumn).not.toHaveBeenCalled();
 	});

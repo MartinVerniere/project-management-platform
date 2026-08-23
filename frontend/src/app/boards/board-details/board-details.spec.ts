@@ -177,6 +177,7 @@ describe('BoardDetails', () => {
 		child.columnListEdited.emit();
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(boardServiceMock.getBoard).toHaveBeenCalledTimes(2);
 	});

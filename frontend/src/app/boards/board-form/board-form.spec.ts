@@ -66,6 +66,7 @@ describe('BoardForm', () => {
 		await component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(projectServiceMock.createBoard).toHaveBeenCalledWith(1, { name: 'Board A' });
 		expect(component.boardModel()).toEqual({ name: '' });
@@ -78,6 +79,7 @@ describe('BoardForm', () => {
 		await component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(projectServiceMock.createBoard).not.toHaveBeenCalled();
 	});
@@ -98,6 +100,7 @@ describe('BoardForm', () => {
 		await component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(component.error()).not.toBe('');
 	});
@@ -108,6 +111,7 @@ describe('BoardForm', () => {
 		component.onCancel();
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(router.url).toBe('/projects/1');
 	});

@@ -85,6 +85,7 @@ describe('ColumnUpdateForm', () => {
 		await component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(columnServiceMock.updateColumn).toHaveBeenCalledWith(currentColumn.id, { name: 'Updated A' });
 		expect(component.columnModel()).toEqual({ name: '' });
@@ -98,6 +99,7 @@ describe('ColumnUpdateForm', () => {
 		await component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(columnServiceMock.updateColumn).not.toHaveBeenCalled();
 	});
@@ -118,6 +120,7 @@ describe('ColumnUpdateForm', () => {
 		await component.onSubmit(new Event('submit'));
 
 		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(component.error()).not.toBe('');
 	});
