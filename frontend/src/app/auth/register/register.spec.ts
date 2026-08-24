@@ -1,47 +1,65 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Register } from './register';
 import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth-service';
+import { Component } from '@angular/core';
+
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('Register', () => {
-	let fixture: ComponentFixture<Register>;
 	let component: Register;
+	let harness: RouterTestingHarness;
 	let router: Router;
-	let navigateSpy: any;
 
-	let authServiceMock: { register: ReturnType<typeof vi.fn> }; // Injected service
+	const authServiceMock = { register: vi.fn() };
+
+	async function createComponent(shouldAwait: boolean = true) {
+		component = await harness.navigateByUrl('/register', Register);
+
+		if (shouldAwait) {
+			await harness.fixture.whenStable();
+			harness.detectChanges();
+		};
+	};
+
+	function setDefaultMockReturnValues() {
+		authServiceMock.register.mockReturnValue(of({ id: '1', username: 'john', email: 'john@test.com' }));
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
+	};
 
 	beforeEach(async () => {
-		authServiceMock = { register: vi.fn() }
+		vi.clearAllMocks();
+
+		setDefaultMockReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [Register],
 			providers: [
 				{ provide: AuthService, useValue: authServiceMock },
-				provideRouter([])
+				provideRouter([
+					{ path: 'register', component: Register },
+					{ path: 'login', component: DummyComponent },
+				]),
 			]
 		}).compileComponents();
-		
-		router = TestBed.inject(Router);
-		navigateSpy = vi.spyOn(router, 'navigate');
 
-		fixture = TestBed.createComponent(Register);
-		component = fixture.componentInstance;
-
-		await fixture.whenStable();
+		await setHarnessAndRouter();
 	});
 
-	it('should create', () => {
+	it('should create', async () => {
+		await createComponent();
+
 		expect(component).toBeTruthy();
 	});
 
-	it('should register on submit', () => {
-		authServiceMock.register.mockReturnValue(of({
-			id: '1',
-			username: 'john',
-			email: 'john@test.com',
-		}));
+	it('should register on submit', async () => {
+		await createComponent();
 
 		const avatar = new File(['avatar'], 'avatar.png', {
 			type: 'image/png'
@@ -54,21 +72,34 @@ describe('Register', () => {
 			avatar: avatar
 		});
 
-		component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const registerButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Register'));
+
+		expect(registerButton).toBeTruthy();
+
+		registerButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(authServiceMock.register).toHaveBeenCalledTimes(1);
 		const formData = authServiceMock.register.mock.calls[0][0];
-
 		expect(formData).toBeInstanceOf(FormData);
 		expect(formData.get('username')).toBe('john');
 		expect(formData.get('email')).toBe('john@test.com');
 		expect(formData.get('password')).toBe('123');
 		expect(formData.get('avatar')).toBe(avatar);
-	
-		expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+
+		expect(router.url).toBe('/login');
 	});
 
-	it('should not submit when form is invalid', () => {
+	it('should not submit when form is invalid', async () => {
+		await createComponent();
+
 		component.registerModel.set({
 			username: '',
 			email: '',
@@ -76,7 +107,20 @@ describe('Register', () => {
 			avatar: null
 		});
 
-		component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const registerButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Register'));
+
+		expect(registerButton).toBeTruthy();
+		expect(registerButton!.disabled).toBe(true); 
+
+		registerButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(authServiceMock.register).not.toHaveBeenCalled();
 	});

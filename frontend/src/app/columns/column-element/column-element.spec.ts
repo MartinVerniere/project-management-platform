@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ColumnElement } from './column-element';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { Component, output, input } from '@angular/core';
 import { TaskList } from '../../tasks/task-list/task-list';
@@ -34,62 +33,28 @@ describe('ColumnElement', () => {
 	let component: ColumnElement;
 	let html: HTMLElement;
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					if (key === 'boardId') return '1';
-					if (key == 'columnId') return '1';
-					return null;
-				}
-			}
-		}
-	};
-
 	let columnServiceMock = { deleteColumn: vi.fn() };
-
-	const column: ColumnDetailsDto = {
-		id: 1,
-		name: 'Todo',
-		tasks: [],
-		boardId: 1,
-		order: 0
-	};
 
 	const projectId = 1;
 	const boardId = 1;
+
+	const column: ColumnDetailsDto = { id: 1, name: 'Todo', tasks: [], boardId, order: 0 };
 
 	const memberList: ProjectMemberDto[] = [
 		{
 			id: 1,
 			role: 'ADMIN',
-			user: {
-				id: 1,
-				username: 'john',
-				email: 'john@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 1, username: 'john', email: 'john@example.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 2,
 			role: 'MEMBER',
-			user: {
-				id: 3,
-				username: 'martin',
-				email: 'martin@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 3, username: 'martin', email: 'martin@example.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 3,
 			role: 'MEMBER',
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@example.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 2, username: 'alice', email: 'alice@example.com', avatarUrl: '/images/default-avatar.png' }
 		}
 	];
 
@@ -112,23 +77,28 @@ describe('ColumnElement', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
-	}
+		};
+	};
+
+	function setDefaultReturnValues() {
+		columnServiceMock.deleteColumn.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [ColumnElement],
 			providers: [
 				{ provide: ColumnService, useValue: columnServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock }
+				provideRouter([])
 			]
 		}).overrideComponent(ColumnElement, {
 			remove: { imports: [TaskList] },
 			add: { imports: [TaskListStub] },
-		})
-			.compileComponents();
+		}).compileComponents();
 	});
 
 	it('should create', async () => {
@@ -159,8 +129,6 @@ describe('ColumnElement', () => {
 	});
 
 	it('should remove column and emit columnElementEdited when "Delete" button is clicked', async () => {
-		columnServiceMock.deleteColumn.mockReturnValue(of({}));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.columnElementEdited, 'emit');

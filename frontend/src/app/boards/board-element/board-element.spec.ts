@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BoardElement } from './board-element';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { BoardService } from '../../services/boards/board-service';
 import type { BoardDto } from '@shared/models/board';
@@ -13,24 +13,9 @@ describe('BoardElement', () => {
 
 	const boardServiceMock = { deleteBoard: vi.fn() };
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					return null;
-				}
-			}
-		}
-	};
-
-	const board: BoardDto = {
-		id: 1,
-		name: 'Board A',
-		projectId: 0
-	};
-
 	const projectId: number = 1;
+
+	const board: BoardDto = { id: 1, name: 'Board A', projectId };
 
 	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(BoardElement);
@@ -46,17 +31,23 @@ describe('BoardElement', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
-	}
+		};
+	};
+
+	function setDefaultReturnValues() {
+		boardServiceMock.deleteBoard.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [BoardElement],
 			providers: [
 				{ provide: BoardService, useValue: boardServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock }
+				provideRouter([]),
 			]
 		}).compileComponents();
 	});
@@ -90,8 +81,6 @@ describe('BoardElement', () => {
 	});
 
 	it('should delete board and emit boardDeleted on clicking "Delete" button', async () => {
-		boardServiceMock.deleteBoard.mockReturnValue(of({}));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.boardDeleted, 'emit');

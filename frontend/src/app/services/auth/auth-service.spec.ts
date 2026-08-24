@@ -12,6 +12,11 @@ describe('AuthService', () => {
 
 	const routerMock = { navigate: vi.fn() };
 
+	function setupService() {
+		httpMock = TestBed.inject(HttpTestingController);
+		service = TestBed.inject(AuthService);
+	};
+
 	beforeEach(() => {
 		vi.clearAllMocks();
 		localStorage.clear();
@@ -23,12 +28,10 @@ describe('AuthService', () => {
 				{ provide: Router, useValue: routerMock },
 			]
 		});
-
-		httpMock = TestBed.inject(HttpTestingController);
-		service = TestBed.inject(AuthService);
 	});
 
 	it('should be created', () => {
+		setupService();
 		expect(service).toBeTruthy();
 	});
 
@@ -43,12 +46,12 @@ describe('AuthService', () => {
 			},
 		};
 
+		setupService();
+
 		service.login({ username: 'john', password: '123' }).subscribe();
 
 		const request: TestRequest = httpMock.expectOne('http://localhost:3000/api/auth/login');
-
 		expect(request.request.method).toBe('POST');
-
 		request.flush(expectedResponse);
 
 		expect(service.getToken()).toBe('abc123');
@@ -63,6 +66,8 @@ describe('AuthService', () => {
 			avatarUrl: '/images/default-avatar.png'
 		};
 
+		setupService();
+
 		let formData = new FormData();
 		formData.append('username', 'john');
 		formData.append('email', 'john@test.com');
@@ -71,31 +76,20 @@ describe('AuthService', () => {
 		service.register(formData).subscribe();
 
 		const request: TestRequest = httpMock.expectOne('http://localhost:3000/api/auth/register');
-
+		expect(request.request.method).toBe('POST');
+		expect(request.request.body).toBe(formData); 
 		request.flush(expectedResponse);
 	});
 
 	describe('When token exists in local storage', () => {
 		beforeEach(() => {
-			vi.clearAllMocks();
-
 			localStorage.clear();
 			localStorage.setItem('authToken', 'abc');
-
-			TestBed.resetTestingModule();
-			TestBed.configureTestingModule({
-				providers: [
-					provideHttpClient(),
-					provideHttpClientTesting(),
-					{ provide: Router, useValue: routerMock },
-				]
-			});
-
-			httpMock = TestBed.inject(HttpTestingController);
-			service = TestBed.inject(AuthService);
 		});
 
 		it('should logout correctly', () => {
+			setupService();
+
 			service.logout();
 
 			expect(service.getToken()).toBe(null);
@@ -112,12 +106,12 @@ describe('AuthService', () => {
 				avatarUrl: '/images/default-avatar.png'
 			};
 
+			setupService();
+
 			service.me().subscribe();
 
 			const request: TestRequest = httpMock.expectOne('http://localhost:3000/api/auth/me');
-
 			expect(request.request.method).toBe('GET');
-
 			request.flush(expectedResponse);
 		});
 
@@ -128,13 +122,13 @@ describe('AuthService', () => {
 				email: 'john@test.com',
 				avatarUrl: '/images/default-avatar.png'
 			};
+			
+			setupService();
 
 			service.initializeAuth();
 
 			const request: TestRequest = httpMock.expectOne('http://localhost:3000/api/auth/me');
-
 			expect(request.request.method).toBe('GET');
-
 			request.flush(expectedResponse);
 
 			expect(service.getCurrentUser()?.username).toBe('john');
@@ -143,25 +137,15 @@ describe('AuthService', () => {
 
 	describe('When token does not exists in local storage', () => {
 		beforeEach(() => {
-			vi.clearAllMocks();
-
 			localStorage.clear();
-
-			TestBed.resetTestingModule();
-			TestBed.configureTestingModule({
-				providers: [
-					provideHttpClient(),
-					provideHttpClientTesting(),
-					{ provide: Router, useValue: routerMock },
-				]
-			});
 		});
 
 		it('should NOT set user on initializeAuth when no token exists', () => {
+			setupService();
+
 			service.initializeAuth();
 
 			httpMock.expectNone('http://localhost:3000/api/auth/me');
-
 			expect(service.getCurrentUser()).toBe(null);
 		});
 	});

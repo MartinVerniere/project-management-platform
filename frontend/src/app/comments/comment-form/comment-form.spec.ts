@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CommentForm } from './comment-form';
 import { TaskService } from '../../services/tasks/task-service';
 import { of, throwError } from 'rxjs';
@@ -7,6 +6,7 @@ import { of, throwError } from 'rxjs';
 describe('CommentForm', () => {
 	let fixture: ComponentFixture<CommentForm>;
 	let component: CommentForm;
+	let html: HTMLElement;
 
 	const taskServiceMock = { addComment: vi.fn() };
 
@@ -15,6 +15,7 @@ describe('CommentForm', () => {
 	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(CommentForm);
 		component = fixture.componentInstance;
+		html = fixture.nativeElement;
 
 		fixture.componentRef.setInput('taskId', taskId);
 
@@ -23,11 +24,17 @@ describe('CommentForm', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
-	}
+		};
+	};
+
+	function setDefaultReturnValues() {
+		taskServiceMock.addComment.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [CommentForm],
@@ -44,22 +51,32 @@ describe('CommentForm', () => {
 	});
 
 	it('should add comment and emit commentAdded on valid data', async () => {
-		taskServiceMock.addComment.mockReturnValue(of({}));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.commentAdded, 'emit');
 
 		component.commentModel.set({ content: 'Good' });
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const createButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add comment'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(taskServiceMock.addComment).toHaveBeenCalledWith(1, { content: 'Good' });
 		expect(emitSpy).toHaveBeenCalled();
 		expect(component.commentModel()).toEqual({ content: '' });
 	});
 
-	it('should set error when adding member fails', async () => {
+	it('should set error when adding comment fails', async () => {
 		taskServiceMock.addComment.mockReturnValue(throwError(() => ({
 			error: {
 				error: {
@@ -73,7 +90,19 @@ describe('CommentForm', () => {
 
 		component.commentModel.set({ content: 'ERROR' });
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const createButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add comment'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(component.error()).toBe('Error message');
 	});

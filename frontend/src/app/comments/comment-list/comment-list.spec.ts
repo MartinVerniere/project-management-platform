@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CommentList } from './comment-list';
 import { Component, input, output } from '@angular/core';
 import { CommentElement } from '../comment-element/comment-element';
@@ -36,34 +35,21 @@ class CommentFormStub {
 describe('CommentList', () => {
 	let fixture: ComponentFixture<CommentList>;
 	let component: CommentList;
+	let html: HTMLElement;
 
-	const commentAuthor: UserDto = {
-		id: 0,
-		username: 'john',
-		email: 'john@test.com',
-		avatarUrl: null
-	};
+	const commentAuthor: UserDto = { id: 0, username: 'john', email: 'john@test.com', avatarUrl: null };
 
 	const commentList: CommentDto[] = [
-		{
-			id: 1,
-			content: 'Good',
-			author: commentAuthor,
-			taskId: 1
-		},
-		{
-			id: 2,
-			content: 'Great',
-			author: commentAuthor,
-			taskId: 1
-		}
-	]
+		{ id: 1, content: 'Good', author: commentAuthor, taskId: 1 },
+		{ id: 2, content: 'Great', author: commentAuthor, taskId: 1 }
+	];
 
 	const taskId = 1;
 
 	async function createComponent(shouldAwait = true, hasAdminPermissions = true) {
 		fixture = TestBed.createComponent(CommentList);
 		component = fixture.componentInstance;
+		html = fixture.nativeElement;
 
 		fixture.componentRef.setInput('commentList', commentList);
 		fixture.componentRef.setInput('taskId', taskId);
@@ -74,7 +60,7 @@ describe('CommentList', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
+		};
 	}
 
 	beforeEach(async () => {
@@ -103,16 +89,37 @@ describe('CommentList', () => {
 	it('should enable add comment form on "Add comment" button click', async () => {
 		await createComponent();
 
-		component.onEnableAddComment();
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add comment'));
+
+		expect(addButton).toBeTruthy();
+
+		addButton!.click();
+
+		await fixture.whenStable();
 
 		expect(component.addCommentFormEnabled()).toBe(true);
 	});
 
-	it('should disable add comment form on cancel', async () => {
+	it('should disable add comment form when CommentForm emits canceledCommentAdd', async () => {
 		await createComponent();
 
-		component.onEnableAddComment();
-		component.onCancelAddComment();
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add comment'));
+
+		expect(addButton).toBeTruthy();
+
+		addButton!.click();
+
+		await fixture.whenStable();
+
+		const child = fixture.debugElement
+			.query(By.directive(CommentFormStub))
+			.componentInstance as CommentFormStub;
+
+		child.canceledCommentAdd.emit();
 
 		expect(component.addCommentFormEnabled()).toBe(false);
 	});
@@ -148,9 +155,15 @@ describe('CommentList', () => {
 	it('should emit commentListEdited when CommentForm emits commentAdded, and hide the form', async () => {
 		await createComponent();
 
-		component.onEnableAddComment();
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add comment'));
 
-		fixture.detectChanges();
+		expect(addButton).toBeTruthy();
+
+		addButton!.click();
+
+		await fixture.whenStable();
 
 		const child = fixture.debugElement
 			.query(By.directive(CommentFormStub))

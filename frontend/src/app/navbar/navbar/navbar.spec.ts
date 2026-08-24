@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Navbar } from './navbar';
 import { AuthService } from '../../services/auth/auth-service';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
+import { UserDto } from '@shared/models/user';
+import { of } from 'rxjs';
 
 describe('Navbar', () => {
 	let component: Navbar;
@@ -15,15 +16,7 @@ describe('Navbar', () => {
 		logout: vi.fn()
 	};
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					return null;
-				}
-			}
-		}
-	};
+	const me: UserDto = { id: 1, username: 'john', email: 'john@test.com', avatarUrl: '/images/default-avatar.png' };
 
 	async function createComponent(shouldAwait = true) {
 		fixture = TestBed.createComponent(Navbar);
@@ -35,17 +28,25 @@ describe('Navbar', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
-	}
+		};
+	};
+
+	function setDefaultReturnValues() {
+		authServiceMock.isLoggedIn.mockReturnValue(true);
+		authServiceMock.user.mockReturnValue(me);
+		authServiceMock.logout.mockReturnValue(of({}));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [Navbar],
 			providers: [
 				{ provide: AuthService, useValue: authServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock }
+				provideRouter([]),
 			]
 		}).compileComponents();
 	});
@@ -79,14 +80,6 @@ describe('Navbar', () => {
 	});
 
 	it('should render "Logout" button when user is logged in', async () => {
-		authServiceMock.isLoggedIn.mockReturnValue(true);
-		authServiceMock.user.mockReturnValue({
-			id: 1,
-			username: 'john',
-			email: 'john@test.com',
-			avatarUrl: '/images/john.png'
-		});
-
 		await createComponent();
 
 		const loginButton = Array
@@ -107,14 +100,6 @@ describe('Navbar', () => {
 	});
 
 	it('should logout when clicking "Logout" button', async () => {
-		authServiceMock.isLoggedIn.mockReturnValue(true);
-		authServiceMock.user.mockReturnValue({
-			id: 1,
-			username: 'john',
-			email: 'john@test.com',
-			avatarUrl: '/images/john.png'
-		});
-
 		await createComponent();
 
 		const logoutButton = Array

@@ -1,67 +1,62 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed } from '@angular/core/testing';
 import { ColumnUpdateForm } from './column-update-form';
-import { ActivatedRoute, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { ColumnService } from '../../services/columns/column-service';
 import type { ColumnDto } from '@shared/models/column';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { Component } from '@angular/core';
+
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('ColumnUpdateForm', () => {
-	let fixture: ComponentFixture<ColumnUpdateForm>;
 	let component: ColumnUpdateForm;
-	let html: HTMLElement;
-
-	const currentColumn: ColumnDto = {
-		id: 1,
-		name: "Column A",
-		boardId: 1,
-		order: 0
-	}
+	let harness: RouterTestingHarness;
+	let router: Router;
 
 	let columnServiceMock = {
-		getColumn: vi.fn().mockReturnValue(of(currentColumn)),
-		updateColumn: vi.fn().mockReturnValue(of({}))
+		getColumn: vi.fn(),
+		updateColumn: vi.fn()
 	};
 
-	let routerMock = { navigate: vi.fn().mockResolvedValue(true) };
-
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					if (key === 'boardId') return '1';
-					if (key === 'columnId') return '1';
-					return null;
-				}
-			}
-		}
-	}
+	const currentColumn: ColumnDto = { id: 1, name: "Column A", boardId: 1, order: 0 };
 
 	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(ColumnUpdateForm);
-		component = fixture.componentInstance;
-		html = fixture.nativeElement;
-
-		fixture.detectChanges();
+		component = await harness.navigateByUrl('/projects/1/boards/1/columns/1/edit', ColumnUpdateForm);
 
 		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
-		}
-	}
+			await harness.fixture.whenStable();
+			harness.detectChanges();
+		};
+	};
+
+	function setDefaultReturnValues() {
+		columnServiceMock.getColumn.mockReturnValue(of(currentColumn));
+		columnServiceMock.updateColumn.mockReturnValue(of({}));
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [ColumnUpdateForm],
 			providers: [
 				{ provide: ColumnService, useValue: columnServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock },
-				{ provide: Router, useValue: routerMock },
+				provideRouter([
+					{ path: 'projects/:projectId/boards/:boardId/columns/:columnId/edit', component: ColumnUpdateForm },
+					{ path: 'projects/:projectId/boards/:boardId', component: DummyComponent },
+				]),
 			]
 		}).compileComponents();
+
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {
@@ -70,43 +65,66 @@ describe('ColumnUpdateForm', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('should load board', async () => {
+	it('should load column', async () => {
 		await createComponent();
 
 		expect(columnServiceMock.getColumn).toHaveBeenCalledWith(1);
 	});
 
-	it('should load existing board into the form', async () => {
+	it('should load existing column into the form', async () => {
 		await createComponent();
 
 		expect(component.columnModel()).toEqual({ name: 'Column A' });
 	});
 
-	it('should update board when valid form data, then redirect to /projects/projectId/boards/boardId and clear form', async () => {
+	it('should update column when valid form data, then redirect to /projects/projectId/boards/boardId and clear form', async () => {
 		await createComponent();
 
 		component.columnModel.set({ name: 'Updated A' });
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const updateButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Save changes'));
+
+		expect(updateButton).toBeTruthy();
+
+		updateButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(columnServiceMock.updateColumn).toHaveBeenCalledWith(currentColumn.id, { name: 'Updated A' });
-		expect(routerMock.navigate).toHaveBeenCalledWith(['/projects', 1, 'boards', 1]);
 		expect(component.columnModel()).toEqual({ name: '' });
+		expect(router.url).toBe('/projects/1/boards/1');
 	});
 
-	it('should not update board when invalid form data', async () => {
+	it('should not update column when invalid form data', async () => {
 		await createComponent();
 
 		component.resetForm(); //Clear information loaded from fetch
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
 
-		await fixture.whenStable();
+		const updateButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Save changes'));
+
+		expect(updateButton).toBeTruthy();
+		expect(updateButton!.disabled).toBe(true); 
+
+		updateButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(columnServiceMock.updateColumn).not.toHaveBeenCalled();
 	});
 
-	it('should set error when updating board fails', async () => {
+	it('should set error when updating column fails', async () => {
 		columnServiceMock.updateColumn.mockReturnValue(throwError(() => ({
 			error: {
 				error: {
@@ -120,7 +138,19 @@ describe('ColumnUpdateForm', () => {
 
 		component.columnModel.set({ name: 'ERROR NAME' });
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const updateButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Save changes'));
+
+		expect(updateButton).toBeTruthy();
+
+		updateButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(component.error()).not.toBe('');
 	});

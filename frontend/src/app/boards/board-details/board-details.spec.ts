@@ -1,7 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { BoardDetails } from './board-details';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { BoardService } from '../../services/boards/board-service';
 import { NEVER, of, throwError } from 'rxjs';
 import { Component, input, output } from '@angular/core';
@@ -12,6 +13,7 @@ import { ProjectService } from '../../services/projects/project-service';
 import type { ColumnDetailsDto } from '@shared/models/column';
 import type { ProjectMemberDto } from '@shared/models/project';
 import type { UserDto } from '@shared/models/user';
+import { BoardDetailsDto } from '@shared/models/board';
 
 @Component({
 	selector: 'app-column-list',
@@ -30,37 +32,23 @@ class ColumnListStub {
 
 describe('BoardDetails', () => {
 	let component: BoardDetails;
-	let fixture: ComponentFixture<BoardDetails>;
+	let harness: RouterTestingHarness;
 	let html: HTMLElement;
 
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					if (key === 'projectId') return '1';
-					if (key === 'boardId') return '1';
-					return null;
-				}
-			}
-		}
-	};
+	const boardServiceMock = { getBoard: vi.fn() };
+	const projectServiceMock = { getMembers: vi.fn() };
+	const authServiceMock = { user: vi.fn() };
 
-	let boardServiceMock = { getBoard: vi.fn() };
-	let projectServiceMock = { getMembers: vi.fn() };
-	let authServiceMock = { user: vi.fn() };
-
-	const board = {
+	const board: BoardDetailsDto = {
 		id: 1,
 		name: 'Board A',
-		columns: [{ id: 1, name: 'Todo' }],
+		columns: [
+			{ id: 1, name: 'Todo', tasks: [], boardId: 1, order: 0 }
+		],
+		projectId: 1
 	};
 
-	const me: UserDto = {
-		id: 1,
-		username: 'john',
-		email: 'john@test.com',
-		avatarUrl: '/images/default-avatar.png'
-	}
+	const me: UserDto = { id: 1, username: 'john', email: 'john@test.com', avatarUrl: '/images/default-avatar.png' };
 
 	const members: ProjectMemberDto[] = [
 		{
@@ -71,40 +59,40 @@ describe('BoardDetails', () => {
 		{
 			id: 2,
 			role: 'MEMBER',
-			user: {
-				id: 2,
-				username: 'alice',
-				email: 'alice@test.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 2, username: 'alice', email: 'alice@test.com', avatarUrl: '/images/default-avatar.png' }
 		},
 		{
 			id: 3,
 			role: 'MEMBER',
-			user: {
-				id: 3,
-				username: 'martin',
-				email: 'martin@test.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 3, username: 'martin', email: 'martin@test.com', avatarUrl: '/images/default-avatar.png' }
 		}
-	]
+	];
 
-	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(BoardDetails);
-		component = fixture.componentInstance;
-		html = fixture.nativeElement;
-
-		fixture.detectChanges();
+	async function createComponent(shouldAwait = true) {
+		component = await harness.navigateByUrl('/projects/1/boards/1', BoardDetails);
+		html = harness.routeNativeElement!;
 
 		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
-		}
-	}
+			await harness.fixture.whenStable();
+			harness.detectChanges();
+		};
+	};
+
+	function setDefaultReturnValues() {
+		boardServiceMock.getBoard.mockReturnValue(of(board));
+		projectServiceMock.getMembers.mockReturnValue(of(members));
+		authServiceMock.user.mockReturnValue(me);
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		// router = TestBed.inject(Router);
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [BoardDetails],
@@ -112,33 +100,31 @@ describe('BoardDetails', () => {
 				{ provide: BoardService, useValue: boardServiceMock },
 				{ provide: ProjectService, useValue: projectServiceMock },
 				{ provide: AuthService, useValue: authServiceMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock }
+				provideRouter([
+					{ path: 'projects/:projectId/boards/:boardId', component: BoardDetails },
+				]),
 			]
 		}).overrideComponent(BoardDetails, {
 			remove: { imports: [ColumnList] },
 			add: { imports: [ColumnListStub] }
 		}).compileComponents();
+
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {
-		boardServiceMock.getBoard.mockReturnValue(of(board));
-
 		await createComponent();
 
 		expect(component).toBeTruthy();
 	});
 
 	it('should load board', async () => {
-		boardServiceMock.getBoard.mockReturnValue(of(board));
-
 		await createComponent();
 
 		expect(boardServiceMock.getBoard).toHaveBeenCalledWith(1);
 	});
 
 	it('should fetch project members', async () => {
-		projectServiceMock.getMembers.mockReturnValue(of(members));
-
 		await createComponent();
 
 		expect(projectServiceMock.getMembers).toHaveBeenCalledWith(1);
@@ -146,7 +132,6 @@ describe('BoardDetails', () => {
 
 	it('should show loading state', async () => {
 		boardServiceMock.getBoard.mockReturnValue(NEVER);
-
 		await createComponent(false);
 
 		expect(html.textContent).toContain('Loading...');
@@ -155,48 +140,45 @@ describe('BoardDetails', () => {
 
 	it('should show error state', async () => {
 		boardServiceMock.getBoard.mockReturnValue(throwError(() => new Error()));
-
 		await createComponent();
 
 		expect(html.textContent).toContain('Error loading board');
 	});
 
 	it('should render board information', async () => {
-		projectServiceMock.getMembers.mockReturnValue(of({ members }));
-		boardServiceMock.getBoard.mockReturnValue(of(board));
-
 		await createComponent();
 
 		expect(html.textContent).toContain('Board A');
 	});
 
-	it('should not render "Add column" button when user doesnt have admin permissions', () => {
-		authServiceMock.user.mockReturnValue(of({ me }));
-		projectServiceMock.getMembers.mockReturnValue(of({ members }));
-		boardServiceMock.getBoard.mockReturnValue(of(board));
+	it('should not render "Add column" button when user doesnt have admin permissions', async () => {
+		authServiceMock.user.mockReturnValue({
+			id: 2,
+			username: 'alice',
+			email: 'alice@test.com',
+			avatarUrl: '/images/default-avatar.png'
+		});
+		await createComponent();
 
-		const addColumnButton = Array
+		const addButton = Array
 			.from(html.querySelectorAll('button'))
 			.find(button => button.textContent?.includes('Add column'));
 
-		expect(addColumnButton).toBeUndefined();
+		expect(addButton).toBeUndefined();
 	});
 
 	it('should reload board when ColumnList emits columnListEdited', async () => {
-		authServiceMock.user.mockReturnValue(of({ me }));
-		projectServiceMock.getMembers.mockReturnValue(of({ members }));
-		boardServiceMock.getBoard.mockReturnValue(of(board));
-
 		await createComponent();
 
-		const child = fixture.debugElement
+		const child = harness.routeDebugElement!
 			.query(By.directive(ColumnListStub))
 			.componentInstance as ColumnListStub;
 
-		const emitSpy = vi.spyOn(component.board, 'reload');
-
 		child.columnListEdited.emit();
 
-		expect(emitSpy).toHaveBeenCalled();
+		await harness.fixture.whenStable();
+		harness.detectChanges();
+
+		expect(boardServiceMock.getBoard).toHaveBeenCalledTimes(2);
 	});
 });

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MemberForm } from './member-form';
 import { of, throwError } from 'rxjs';
 import { ProjectService } from '../../services/projects/project-service';
@@ -10,6 +9,7 @@ import type { UserDto } from '@shared/models/user';
 describe('MemberForm', () => {
 	let fixture: ComponentFixture<MemberForm>;
 	let component: MemberForm;
+	let html: HTMLElement;
 
 	const projectServiceMock = { addMember: vi.fn() };
 	const userServiceMock = { getUsers: vi.fn() };
@@ -18,28 +18,13 @@ describe('MemberForm', () => {
 		{
 			id: 1,
 			role: 'ADMIN',
-			user: {
-				id: 10,
-				username: 'john',
-				email: 'john@email.com',
-				avatarUrl: '/images/default-avatar.png'
-			}
+			user: { id: 10, username: 'john', email: 'john@email.com', avatarUrl: '/images/default-avatar.png' }
 		}
-	]
+	];
 
 	const users: UserDto[] = [
-		{
-			id: 10,
-			username: 'user',
-			email: 'user@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		},
-		{
-			id: 20,
-			username: 'New user',
-			email: 'newUser@email.com',
-			avatarUrl: '/images/default-avatar.png'
-		}
+		{ id: 10, username: 'john', email: 'john@email.com', avatarUrl: '/images/default-avatar.png' },
+		{ id: 20, username: 'New user', email: 'newUser@email.com', avatarUrl: '/images/default-avatar.png' }
 	];
 
 	const projectId = 1;
@@ -47,6 +32,7 @@ describe('MemberForm', () => {
 	async function createComponent(shouldAwait: boolean = true) {
 		fixture = TestBed.createComponent(MemberForm);
 		component = fixture.componentInstance;
+		html = fixture.nativeElement;
 
 		fixture.componentRef.setInput('projectId', projectId);
 		fixture.componentRef.setInput('memberList', memberList);
@@ -56,13 +42,18 @@ describe('MemberForm', () => {
 		if (shouldAwait) {
 			await fixture.whenStable();
 			fixture.detectChanges();
-		}
-	}
+		};
+	};
+
+	function setDefaultReturnValues() {
+		projectServiceMock.addMember.mockReturnValue(of({}));
+		userServiceMock.getUsers.mockReturnValue(of(users));
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 
-		userServiceMock.getUsers.mockReturnValue(of(users));
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [MemberForm],
@@ -91,15 +82,25 @@ describe('MemberForm', () => {
 	});
 
 	it('should add member and emit memberAdded', async () => {
-		projectServiceMock.addMember.mockReturnValue(of({}));
-
 		await createComponent();
 
 		const emitSpy = vi.spyOn(component.memberAdded, 'emit');
 
 		component.memberModel.set({ userId: '20' });
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add member'));
+
+		expect(addButton).toBeTruthy();
+
+		addButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(projectServiceMock.addMember).toHaveBeenCalledWith(1, 20);
 		expect(emitSpy).toHaveBeenCalled();
@@ -120,7 +121,19 @@ describe('MemberForm', () => {
 
 		component.memberModel.set({ userId: '20' });
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
+
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add member'));
+
+		expect(addButton).toBeTruthy();
+
+		addButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 
 		expect(component.error()).toBe('Error message');
 	});
@@ -128,8 +141,20 @@ describe('MemberForm', () => {
 	it('should not add member when no user is selected', async () => {
 		await createComponent();
 
-		await component.onSubmit(new Event('submit'));
+		await fixture.whenStable();
+		fixture.detectChanges();
 
+		const addButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Add member'));
+
+		expect(addButton).toBeTruthy();
+		expect(addButton!.disabled).toBe(true);
+
+		addButton!.click();
+
+		await fixture.whenStable();
+		fixture.detectChanges();
 		expect(projectServiceMock.addMember).not.toHaveBeenCalled();
 	});
 
@@ -138,7 +163,15 @@ describe('MemberForm', () => {
 
 		const emitSpy = vi.spyOn(component.canceledMemberAdd, 'emit');
 
-		component.onCancel();
+		const cancelButton = Array
+			.from(html.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Cancel'));
+
+		expect(cancelButton).toBeTruthy();
+
+		cancelButton!.click();
+
+		await fixture.whenStable();
 
 		expect(emitSpy).toHaveBeenCalled();
 	});

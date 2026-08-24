@@ -11,6 +11,10 @@ describe('Home', () => {
 
 	let healthServiceMock = { getHealthStatus: vi.fn() };
 
+	function setDefaultReturnValues() {
+		healthServiceMock.getHealthStatus.mockReturnValue(of({}));
+	};
+
 	async function createComponent(shouldAwait = true) {
 		fixture = TestBed.createComponent(Home);
 		component = fixture.componentInstance;
@@ -25,6 +29,10 @@ describe('Home', () => {
 	}
 
 	beforeEach(async () => {
+		vi.clearAllMocks();
+
+		setDefaultReturnValues();
+
 		await TestBed.configureTestingModule({
 			imports: [Home],
 			providers: [
@@ -35,10 +43,8 @@ describe('Home', () => {
 	});
 
 	it('should create', async () => {
-		healthServiceMock.getHealthStatus.mockReturnValue(of({}));
-		
 		await createComponent();
-		
+
 		expect(component).toBeTruthy();
 	});
 });

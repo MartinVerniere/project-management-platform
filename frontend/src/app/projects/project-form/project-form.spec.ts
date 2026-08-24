@@ -1,50 +1,55 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed } from '@angular/core/testing';
 import { ProjectForm } from './project-form';
-import { ActivatedRoute, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
 import { of } from 'rxjs';
+import { Component } from '@angular/core';
+import { RouterTestingHarness } from '@angular/router/testing';
+
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('ProjectForm', () => {
-	let fixture: ComponentFixture<ProjectForm>;
 	let component: ProjectForm;
+	let harness: RouterTestingHarness;
+	let router: Router;
 
 	let projectServiceMock = { createProject: vi.fn() };
-	let routerMock = { navigate: vi.fn().mockResolvedValue(true) };
-
-	const activatedRouteMock = {
-		snapshot: {
-			paramMap: {
-				get: (key: string) => {
-					return null;
-				}
-			}
-		}
-	}
 
 	async function createComponent(shouldAwait: boolean = true) {
-		fixture = TestBed.createComponent(ProjectForm);
-		component = fixture.componentInstance;
-
-		fixture.detectChanges();
+		component = await harness.navigateByUrl('/projects/create', ProjectForm);
 
 		if (shouldAwait) {
-			await fixture.whenStable();
-			fixture.detectChanges();
-		}
-	}
+			await harness.fixture.whenStable();
+			harness.detectChanges();
+		};
+	};
+
+	function setDefaultReturnValues() {
+		projectServiceMock.createProject.mockReturnValue(of({}));
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
+	};
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
+
+		setDefaultReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [ProjectForm],
 			providers: [
 				{ provide: ProjectService, useValue: projectServiceMock },
-				{ provide: Router, useValue: routerMock },
-				{ provide: ActivatedRoute, useValue: activatedRouteMock }
+				provideRouter([
+					{ path: 'projects/create', component: ProjectForm, },
+					{ path: 'projects', component: DummyComponent, },
+				]),
 			]
 		}).compileComponents();
+
+		await setHarnessAndRouter();
 	});
 
 	it('should create', async () => {
@@ -64,19 +69,42 @@ describe('ProjectForm', () => {
 			description: ''
 		});
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges();
+		await harness.fixture.whenStable();
+
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create project'));
+
+		expect(createButton).toBeTruthy();
+
+		createButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(projectServiceMock.createProject).toHaveBeenCalledWith({ name: 'Project A', key: 'PRO', description: '' });
-		expect(routerMock.navigate).toHaveBeenCalledWith(['/projects']);
 		expect(component.projectModel()).toEqual({ name: '', key: '', description: '' });
+		expect(router.url).toBe('/projects');
 	});
 
 	it('should not create project when invalid form data', async () => {
 		await createComponent();
 
-		await component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
 
-		await fixture.whenStable();
+		const createButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Create project'));
+
+		expect(createButton).toBeTruthy();
+		expect(createButton!.disabled).toBe(true); 
+
+		createButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(projectServiceMock.createProject).not.toHaveBeenCalled();
 	});

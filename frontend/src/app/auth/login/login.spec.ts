@@ -1,72 +1,111 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Login } from './login';
 import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth-service';
+import { Component } from '@angular/core';
+
+@Component({ standalone: true, template: '' }) class DummyComponent { }
 
 describe('Login', () => {
-	let fixture: ComponentFixture<Login>;
 	let component: Login;
+	let harness: RouterTestingHarness;
 	let router: Router;
-	let navigateSpy: any;
 
-	let authServiceMock: { login: ReturnType<typeof vi.fn> }; // Injected service
+	const authServiceMock = { login: vi.fn() };
+
+	async function createComponent(shouldAwait: boolean = true) {
+		component = await harness.navigateByUrl('/login', Login);
+
+		if (shouldAwait) {
+			await harness.fixture.whenStable();
+			harness.detectChanges();
+		};
+	};
+
+	function setDefaultMockReturnValues() {
+		authServiceMock.login.mockReturnValue(of({ user: { id: '1', username: 'john', email: 'john@test.com' } }));
+	};
+
+	async function setHarnessAndRouter() {
+		harness = await RouterTestingHarness.create();
+		router = TestBed.inject(Router);
+	};
 
 	beforeEach(async () => {
-		authServiceMock = { login: vi.fn() };
+		vi.clearAllMocks();
+
+		setDefaultMockReturnValues();
 
 		await TestBed.configureTestingModule({
 			imports: [Login],
 			providers: [
 				{ provide: AuthService, useValue: authServiceMock },
-				provideRouter([])
+				provideRouter([
+					{ path: 'login', component: Login },
+					{ path: '', component: DummyComponent },
+				]),
 			]
 		}).compileComponents();
 
-		router = TestBed.inject(Router);
-		navigateSpy = vi.spyOn(router, 'navigate');
-
-		fixture = TestBed.createComponent(Login);
-		component = fixture.componentInstance;
-
-		await fixture.whenStable();
+		await setHarnessAndRouter();
 	});
 
-	it('should create', () => {
+	it('should create', async () => {
+		await createComponent();
+
 		expect(component).toBeTruthy();
 	});
 
-	it('should login on submit', () => {
-		authServiceMock.login.mockReturnValue(of({
-			user: {
-				id: '1',
-				username: 'john',
-				email: 'john@test.com'
-			}
-		}));
+	it('should login on submit', async () => {
+		await createComponent();
 
 		component.loginModel.set({
 			username: 'john',
 			password: '123',
 		});
 
-		component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
 
-		expect(authServiceMock.login).toHaveBeenCalledWith({
-			username: 'john',
-			password: '123',
-		});
+		const loginButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Login'));
 
-		expect(navigateSpy).toHaveBeenCalledWith(['/']);
+		expect(loginButton).toBeTruthy();
+
+		loginButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
+
+		expect(authServiceMock.login).toHaveBeenCalledWith({ username: 'john', password: '123' });
+		expect(router.url).toBe('/');
 	});
 
-	it('should not submit when form is invalid', () => {
+	it('should not submit when form is invalid', async () => {
+		await createComponent();
+
 		component.loginModel.set({
 			username: '',
 			password: '',
 		});
 
-		component.onSubmit(new Event('submit'));
+		harness.detectChanges(); 
+		await harness.fixture.whenStable();
+
+		const loginButton = Array
+			.from(harness.routeNativeElement!.querySelectorAll('button'))
+			.find(button => button.textContent?.includes('Login'));
+
+		expect(loginButton).toBeTruthy();
+		expect(loginButton!.disabled).toBe(true); 
+
+		loginButton!.click();
+
+		await harness.fixture.whenStable();
+		harness.detectChanges();
 
 		expect(authServiceMock.login).not.toHaveBeenCalled();
 	});

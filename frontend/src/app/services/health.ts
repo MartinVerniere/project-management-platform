@@ -9,8 +9,8 @@ interface HealthResponse {
 @Service()
 export class Health {
 	http: HttpClient = inject(HttpClient);
-	
+
 	getHealthStatus(): Observable<HealthResponse> {
 		return this.http.get<HealthResponse>('http://localhost:3000/health');
-	  }
+	}
 }
