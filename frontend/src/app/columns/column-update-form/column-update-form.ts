@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { ColumnService } from "../../services/columns/column-service";
 import { ColumnModel } from "../column-form/column-form";
+import { ToastService } from "../../services/toast/toast-service";
 
 @Component({
 	selector: 'app-column-update-form',
@@ -15,6 +16,7 @@ import { ColumnModel } from "../column-form/column-form";
 export class ColumnUpdateForm {
 	router = inject(Router);
 	columnService = inject(ColumnService);
+	toastService = inject(ToastService);
 	route = inject(ActivatedRoute);
 
 	projectId = Number(this.route.snapshot.paramMap.get('projectId'));
@@ -34,7 +36,6 @@ export class ColumnUpdateForm {
 	constructor() {
 		effect(() => {
 			const column = this.currentColumn.value();
-
 			if (!column) return;
 
 			this.columnModel.set({ name: column.name });
@@ -51,12 +52,14 @@ export class ColumnUpdateForm {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Updated column successfully.');
 					this.router.navigate(['/projects', this.projectId, 'boards', this.boardId]);
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to update column.');
 				}
 			});
 		});

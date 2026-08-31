@@ -3,6 +3,7 @@ import { form, FormField, required, submit } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth/auth-service';
+import { ToastService } from '../../services/toast/toast-service';
 
 interface LoginModel {
 	username: string;
@@ -18,6 +19,7 @@ interface LoginModel {
 export class Login {
 	authService = inject(AuthService);
 	router = inject(Router);
+	toastService = inject(ToastService);
 
 	loginModel = signal<LoginModel>({
 		username: '',
@@ -44,6 +46,7 @@ export class Login {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to log in.');
 				}
 			});
 		});

@@ -3,6 +3,7 @@ import { BoardService } from '../../services/boards/board-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ToastService } from '../../services/toast/toast-service';
 
 export interface ColumnModel {
 	name: string;
@@ -17,6 +18,7 @@ export interface ColumnModel {
 export class ColumnForm {
 	router = inject(Router);
 	boardService = inject(BoardService);
+	toastService = inject(ToastService);
 	route = inject(ActivatedRoute);
 
 	projectId = Number(this.route.snapshot.paramMap.get('projectId'));
@@ -39,12 +41,14 @@ export class ColumnForm {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Created column successfully.');
 					this.router.navigate(['/projects', this.projectId, 'boards', this.boardId]);
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to create column.');
 				}
 			});
 

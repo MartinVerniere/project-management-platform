@@ -3,6 +3,7 @@ import { email, form, FormField, required, submit } from '@angular/forms/signals
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth/auth-service';
+import { ToastService } from '../../services/toast/toast-service';
 
 interface RegisterModel {
 	username: string;
@@ -20,6 +21,7 @@ interface RegisterModel {
 export class Register {
 	authService = inject(AuthService);
 	router = inject(Router);
+	toastService = inject(ToastService);
 
 	registerModel = signal<RegisterModel>({
 		username: '',
@@ -66,12 +68,14 @@ export class Register {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Account created successfully.');
 					this.router.navigate(['/login']);
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to register.');
 				}
 			});
 		});

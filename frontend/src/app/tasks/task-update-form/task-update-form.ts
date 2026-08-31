@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { TaskModel } from '../task-form/task-form';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../../services/toast/toast-service';
 
 @Component({
 	selector: 'app-task-update-form',
@@ -15,6 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class TaskUpdateForm {
 	router = inject(Router);
 	taskService = inject(TaskService);
+		toastService = inject(ToastService);
 	route = inject(ActivatedRoute);
 
 	projectId = Number(this.route.snapshot.paramMap.get('projectId'));
@@ -52,12 +54,14 @@ export class TaskUpdateForm {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Updated task successfully.');
 					this.router.navigate(['/projects', this.projectId, 'boards', this.boardId]);
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to update task.');
 				}
 			});
 		});

@@ -4,6 +4,7 @@ import { CommentModel } from '../comment-form/comment-form';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
 import type { CommentDto } from '@shared/models/comment';
+import { ToastService } from '../../services/toast/toast-service';
 
 @Component({
 	selector: 'app-comment-update-form',
@@ -13,6 +14,7 @@ import type { CommentDto } from '@shared/models/comment';
 })
 export class CommentUpdateForm {
 	commentService = inject(CommentService);
+	toastService = inject(ToastService);
 
 	comment = input.required<CommentDto>();
 
@@ -32,10 +34,7 @@ export class CommentUpdateForm {
 	constructor() {
 		effect(() => {
 			const comment = this.comment();
-
-			this.commentModel.set({
-				content: comment.content,
-			});
+			this.commentModel.set({ content: comment.content });
 		});
 	}
 
@@ -47,11 +46,13 @@ export class CommentUpdateForm {
 				next: () => {
 					this.error.set(null);
 					this.commentEdited.emit();
+					this.toastService.success('Updated comment successfully.');
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to update comment.');
 				}
 			});
 

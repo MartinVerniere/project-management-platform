@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth/auth-service';
 import { firstValueFrom } from 'rxjs';
 import type { ProjectDto } from '@shared/models/project';
+import { ToastService } from '../../services/toast/toast-service';
 
 @Component({
 	selector: 'app-project-element',
@@ -15,6 +16,7 @@ import type { ProjectDto } from '@shared/models/project';
 export class ProjectElement {
 	projectService = inject(ProjectService);
 	authService = inject(AuthService);
+	toastService = inject(ToastService);
 
 	project = input.required<ProjectDto>();
 	projectDeleted = output<void>();
@@ -24,7 +26,6 @@ export class ProjectElement {
 	hasDeletePermission = computed(() => {
 		const userId = this.authService.user()?.id;
 		const members = this.members.value();
-
 		if (!userId || !members) return false;
 
 		return members.some(member => member.user.id === userId && member.role === 'ADMIN');
@@ -37,11 +38,13 @@ export class ProjectElement {
 			next: () => {
 				this.projectDeleted.emit();
 				this.error.set(null);
+				this.toastService.success('Project deleted successfully.');
 			},
 			error: (response: HttpErrorResponse) => {
 				const errorObject = response.error.error;
 				console.log(errorObject);
 				this.error.set(errorObject.message);
+				this.toastService.error('Failed to delete project.');
 			}
 		});
 	}

@@ -2,6 +2,7 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { TaskService } from '../../services/tasks/task-service';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../../services/toast/toast-service';
 
 export interface CommentModel {
 	content: string;
@@ -15,7 +16,8 @@ export interface CommentModel {
 })
 export class CommentForm {
 	taskService = inject(TaskService);
-
+	toastService = inject(ToastService);
+	
 	taskId = input.required<number>();
 
 	commentAdded = output<void>();
@@ -41,12 +43,14 @@ export class CommentForm {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Added comment successfully.');
 					this.commentAdded.emit();
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to add comment.');
 				}
 			});
 

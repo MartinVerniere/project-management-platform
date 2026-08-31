@@ -3,6 +3,7 @@ import { form, FormField, required, submit } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { ProjectService } from '../../services/projects/project-service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../../services/toast/toast-service';
 
 export interface ProjectModel {
 	name: string;
@@ -20,6 +21,7 @@ export interface ProjectModel {
 export class ProjectForm {
 	router = inject(Router);
 	projectService = inject(ProjectService);
+	toastService = inject(ToastService);
 
 	projectModel = signal<ProjectModel>({
 		name: '',
@@ -41,12 +43,14 @@ export class ProjectForm {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Created project successfully.');
 					this.router.navigate(['/projects']);
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to create project.');
 				}
 			});
 
