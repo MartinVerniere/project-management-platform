@@ -13,16 +13,16 @@
 	}
 </div>
 <div class="project-actions">
-	<button class="btn btn-primary" [routerLink]="['/projects', project.id]">
+	<button class="primary" [routerLink]="['/projects', project.id]">
 		Open
 	</button>
 
-	<!-- <button class="btn btn-secondary" [routerLink]="['/projects', project.id, 'edit']">
+	<!-- <button class="secondary" [routerLink]="['/projects', project.id, 'edit']">
 			Edit
 		</button> -->
 
 	@if (hasDeletePermission()) {
-	<button class="btn btn-danger" type="button" (click)="onDeleteProject(project.id)">
+	<button class="danger" type="button" (click)="onDeleteProject(project.id)">
 		Delete
 	</button>
 	}

@@ -24,18 +24,18 @@
 }
 
 .toast.success {
-	background: var(--purple-primary);
-	color: var(--white-primary);
+	background: var(--color-success);
+	color: var(--color-text-alt);
 }
 
 .toast.error {
-	background: var(--red-secondary);
-	color: var(--white-primary);
+	background: var(--color-error);
+	color: var(--color-text-alt);
 }
 
 .toast.info {
-	background: var(--gray-secondary);
-	color: var(--white-primary);
+	background: var(--color-info);
+	color: var(--color-text-alt);
 }
 
 .toast button {

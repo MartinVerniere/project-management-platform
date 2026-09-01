@@ -19,9 +19,9 @@
 .column-list-empty {
 	padding: 32px;
 	text-align: center;
-	border: 2px dashed var(--white-tertiary);
+	border: 2px dashed var(--color-border);
 	border-radius: 10px;
-	color: var(--gray-secondary);
+	color: var(--color-text-secondary);
 }
 
 .empty-icon {
@@ -44,7 +44,6 @@
 	align-items: center;
 	gap: 16px;
 	padding: 5px;
-
 }
 
 .filter {
@@ -57,46 +56,24 @@
 .filter-label {
 	font-size: 12px;
 	font-weight: 600;
-	color: var(--black-tertiary);
+	color: var(--color-text-secondary);
 }
 
 .filter-element {
 	padding: 4px;
-	border: 1px solid var(--white-tertiary);
+	border: 1px solid var(--color-border);
 	border-radius: 4px;
-	background: var(--white-primary);
-	color: var(--black-primary);
+	background: var(--color-background);
+	color: var(--color-text);
 }
 
 .filter-element:focus {
 	outline: none;
-	border-color: var(--purple-tertiary);;
+	border-color: var(--color-primary);
 	box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
-.btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 8px;
-	border-radius: 6px;
-	text-decoration: none;
-	cursor: pointer;
-}
-
-.btn-secondary {
-	border: 1px solid var(--white-tertiary);
-	background: var(--white-primary);
-	color: var(--black-tertiary);
-}
-
-.btn-secondary:hover {
-	border: 1px solid var(--white-primary);
-	background: var(--black-tertiary);
-	color: var(--white-primary);
-}
-
 .error {
-	color: var(--red-secondary);
+	color: var(--color-error);
 	font-size: 12px;
 }

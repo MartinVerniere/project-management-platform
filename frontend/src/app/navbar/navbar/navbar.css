@@ -5,8 +5,8 @@
 	padding-right: 24px;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	background: var(--blue-primary);
-	border-bottom: 1px solid var(--white-secondary);
+	background: var(--color-navbar);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .navigation-section {
@@ -25,7 +25,7 @@
 	padding-top: 10px;
 	padding-bottom: 10px;
 	position: relative;
-	color: var(--black-tertiary);
+	color: var(--color-text);
 	text-decoration: none;
 	font-size: 14px;
 	font-weight: 500;
@@ -40,30 +40,16 @@
 	width: 0;
 	height: 2px;
 
-	background: var(--purple-primary);
+	background: var(--color-primary);
 	transition: width 0.15s ease;
 }
 
 .nav-link:hover {
-	color: var(--purple-primary);
+	color: var(--color-primary);
 }
 
 .nav-link:hover::after {
 	width: 100%;
-}
-
-.button {
-	padding-top: 10px;
-	padding-bottom: 10px;
-	color: var(--black-tertiary);
-	text-decoration: none;
-	font-size: 14px;
-	font-weight: 500;
-	cursor: pointer;
-}
-
-.button:hover {
-	color: var(--purple-primary);
 }
 
 .user-info {
@@ -73,7 +59,7 @@
 }
 
 .username {
-	color: var(--black-primary);;
+	color: var(--color-text);
 	font-size: 14px;
 	font-weight: 600;
 }
@@ -97,7 +83,7 @@
 	border: none;
 	background: none;
 
-	color: var(--black-tertiary);
+	color: var(--color-text-secondary);
 	font: inherit;
 	font-size: 14px;
 	font-weight: 500;
@@ -106,5 +92,5 @@
 }
 
 .logout-button:hover {
-	color: var(--red-secondary);
+	color: var(--color-danger);
 }

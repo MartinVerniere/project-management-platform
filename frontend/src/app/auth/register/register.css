@@ -4,13 +4,13 @@
 	align-items: center;
 	justify-content: center;
 	padding: 24px;
-	background: var(--white-primary);
+	background: var(--color-background);
 }
 
 .register-card {
-	background: var(--white-primary);
+	background: var(--color-surface);
 	width: 400px;
-	border: 1px solid var(--white-secondary);
+	border: 1px solid var(--color-border);
 	border-radius: 10px;
 	padding: 32px;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
@@ -22,7 +22,7 @@
 
 .header {
 	margin: 0;
-	color: var(--black-primary);
+	color: var(--color-text);
 	font-size: 24px;
 	font-weight: 650;
 }
@@ -51,41 +51,14 @@
 	gap: 6px;
 	font-size: 12px;
 	font-weight: 600;
-	color: var(--black-tertiary);
-}
-
-.required {
-	color: var(--red-primary);
-	;
-}
-
-
-.form-control {
-	padding: 12px;
-	border: 1px solid var(--white-tertiary);
-	border-radius: 6px;
-	background: var(--white-primary);
-	;
-	color: var(--black-primary);
-	font: inherit;
-	font-size: 12px;
-	outline: none;
-}
-
-.form-control::placeholder {
-	color: var(--gray-primary);
-}
-
-.form-control:focus {
-	border-color: var(--purple-tertiary);
-	box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+	color: var(--color-text-secondary);
 }
 
 .error {
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
-	color: var(--red-secondary);
+	color: var(--color-error);
 	font-size: 12px;
 }
 
@@ -110,55 +83,4 @@
 	object-fit: cover;
 	border-radius: 50%;
 	cursor: pointer;
-}
-
-.btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 8px;
-	border-radius: 6px;
-	text-decoration: none;
-	cursor: pointer;
-}
-
-.btn-primary {
-	border: 1px solid var(--white-primary);
-	background: var(--purple-primary);
-	color: var(--white-primary);
-}
-
-.btn-primary:hover {
-	border: 1px solid var(--purple-primary);
-	background: var(--white-primary);
-	color: var(--purple-primary);
-}
-
-.btn-secondary {
-	border: 1px solid var(--white-tertiary);
-	background: var(--white-primary);
-	color: var(--black-tertiary);
-}
-
-.btn-secondary:hover {
-	border: 1px solid var(--white-primary);
-	background: var(--black-tertiary);
-	color: var(--white-primary);
-}
-
-.btn-secondary {
-	border: 1px solid var(--white-tertiary);
-	background: var(--white-primary);
-	color: var(--black-tertiary);
-}
-
-.btn-secondary:hover {
-	border: 1px solid var(--white-primary);
-	background: var(--black-tertiary);
-	color: var(--white-primary);
-}
-
-.btn:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
 }

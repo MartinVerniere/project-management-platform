@@ -26,16 +26,16 @@
 
 		@if (hasAdminPermissions()){
 		@if (!assigneeFormEnabled()) {
-		<button type="button" class="btn btn-secondary" (click)="onEnableSetAssignee()">
+		<button type="button" class="secondary" (click)="onEnableSetAssignee()">
 			Change
 		</button>
 		} @else {
 		<div class="assignee-actions">
-			<button type="button" class="btn btn-secondary" (click)="onSetAssignee()">
+			<button type="button" class="secondary" (click)="onSetAssignee()">
 				Set
 			</button>
 
-			<button type="button" class="btn btn-danger" (click)="onCancelSetAssignee()">
+			<button type="button" class="danger" (click)="onCancelSetAssignee()">
 				Cancel
 			</button>
 		</div>
@@ -45,7 +45,7 @@
 
 	@if (assigneeFormEnabled()) {
 	<div class="assignee-form">
-		<select id="assignee" class="form-input" (change)="onAssigneeChanged($event)">
+		<select id="assignee"  (change)="onAssigneeChanged($event)">
 			<option value="null">None</option>
 			@for (member of memberList(); track member.user.id) {
 			<option [value]="member.user.id">
@@ -83,12 +83,12 @@
 }
 
 <div class="task-actions">
-	<button type="button" class="btn btn-secondary"
+	<button type="button" class="secondary"
 		[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
 		Edit
 	</button>
 
-	<button type="button" class="btn btn-danger" (click)="onTaskDeleted(task.id)">
+	<button type="button" class="danger" (click)="onTaskDeleted(task.id)">
 		Delete
 	</button>
 </div>

@@ -14,8 +14,7 @@
 					<div class="required">*</div>
 				</label>
 
-				<input id="name" class="form-input" type="text" placeholder="e.g. Website redesign"
-					[formField]="projectForm.name" />
+				<input id="name" type="text" placeholder="e.g. Website redesign" [formField]="projectForm.name" />
 
 				@if (projectForm.name().invalid() && projectForm.name().touched()) {
 				<div class="field-error">
@@ -31,7 +30,7 @@
 					<div class="required">*</div>
 				</label>
 
-				<input id="key" class="form-input" type="text" placeholder="e.g. WEB" [formField]="projectForm.key" />
+				<input id="key" type="text" placeholder="e.g. WEB" [formField]="projectForm.key" />
 
 				<div class="field-hint">
 					A short identifier for your project.
@@ -51,7 +50,7 @@
 					Description
 				</label>
 
-				<textarea id="description" class="form-input form-textarea"
+				<textarea id="description"
 					placeholder="Describe what this project is about..."
 					[formField]="projectForm.description"></textarea>
 
@@ -72,11 +71,11 @@
 			}
 
 			<div class="form-actions">
-				<button class="btn btn-secondary" type="button" routerLink="/projects">
+				<button class="secondary" type="button" routerLink="/projects">
 					Cancel
 				</button>
 
-				<button class="btn btn-primary" type="submit" [disabled]="projectForm().invalid()">
+				<button class="primary" type="submit" [disabled]="projectForm().invalid()">
 					Create project
 					<div class="btn-arrow">→</div>
 				</button>

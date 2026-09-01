@@ -19,18 +19,18 @@
 	</div>
 
 	<div class="column-actions">
-		<button class="btn btn-primary"
+		<button class="primary"
 			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'tasks', 'create']">
 			Add task
 		</button>
 
 		@if(hasAdminPermissions()){
-		<button type="button" class="btn btn-secondary"
+		<button type="button" class="secondary"
 			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'edit']">
 			Edit
 		</button>
 
-		<button type="button" class="btn btn-danger" (click)="onRemoveColumn(column.id)">
+		<button type="button" class="danger" (click)="onRemoveColumn(column.id)">
 			Delete
 		</button>
 		}

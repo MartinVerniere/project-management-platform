@@ -24,29 +24,7 @@
 .comment-list-empty {
 	padding: 16px;
 	text-align: center;
-	color: var(--gray-secondary);
-	border: 1px dashed var(--white-tertiary);
+	color: var(--color-text-secondary);
+	border: 1px dashed var(--color-border);
 	border-radius: 6px;
-}
-
-.btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 8px;
-	border-radius: 6px;
-	text-decoration: none;
-	cursor: pointer;
-}
-
-.btn-secondary {
-	border: 1px solid var(--white-primary);
-	background: var(--black-tertiary);
-	color: var(--white-primary);
-}
-
-.btn-secondary:hover {
-	border: 1px solid var(--white-tertiary);
-	background: var(--white-primary);
-	color: var(--black-tertiary);
 }

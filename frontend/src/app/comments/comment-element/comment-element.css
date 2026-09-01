@@ -3,14 +3,14 @@
 	flex-direction: column;
 	gap: 10px;
 	padding: 12px;
-	border: 1px solid var(--white-tertiary);
+	border: 1px solid var(--color-border);
 	border-radius: 8px;
-	background: var(--white-primary);
+	background: var(--color-background);
 }
 
 .comment-element:hover {
-	border: 1px solid var(--white-tertiary);
-	background: var(--white-primary);
+	border: 1px solid var(--color-border);
+	background: var(--color-surface);
 }
 
 .comment-header {
@@ -25,7 +25,7 @@
 }
 
 .username {
-	color: var(--black-primary);;
+	color: var(--color-text);
 	font-size: 14px;
 	font-weight: 600;
 }
@@ -47,7 +47,7 @@
 .comment-content {
 	font-size: 0.95rem;
 	line-height: 1.5;
-	color: var(--black-secondary);
+	color: var(--color-text);
 	white-space: pre-wrap;
 }
 
@@ -57,41 +57,7 @@
 	margin-top: 2px;
 }
 
-.btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 8px;
-	border-radius: 6px;
-	text-decoration: none;
-	cursor: pointer;
-}
-
-.btn-secondary {
-	border: 1px solid var(--white-tertiary);
-	background: var(--white-primary);
-	color: var(--black-tertiary);
-}
-
-.btn-secondary:hover {
-	border: 1px solid var(--white-primary);
-	background: var(--black-tertiary);
-	color: var(--white-primary);
-}
-
-.btn-danger {
-	border: 1px solid var(--red-tertiary);
-	background: var(--white-primary);
-	color: var(--red-secondary);
-}
-
-.btn-danger:hover {
-	border: 1px solid var(--white-primary);
-	background: var(--red-secondary);
-	color: var(--white-primary);
-}
-
 .error {
-	color: var(--red-secondary);
+	color: var(--color-error);
 	font-size: 0.85rem;
 }

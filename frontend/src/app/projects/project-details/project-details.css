@@ -4,7 +4,7 @@
 	flex-direction: column;
 	gap: 24px;
 	padding: 24px;
-	background: var(--white-primary);
+	background: var(--color-background);
 }
 
 .project-header {
@@ -13,13 +13,13 @@
 	justify-content: space-between;
 	gap: 24px;
 	padding-bottom: 20px;
-	border-bottom: 1px solid var(--white-secondary);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .project-key {
 	font-size: 12px;
 	font-weight: 600;
-	color: var(--gray-secondary);
+	color: var(--color-text-secondary);
 	text-transform: uppercase;
 }
 
@@ -27,17 +27,17 @@
 	margin: 0;
 	font-size: 28px;
 	font-weight: 650;
-	color: var(--black-primary);
+	color: var(--color-text);
 }
 
 .project-description {
 	max-width: 650px;
 	font-size: 12px;
-	color: var(--gray-secondary);
+	color: var(--color-text-secondary);
 }
 
 .back-button {
-	color: var(--purple-primary);
+	color: var(--color-primary);
 	font-size: 12px;
 	font-weight: 600;
 	text-decoration: none;
@@ -45,7 +45,7 @@
 }
 
 .back-button:hover {
-	color: var(--purple-primary);
+	color: var(--color-primary-hover);
 }
 
 .project-content {
@@ -60,7 +60,7 @@
 	align-items: center;
 	justify-content: center;
 
-	color: var(--gray-secondary);
+	color: var(--color-text-secondary);
 	font-size: 14px;
 
 	animation: loading 1.4s ease-in-out infinite;
@@ -86,5 +86,5 @@
 	align-items: center;
 	justify-content: center;
 	font-size: 14px;
-	color: var(--red-secondary);
+	color: var(--color-error);
 }

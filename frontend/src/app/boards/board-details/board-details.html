@@ -13,12 +13,12 @@
 
 	<div class="board-actions">
 		@if(hasAdminPermissions()){
-		<button class="btn btn-primary" type="button"
+		<button class="primary" type="button"
 			[routerLink]="['/projects', projectId, 'boards', boardId, 'columns', 'create']">
 			Add column
 		</button>
 		}
-		<button type="button" class="btn btn-secondary" [routerLink]="['/projects', projectId]">
+		<button type="button" class="secondary" [routerLink]="['/projects', projectId]">
 			Back to project
 		</button>
 	</div>

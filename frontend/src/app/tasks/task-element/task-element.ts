@@ -70,13 +70,13 @@ export class TaskElement {
 					this.assigneeFormEnabled.set(false);
 					this.error.set(null);
 					this.taskAssigneeEdited.emit();
-					this.toastService.success('Task de-assigned successfully.');
+					this.toastService.success('Task unassigned successfully.');
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
-					this.toastService.error('Failed to de-assign task.');
+					this.toastService.error('Failed to unassign task.');
 				}
 			});
 		} else {
