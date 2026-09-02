@@ -28,7 +28,7 @@ export const loginUser = async (username: string, password: string): Promise<Log
 	return response.body;
 }
 
-export const createProject = async (authToken: string, name: string, key: string, description: string = "Test project"): Promise<ProjectDto> => {
+export const createProject = async (authToken: string, name: string, key: string, description = "Test project"): Promise<ProjectDto> => {
 	const response = await request(app)
 		.post('/api/projects')
 		.set('Authorization', `Bearer ${authToken}`)
@@ -63,11 +63,20 @@ export const createColumn = async (authToken: string, boardId: number, name: str
 	return response.body;
 }
 
-export const createTask = async (authToken: string, columnId: number, title: string, description: string = "Test task"): Promise<TaskDto> => {
+export const createTask = async (authToken: string, columnId: number, title: string, description = "Test task"): Promise<TaskDto> => {
 	const response = await request(app)
 		.post(`/api/columns/${columnId}/tasks`)
 		.set('Authorization', `Bearer ${authToken}`)
 		.send({ title, description });
+
+	return response.body;
+}
+
+export const assignUser = async (authToken: string, taskId: number, userId: number): Promise<TaskDto> => {
+	const response = await request(app)
+		.put(`/api/tasks/${taskId}/assignee`)
+		.set('Authorization', `Bearer ${authToken}`)
+		.send({ userId });
 
 	return response.body;
 }

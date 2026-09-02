@@ -1,31 +1,51 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import request from 'supertest';
-
 import { app } from '../app.js';
 import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
-import { addMember, createBoard, createColumn, createProject, createTask, loginUser, registerUser } from '../helpers/test.js';
+import { addMember, assignUser, createBoard, createColumn, createProject, createTask, loginUser, registerUser } from '../helpers/test.js';
+
+const { notifyCommentAddedMock, notifyTaskAssignedMock, notifyTaskUnassignedMock } = vi.hoisted(() => ({
+	notifyCommentAddedMock: vi.fn(),
+	notifyTaskAssignedMock: vi.fn(),
+	notifyTaskUnassignedMock: vi.fn(),
+}));
+
+vi.mock('../services/notification.js', () => ({
+	notifyCommentAdded: notifyCommentAddedMock,
+	notifyTaskAssigned: notifyTaskAssignedMock,
+	notifyTaskUnassigned: notifyTaskUnassignedMock,
+	notifyProjectMemberAdded: vi.fn(),
+	notifyProjectMemberRemoved: vi.fn(),
+}));
 
 describe('Task API', () => {
 	beforeEach(async () => {
+		vi.clearAllMocks();
 		await clearDatabase();
 	});
 
 	describe('when a task exists in the database', () => {
 		let authToken: string;
+		let johnId: number;
 		let aliceId: number;
 		let martinId: number;
+		let bobId: number;
 		let taskAId: number;
 		let taskBId: number;
+		let taskCId: number;
 		let columnBId: number;
 		let columnCId: number;
 
 		beforeEach(async () => {
 			//Create users
 			const john = await registerUser('john', 'john@test.com', 'password123');
+			johnId = john.id;
 			const alice = await registerUser('alice', 'alice@test.com', 'password123');
 			aliceId = alice.id;
 			const martin = await registerUser('martin', 'martin@test.com', 'password123');
 			martinId = martin.id;
+			const bob = await registerUser('bob', 'bob@test.com', 'password123');
+			bobId = bob.id;
 
 			//Login
 			const login = await loginUser('john', 'password123');
@@ -36,6 +56,7 @@ describe('Task API', () => {
 
 			//Add member to project
 			const member = await addMember(authToken, project.id, alice.id);
+			const secondMember = await addMember(authToken, project.id, bob.id);
 
 			//Create boards
 			const boardA = await createBoard(authToken, project.id, 'Board A');
@@ -53,7 +74,11 @@ describe('Task API', () => {
 			taskAId = taskA.id;
 			const taskB = await createTask(authToken, columnA.id, 'Task B', 'This is task B');
 			taskBId = taskB.id;
-			const taskC = await createTask(authToken, columnB.id, 'Task B', 'This is task C');
+			const secondTaskB = await createTask(authToken, columnB.id, 'Task B', 'This is task B');
+			const taskC = await createTask(authToken, columnB.id, 'Task C', 'This is task C');
+			taskCId = taskC.id;
+
+			await assignUser(authToken, taskCId, bobId);
 		});
 
 		describe('and project ADMIN is logged in', () => {
@@ -71,6 +96,20 @@ describe('Task API', () => {
 
 					expect(response.status).toBe(200);
 					expect(response.body.assigneeId).toBe(aliceId);
+				});
+
+				it('notifies user that he has been assigned to task', async () => {
+					const response = await request(app)
+						.put(`/api/tasks/${taskAId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ userId: aliceId });
+
+					expect(response.status).toBe(200);
+					expect(notifyTaskAssignedMock).toHaveBeenCalledWith(
+						expect.objectContaining({ id: johnId, username: 'john', }),
+						expect.objectContaining({ id: aliceId, username: 'alice', email: 'alice@test.com', }),
+						expect.objectContaining({ id: taskAId, title: 'Task A', })
+					);
 				});
 
 				it('returns 400 if user id is not part of request', async () => {
@@ -161,6 +200,19 @@ describe('Task API', () => {
 
 					expect(response.status).toBe(200);
 					expect(response.body.assigneeId).toBe(null);
+				});
+
+				it('notifies user that he has been unassigned from task', async () => {
+					const response = await request(app)
+						.delete(`/api/tasks/${taskCId}/assignee`)
+						.set('Authorization', `Bearer ${authToken}`);
+
+					expect(response.status).toBe(200);
+					expect(notifyTaskUnassignedMock).toHaveBeenCalledWith(
+						expect.objectContaining({ id: johnId, username: 'john' }),
+						expect.objectContaining({ id: bobId, username: 'bob', email: 'bob@test.com' }),
+						expect.objectContaining({ id: taskCId, title: 'Task C' })
+					);
 				});
 
 				it('returns 400 if invalid task id', async () => {
@@ -342,6 +394,21 @@ describe('Task API', () => {
 
 					expect(response.status).toBe(201);
 					expect(response.body.content).toBe('This is a comment!');
+				});
+
+				it('notifies user assigned to task that a comment has been added', async () => {
+					const response = await request(app)
+						.post(`/api/tasks/${taskCId}/comments`)
+						.set('Authorization', `Bearer ${authToken}`)
+						.send({ content: 'This is a comment!' });
+
+					expect(response.status).toBe(201);
+					expect(notifyCommentAddedMock).toHaveBeenCalledWith(
+						expect.objectContaining({ id: aliceId, username: 'alice' }),
+						expect.objectContaining({ id: bobId, username: 'bob', email: 'bob@test.com' }),
+						expect.objectContaining({ id: taskCId, title: 'Task C' }),
+						expect.objectContaining({ content: 'This is a comment!' })
+					);
 				});
 
 				it('returns 400 if missing field content in request', async () => {
