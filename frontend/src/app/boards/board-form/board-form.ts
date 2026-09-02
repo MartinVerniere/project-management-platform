@@ -3,6 +3,7 @@ import { Component, inject, signal } from "@angular/core";
 import { FormField, form, required, submit } from "@angular/forms/signals";
 import { Router, ActivatedRoute } from "@angular/router";
 import { ProjectService } from "../../services/projects/project-service";
+import { ToastService } from "../../services/toast/toast-service";
 
 export interface BoardModel {
 	name: string;
@@ -17,6 +18,7 @@ export interface BoardModel {
 export class BoardForm {
 	router = inject(Router);
 	projectService = inject(ProjectService);
+	toastService = inject(ToastService);
 	route = inject(ActivatedRoute);
 
 	projectId = Number(this.route.snapshot.paramMap.get('id'));
@@ -40,12 +42,14 @@ export class BoardForm {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Created board successfully.');
 					this.router.navigate(['/projects', this.projectId]);
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to create board.');
 				}
 			});
 		});

@@ -14,7 +14,7 @@
 					Name
 					<div class="required">*</div>
 				</label>
-				<input id="name" class="form-input" type="text" placeholder="e.g. Backlog"
+				<input id="name"  type="text" placeholder="e.g. Backlog"
 					[formField]="columnForm.name" />
 
 				@if(columnForm.name().invalid() && columnForm.name().touched()){
@@ -36,11 +36,11 @@
 			}
 
 			<div class="form-actions">
-				<button class="btn btn-secondary" type="button"
+				<button class="secondary" type="button"
 					[routerLink]="['/projects', projectId, 'boards', boardId]">
 					Cancel
 				</button>
-				<button class="btn btn-primary" type="submit" [disabled]="columnForm().invalid()">
+				<button class="primary" type="submit" [disabled]="columnForm().invalid()">
 					Create column
 					<div class="btn-arrow">→</div>
 				</button>

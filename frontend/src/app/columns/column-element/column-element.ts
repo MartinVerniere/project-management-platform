@@ -6,6 +6,7 @@ import { ColumnService } from "../../services/columns/column-service";
 import { CdkDragHandle } from "@angular/cdk/drag-drop";
 import type { ColumnDetailsDto } from "@shared/models/column";
 import type { ProjectMemberDto } from "@shared/models/project";
+import { ToastService } from "../../services/toast/toast-service";
 
 @Component({
 	selector: 'app-column-element',
@@ -15,6 +16,7 @@ import type { ProjectMemberDto } from "@shared/models/project";
 })
 export class ColumnElement {
 	columnService = inject(ColumnService);
+	toastService = inject(ToastService);
 
 	column = input.required<ColumnDetailsDto>();
 	projectId = input.required<number>();
@@ -36,11 +38,13 @@ export class ColumnElement {
 			next: () => {
 				this.columnElementEdited.emit();
 				this.error.set(null);
+				this.toastService.success('Column deleted successfully.');
 			},
 			error: (response: HttpErrorResponse) => {
 				const errorObject = response.error.error;
 				console.log(errorObject);
 				this.error.set(errorObject.message);
+				this.toastService.error('Failed to delete Column.');
 			}
 		});
 	}

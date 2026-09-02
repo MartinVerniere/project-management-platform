@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { BoardService } from "../../services/boards/board-service";
 import { BoardModel } from "../board-form/board-form";
+import { ToastService } from "../../services/toast/toast-service";
 
 @Component({
 	selector: 'app-board-update-form',
@@ -15,6 +16,7 @@ import { BoardModel } from "../board-form/board-form";
 export class BoardUpdateForm {
 	router = inject(Router);
 	boardService = inject(BoardService);
+	toastService = inject(ToastService);
 	route = inject(ActivatedRoute);
 
 	projectId = Number(this.route.snapshot.paramMap.get('projectId'));
@@ -33,7 +35,6 @@ export class BoardUpdateForm {
 	constructor() {
 		effect(() => {
 			const board = this.currentBoard.value();
-
 			if (!board) return;
 
 			this.boardModel.set({ name: board.name });
@@ -50,12 +51,14 @@ export class BoardUpdateForm {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Updated board successfully.');
 					this.router.navigate(['/projects', this.projectId]);
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to update board.');
 				}
 			});
 		});

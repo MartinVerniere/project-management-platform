@@ -19,11 +19,11 @@
 </div>
 <div class="comment-actions">
 	@if(hasCommentEditorPermissions()){
-	<button type="button" class="btn btn-secondary" (click)="onEnableEditComment()">
+	<button type="button" class="secondary" (click)="onEnableEditComment()">
 		Edit
 	</button>
 
-	<button type="button" class="btn btn-danger" (click)="onCommentDeleted(comment.id)">
+	<button type="button" class="danger" (click)="onCommentDeleted(comment.id)">
 		Delete
 	</button>
 	}

@@ -6,6 +6,7 @@ import { TaskService } from '../../services/tasks/task-service';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import type { TaskDetailsDto } from '@shared/models/task';
 import type { ProjectMemberDto } from '@shared/models/project';
+import { ToastService } from '../../services/toast/toast-service';
 
 @Component({
 	selector: 'app-task-element',
@@ -15,6 +16,7 @@ import type { ProjectMemberDto } from '@shared/models/project';
 })
 export class TaskElement {
 	taskService = inject(TaskService);
+	toastService = inject(ToastService);
 
 	task = input.required<TaskDetailsDto>();
 	projectId = input.required<number>();
@@ -49,11 +51,13 @@ export class TaskElement {
 			next: () => {
 				this.taskDeleted.emit();
 				this.error.set(null);
+				this.toastService.success('Task deleted successfully.');
 			},
 			error: (response: HttpErrorResponse) => {
 				const errorObject = response.error.error;
 				console.log(errorObject);
 				this.error.set(errorObject.message);
+				this.toastService.error('Failed to delete task.');
 			}
 		});
 	}
@@ -66,11 +70,13 @@ export class TaskElement {
 					this.assigneeFormEnabled.set(false);
 					this.error.set(null);
 					this.taskAssigneeEdited.emit();
+					this.toastService.success('Task unassigned successfully.');
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to unassign task.');
 				}
 			});
 		} else {
@@ -80,11 +86,13 @@ export class TaskElement {
 					this.assigneeFormEnabled.set(false);
 					this.error.set(null);
 					this.taskAssigneeEdited.emit();
+					this.toastService.success('Task assigned successfully.');
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to assign task.');
 				}
 			});
 		}

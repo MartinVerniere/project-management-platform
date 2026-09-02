@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ColumnService } from '../../services/columns/column-service';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../../services/toast/toast-service';
 
 export interface TaskModel {
 	title: string;
@@ -18,6 +19,7 @@ export interface TaskModel {
 export class TaskForm {
 	router = inject(Router);
 	columnService = inject(ColumnService);
+	toastService = inject(ToastService);
 	route = inject(ActivatedRoute);
 
 	projectId = Number(this.route.snapshot.paramMap.get('projectId'));
@@ -45,12 +47,14 @@ export class TaskForm {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Created task successfully.');
 					this.router.navigate(['/projects', this.projectId, 'boards', this.boardId]);
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to create task.');
 				}
 			});
 		});

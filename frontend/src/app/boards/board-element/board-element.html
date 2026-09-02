@@ -3,17 +3,17 @@
 	<h3 class="board-name">{{ board.name }}</h3>
 
 	<div class="board-actions">
-		<button type="button" class="btn btn-primary" [routerLink]="['/projects', projectId(), 'boards', board.id]">
+		<button type="button" class="primary" [routerLink]="['/projects', projectId(), 'boards', board.id]">
 			View
 		</button>
 
 		@if(hasAdminPermissions()){
-		<button type="button" class="btn btn-secondary"
+		<button type="button" class="secondary"
 			[routerLink]="['/projects', projectId(), 'boards', board.id, 'edit']">
 			Edit
 		</button>
 
-		<button type="button" class="btn btn-danger" (click)="onDeleteBoard(board.id)">
+		<button type="button" class="danger" (click)="onDeleteBoard(board.id)">
 			Delete
 		</button>
 		}

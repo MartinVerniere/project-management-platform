@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, input, output, signal } from '@angular/core';
 import { ProjectService } from '../../services/projects/project-service';
 import type { ProjectMemberDto } from '@shared/models/project';
+import { ToastService } from '../../services/toast/toast-service';
 
 @Component({
 	selector: 'app-member-element',
@@ -11,6 +12,7 @@ import type { ProjectMemberDto } from '@shared/models/project';
 })
 export class MemberElement {
 	projectService = inject(ProjectService);
+	toastService = inject(ToastService);
 
 	projectId = input.required<number>();
 	member = input.required<ProjectMemberDto>();
@@ -25,11 +27,13 @@ export class MemberElement {
 			next: () => {
 				this.error.set(null);
 				this.memberRemoved.emit();
+				this.toastService.success('Member removed successfully.');
 			},
 			error: (response: HttpErrorResponse) => {
 				const errorObject = response.error.error;
 				console.log(errorObject);
 				this.error.set(errorObject.message);
+				this.toastService.error('Failed to remove member.');
 			}
 		});
 	}

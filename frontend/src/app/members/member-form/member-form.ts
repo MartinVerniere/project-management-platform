@@ -5,6 +5,7 @@ import { firstValueFrom } from "rxjs";
 import { ProjectService } from "../../services/projects/project-service";
 import { UserService } from "../../services/users/user-service";
 import type { ProjectMemberDto } from "@shared/models/project";
+import { ToastService } from "../../services/toast/toast-service";
 
 export interface MemberModel {
 	userId: string;
@@ -20,6 +21,7 @@ export interface MemberModel {
 export class MemberForm {
 	projectService = inject(ProjectService);
 	userService = inject(UserService);
+	toastService = inject(ToastService);
 
 	projectId = input.required<number>();
 	memberList = input.required<ProjectMemberDto[]>();
@@ -56,12 +58,14 @@ export class MemberForm {
 				next: () => {
 					this.resetForm();
 					this.error.set(null);
+					this.toastService.success('Added member successfully.');
 					this.memberAdded.emit();
 				},
 				error: (response: HttpErrorResponse) => {
 					const errorObject = response.error.error;
 					console.log(errorObject);
 					this.error.set(errorObject.message);
+					this.toastService.error('Failed to add member.');
 				}
 			});
 

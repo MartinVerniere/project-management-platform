@@ -4,6 +4,7 @@ import { CommentService } from '../../services/comments/comment-service';
 import { CommentUpdateForm } from '../comment-update-form/comment-update-form';
 import { AuthService } from '../../services/auth/auth-service';
 import type { CommentDto } from '@shared/models/comment';
+import { ToastService } from '../../services/toast/toast-service';
 
 @Component({
 	selector: 'app-comment-element',
@@ -14,6 +15,7 @@ import type { CommentDto } from '@shared/models/comment';
 export class CommentElement {
 	commentService = inject(CommentService);
 	authService = inject(AuthService);
+	toastService = inject(ToastService);
 
 	comment = input.required<CommentDto>();
 	hasAdminPermissions = input.required<boolean>();
@@ -35,11 +37,13 @@ export class CommentElement {
 			next: () => {
 				this.commentDeleted.emit();
 				this.error.set(null);
+				this.toastService.success('Comment deleted successfully.');
 			},
 			error: (response: HttpErrorResponse) => {
 				const errorObject = response.error.error;
 				console.log(errorObject);
 				this.error.set(errorObject.message);
+				this.toastService.error('Failed to delete comment.');
 			}
 		});
 	}

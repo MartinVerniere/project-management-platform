@@ -5,9 +5,9 @@
 	gap: 16px;
 	padding: 16px;
 	min-width: 150px;
-	border: 1px solid var(--white-tertiary);
+	border: 1px solid var(--color-border);
 	border-radius: 8px;
-	background: var(--white-primary);
+	background: var(--color-background);
 }
 
 .task-header {
@@ -22,7 +22,7 @@
 }
 
 .task-description {
-	color: var(--gray-secondary);
+	color: var(--color-text-secondary);
 }
 
 .task-actions {
@@ -42,7 +42,7 @@
 	gap: 8px;
 	padding: 12px;
 	border-radius: 6px;
-	background: var(--white-secondary);
+	background: var(--color-background-alternative);
 }
 
 .user-info {
@@ -52,7 +52,7 @@
 }
 
 .username {
-	color: var(--black-primary);;
+	color: var(--color-text);
 	font-size: 12px;
 	font-weight: 600;
 }
@@ -99,55 +99,21 @@
 	border: none;
 	border-radius: 6px;
 	background: transparent;
-	color: var(--gray-primary);
+	color: var(--color-text-muted);
 	cursor: grab;
 	border-radius: 2px;
 	transition: .15s;
 }
 
 .task-handle:hover {
-	background: var(--white-primary);
-	color: var(--gray-tertiary);
+	background: var(--color-surface);
+	color: var(--color-text-secondary);
 }
 
 .task-handle:active {
 	cursor: grabbing;
 }
 
-.btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 8px;
-	border-radius: 6px;
-	text-decoration: none;
-	cursor: pointer;
-}
-
-.btn-secondary {
-	border: 1px solid var(--white-tertiary);
-	background: var(--white-primary);
-	color: var(--black-tertiary);
-}
-
-.btn-secondary:hover {
-	border: 1px solid var(--white-primary);
-	background: var(--black-tertiary);
-	color: var(--white-primary);
-}
-
-.btn-danger {
-	border: 1px solid var(--red-tertiary);
-	background: var(--white-primary);
-	color: var(--red-secondary);
-}
-
-.btn-danger:hover {
-	border: 1px solid var(--white-primary);
-	background: var(--red-secondary);
-	color: var(--white-primary);
-}
-
 .error {
-	color: var(--red-secondary);
+	color: var(--color-error);
 }
