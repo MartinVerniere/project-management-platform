@@ -1,85 +1,150 @@
 :host {
 	display: flex;
 	flex: 1;
-	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	padding: 32px;
-	background: var(--color-surface);
+	background: linear-gradient(135deg, #f7f8ff 0%, #eef0ff 100%);
 }
 
 .project-form-card {
-	width: 600px;
+	display: grid;
+	grid-template-columns: 220px minmax(0, 1fr);
+	width: 700px;
+	overflow: hidden;
 	background: var(--color-background);
 	border: 1px solid var(--color-border);
-	border-radius: 10px;
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+	border-radius: 14px;
+	box-shadow: 0 18px 45px rgba(30, 35, 90, 0.08), 0 3px 8px rgba(0, 0, 0, 0.04);
 }
 
-.project-form-header {
+.project-form-intro {
+	position: relative;
 	display: flex;
 	flex-direction: column;
-	padding: 32px;
+	justify-content: space-between;
+	padding: 28px;
+	overflow: hidden;
+	background: var(--color-primary);
+	color: var(--color-text-alt);
+}
+
+.project-form-intro::after {
+	content: '';
+	position: absolute;
+	width: 190px;
+	height: 190px;
+	right: -95px;
+	bottom: -95px;
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	border-radius: 50%;
+}
+
+.project-form-intro::before {
+	content: '';
+	position: absolute;
+	width: 110px;
+	height: 110px;
+	right: 35px;
+	bottom: 28px;
+	border: 1px solid rgba(255, 255, 255, 0.10);
+	border-radius: 50%;
+}
+
+.project-mark {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	width: 46px;
+	height: 46px;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.14);
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 10px;
+	font-size: 24px;
+	font-weight: var(--font-medium);
+}
+
+.intro-content {
+	position: relative;
+	z-index: 1;
+}
+
+.eyebrow {
+	display: block;
+	margin-bottom: 8px;
+	color: rgba(255, 255, 255, 0.70);
+	font-size: var(--font-sm);
+	font-weight: var(--font-bold);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
 }
 
 .header {
-	font-size: 24px;
-	font-weight: 650;
-	color: var(--color-text);
+	margin: 0;
+	color: var(--color-text-alt);
+	font-size: 26px;
+	font-weight: var(--font-bold);
+	line-height: 1.15;
+	letter-spacing: -0.4px;
 }
 
 .subtext {
-	font-size: 14px;
-	color: var(--color-text-secondary);
-}
-
-.divider {
-	height: 1px;
-	background: var(--color-surface);
+	margin: 9px 0 0;
+	color: rgba(255, 255, 255, 0.74);
+	font-size: var(--font-sm);
+	line-height: 1.5;
 }
 
 .project-form {
+	min-width: 0;
 	padding: 32px;
 }
 
 .form-grid {
 	display: flex;
 	flex-direction: column;
-	gap: 24px;
+	gap: 20px;
 }
 
 .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 7px;
 }
 
 .form-label {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-
-	font-size: 14px;
-	font-weight: 600;
-	color: var(--color-text-secondary);
+	gap: 5px;
+	color: var(--color-text);
+	font-size: var(--font-sm);
+	font-weight: var(--font-medium);
 }
 
 .required {
-	color: var(--color-error);
+	color: var(--color-danger);
 }
 
 .field-hint {
-	font-size: 12px;
 	color: var(--color-text-muted);
+	font-size: var(--font-sm);
+	line-height: 1.4;
 }
 
 .field-error {
 	display: flex;
 	flex-direction: column;
 	gap: 3px;
-
-	font-size: 12px;
 	color: var(--color-error);
+	font-size: var(--font-sm);
+}
+
+textarea {
+	min-height: 120px;
+	padding: 12px;
+	resize: vertical;
 }
 
 .server-error {
@@ -87,34 +152,35 @@
 	align-items: center;
 	gap: 10px;
 	padding: 12px;
-	border: 1px solid  var(--color-error);
-	border-radius: 6px;
-	background: var(--color-background);
+	background: rgba(220, 38, 38, 0.05);
+	border: 1px solid rgba(220, 38, 38, 0.20);
+	border-radius: 7px;
 	color: var(--color-error);
-	font-size: 13px;
+	font-size: var(--font-sm);
 }
 
 .server-error-icon {
 	display: flex;
+	width: 20px;
+	height: 20px;
 	align-items: center;
 	justify-content: center;
 	flex-shrink: 0;
 	background: var(--color-error);
 	color: var(--color-text-alt);
-	width: 20px;
-	height: 20px;
 	border-radius: 50%;
 	font-size: 12px;
-	font-weight: 700;
+	font-weight: var(--font-bold);
 }
 
 .form-actions {
 	display: flex;
-	justify-content: flex-end;
 	align-items: center;
-	gap: 8px;
+	justify-content: flex-end;
+	gap: 10px;
+	padding-top: 8px;
 }
 
-.btn-arrow {
-	font-size: 16px;
+.form-actions .primary {
+	gap: 8px;
 }
