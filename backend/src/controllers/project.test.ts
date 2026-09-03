@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import request from 'supertest';
 
 import { prisma } from '../prisma.js';
@@ -7,8 +7,22 @@ import { ProjectRole } from '../generated/prisma/client.js';
 import { clearDatabase, INVALID_ID, NOT_FOUND_ID } from '../helpers/database.js';
 import { registerUser, loginUser, createProject, addMember, createBoard } from '../helpers/test.js';
 
+const { notifyProjectMemberAddedMock, notifyProjectMemberRemovedMock } = vi.hoisted(() => ({
+	notifyProjectMemberAddedMock: vi.fn(),
+	notifyProjectMemberRemovedMock: vi.fn(),
+}));
+
+vi.mock('../services/notification.js', () => ({
+	notifyCommentAdded: vi.fn(),
+	notifyTaskAssigned: vi.fn(),
+	notifyTaskUnassigned: vi.fn(),
+	notifyProjectMemberAdded: notifyProjectMemberAddedMock,
+	notifyProjectMemberRemoved: notifyProjectMemberRemovedMock,
+}));
+
 describe('Project API', () => {
 	beforeEach(async () => {
+		vi.clearAllMocks();
 		await clearDatabase();
 	});
 
@@ -56,19 +70,10 @@ describe('Project API', () => {
 				const response = await request(app)
 					.post(`/api/projects`)
 					.set('Authorization', `Bearer ${authToken}`)
-					.send({
-						name: 'Test 1',
-						key: 'TEST1',
-						description: 'test desc'
-					});
+					.send({ name: 'Test 1', key: 'TEST1', description: 'test desc' });
 
 				const createdProjectId = response.body.id;
-
-				const member = await prisma.projectMember.findFirst({
-					where: {
-						projectId: createdProjectId
-					}
-				});
+				const member = await prisma.projectMember.findFirst({ where: { projectId: createdProjectId } });
 
 				expect(member).not.toBeNull();
 				expect(member?.role).toBe(ProjectRole.ADMIN);
@@ -220,7 +225,7 @@ describe('Project API', () => {
 				});
 
 				describe('on add member to project', () => {
-					it('adds member to member list', async () => {
+					it('adds member to project member list and notifies user added', async () => {
 						const response = await request(app)
 							.post(`/api/projects/${projectId}/members`)
 							.set('Authorization', `Bearer ${authToken}`)
@@ -228,6 +233,11 @@ describe('Project API', () => {
 
 						expect(response.status).toBe(201);
 						expect(response.body.user.id).toBe(martinId);
+						expect(notifyProjectMemberAddedMock).toHaveBeenCalledWith(
+							expect.objectContaining({ id: johnId, username: 'john', email: 'john@test.com' }),
+							expect.objectContaining({ id: martinId, username: 'martin', email: 'martin@test.com' }),
+							expect.objectContaining({ id: projectId, name: 'Test 1' })
+						);
 					});
 
 					it('returns 400 when invalid project id', async () => {
@@ -291,12 +301,17 @@ describe('Project API', () => {
 				});
 
 				describe('on remove project member', () => {
-					it('removes member from project', async () => {
+					it('removes member from project and notifies user removed', async () => {
 						const response = await request(app)
 							.delete(`/api/projects/${projectId}/members/${aliceId}`)
 							.set('Authorization', `Bearer ${authToken}`);
 
 						expect(response.status).toBe(200);
+						expect(notifyProjectMemberRemovedMock).toHaveBeenCalledWith(
+							expect.objectContaining({ id: johnId, username: 'john', email: 'john@test.com' }),
+							expect.objectContaining({ id: aliceId, username: 'alice', email: 'alice@test.com' }),
+							expect.objectContaining({ id: projectId, name: 'Test 1' })
+						);
 					});
 
 					it('returns 400 for invalid project id', async () => {

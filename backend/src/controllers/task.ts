@@ -3,6 +3,9 @@ import { ApiError, requireTaskAdmin, requireTaskMember, taskExtractor, tokenExtr
 import { prisma } from "../prisma.js";
 import type { BoardColumn } from "../generated/prisma/client.js";
 import type { TaskDto } from "@shared/models/task.js";
+import { notifyCommentAdded, notifyTaskAssigned, notifyTaskUnassigned } from "../services/notification.js";
+import type { UserDto } from "@shared/models/user.js";
+import type { TaskWithColumnAndAssigneeResponse } from "../models/task.js";
 
 const taskRouter = Router();
 
@@ -86,6 +89,14 @@ taskRouter.post('/:id/comments',
 				userId: true
 			}
 		});
+
+		try {
+			if (task.assignee && task.assignee.id !== user.id) {
+				await notifyCommentAdded(request.user, task.assignee, task, newComment);
+			}
+		} catch (error) {
+			console.error('Failed to send notification email:', error);
+		};
 
 		return response.status(201).json(newComment);
 	}
@@ -210,6 +221,14 @@ taskRouter.put('/:id/assignee',
 			}
 		});
 
+		if (userId !== request.user.id) { // If he hasnt assigned the task to himself, send notification
+			try {
+				await notifyTaskAssigned(request.user, userExists, task);
+			} catch (error) {
+				console.error('Failed to send notification email:', error);
+			}
+		}
+
 		return response.status(200).json(updatedTask);
 	}
 );
@@ -222,6 +241,7 @@ taskRouter.delete('/:id/assignee',
 	requireTaskAdmin,
 	async (request: Request, response: Response) => {
 		const task = request.task!;
+		const previousAssignee = task.assignee;
 
 		const updatedTask = await prisma.task.update({
 			where: { id: task.id },
@@ -235,6 +255,14 @@ taskRouter.delete('/:id/assignee',
 				assigneeId: true,
 			}
 		});
+
+		try {
+			if (previousAssignee) {
+				await notifyTaskUnassigned(request.user, previousAssignee, task);
+			}
+		} catch (error) {
+			console.error('Failed to send notification email:', error);
+		};
 
 		return response.status(200).json(updatedTask);
 	}

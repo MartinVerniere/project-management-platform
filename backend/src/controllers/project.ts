@@ -2,6 +2,7 @@ import { Router, type Request, type Response } from 'express';
 import { ApiError, projectExtractor, requireProjectAdmin, requireProjectMember, tokenExtractor, userExtractor } from '../utils/middleware.js';
 import { prisma } from '../prisma.js';
 import { ProjectRole, type Project } from '../generated/prisma/client.js';
+import { notifyProjectMemberAdded, notifyProjectMemberRemoved } from '../services/notification.js';
 
 const projectRouter = Router();
 
@@ -132,6 +133,12 @@ projectRouter.post('/:id/members', tokenExtractor, userExtractor, projectExtract
 		}
 	});
 
+	try {
+		await notifyProjectMemberAdded(request.user, newMember.user, project);
+	} catch (error) {
+		console.error('Failed to send notification email:', error);
+	};
+
 	return response.status(201).json(newMember);
 });
 
@@ -160,6 +167,12 @@ projectRouter.delete('/:id/members/:userId', tokenExtractor, userExtractor, proj
 
 		prisma.projectMember.delete({ where: { id: existingMembership.id } })
 	]);
+
+	try {
+		await notifyProjectMemberRemoved(request.user, existingMembership.user, project);
+	} catch (error) {
+		console.error('Failed to send notification email:', error);
+	};
 
 	return response.status(200).send();
 });
