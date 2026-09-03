@@ -46,6 +46,7 @@ body {
 app-root {
 	display: flex;
 	height: 100%;
+	font-family: var(--font-family);
 }
 
 /* Buttons */
