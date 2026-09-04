@@ -1,9 +1,21 @@
-<form class="comment-form" (submit)="(onSubmit($event))">
+<form class="comment-form" (submit)="onSubmit($event)">
+	<div class="comment-form-header">
+		<div class="comment-form-title">
+			Add a comment
+		</div>
+
+		<div class="comment-form-subtitle">
+			Share something about this task.
+		</div>
+	</div>
+
 	<div class="form-group">
-		<label class="form-label" for="content"> Comment </label>
-		<textarea id="content"  rows="3" placeholder="Write a comment..."
-			[formField]="commentForm.content">
-		</textarea>
+		<label class="form-label" for="content">
+			Comment
+		</label>
+
+		<textarea id="content" rows="3" placeholder="Write a comment..." [formField]="commentForm.content">
+        </textarea>
 	</div>
 
 	@if (error(); as error) {
