@@ -1,71 +1,106 @@
+:host {
+	display: block;
+
+	background:
+		linear-gradient(90deg,
+			rgba(67, 67, 233, 0.06),
+			rgba(67, 67, 233, 0.025));
+
+	border-top: 1px solid rgba(67, 67, 233, 0.14);
+}
+
 .member-form {
+	padding: 14px 16px;
+}
+
+.form-grid {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
-	padding: 16px;
-	border: 1px solid var(--color-border);
-	border-radius: 6px;
-	background: var(--color-background);
 }
 
 .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
-	margin-bottom: 20px;
+	gap: 7px;
 }
 
 .form-label {
-	font-size: 12px;
-	font-weight: 600;
-	color: var(--color-text-secondary);
+	display: flex;
+	align-items: center;
+	gap: 5px;
+
+	color: var(--color-text);
+
+	font-size: var(--font-sm);
+	font-weight: var(--font-medium);
 }
 
 .required {
-	color: var(--color-error);
+	color: var(--color-danger);
 }
 
-.form-input-and-actions{
+.form-input-and-actions {
 	display: flex;
+	align-items: center;
 	gap: 10px;
 }
 
+.form-input-and-actions select {
+	flex: 1;
+	min-width: 0;
+}
+
+.form-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+
+	flex-shrink: 0;
+}
+
+.form-actions button {
+	white-space: nowrap;
+}
+
 .field-error {
-	font-size: 12px;
+	margin-top: 2px;
+
 	color: var(--color-error);
+	font-size: var(--font-sm);
 }
 
 .server-error {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	padding: 8px;
-	border: 1px solid var(--color-error);
-	border-radius: 4px;
-	background: var(--color-background);
+
+	margin-top: 10px;
+	padding: 9px 10px;
+
+	background: rgba(220, 38, 38, 0.05);
+
+	border: 1px solid rgba(220, 38, 38, 0.18);
+	border-radius: 6px;
+
 	color: var(--color-error);
-	font-size: 12px;
+	font-size: var(--font-sm);
 }
 
 .server-error-icon {
 	display: flex;
-	align-items: center;
-	justify-content: center;
+
 	width: 18px;
 	height: 18px;
-	border-radius: 50%;
+
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+
 	background: var(--color-error);
 	color: var(--color-text-alt);
-	font-size: 12px;
-	font-weight: 700;
-}
 
-.form-actions {
-	display: flex;
-	justify-content: flex-end;
-	gap: 8px;
-}
+	border-radius: 50%;
 
-.btn-arrow {
-	font-size: 12px;
+	font-size: 11px;
+	font-weight: var(--font-bold);
 }

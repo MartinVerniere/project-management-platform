@@ -1,21 +1,39 @@
 <div class="member-list-header">
-	<h2 class="member-list-title">Members</h2>
+	<div class="member-heading">
+		<div class="section-icon" aria-hidden="true">
+			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-	@if (hasAdminPermissions()){
-	@if (!addMemberFormEnabled()) {
+				<path d="M16 21V19C16 17.3431 14.6569 16 13 16H7C5.34315 16 4 17.3431 4 19V21" stroke="currentColor"
+					stroke-width="1.8" stroke-linecap="round" />
+
+				<circle cx="10" cy="9" r="3" stroke="currentColor" stroke-width="1.8" />
+
+				<path d="M20 21V19C20 17.6716 19.1183 16.5503 18 16.126" stroke="currentColor" stroke-width="1.8"
+					stroke-linecap="round" />
+
+				<path d="M15 6.126C16.1183 6.5503 17 7.67157 17 9C17 10.3284 16.1183 11.4497 15 11.874"
+					stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+
+			</svg>
+		</div>
+
+		<div>
+			<h2 class="member-list-title">Members</h2>
+
+			<p class="member-list-subtitle">
+				People working on this project.
+			</p>
+		</div>
+
+	</div>
+
+	@if (hasAdminPermissions() && !addMemberFormEnabled()) {
 	<button class="primary" type="button" (click)="onEnableAddMember()">
-		Add member
-		<div class="btn-arrow">→</div>
+		<span>Add member</span>
+		<span class="btn-arrow" aria-hidden="true">+</span>
 	</button>
 	}
-	}
 </div>
-
-@if (addMemberFormEnabled()) {
-<app-member-form [projectId]="projectId()" [memberList]="memberList()" (memberAdded)="onMemberAdded()"
-	(canceledMemberAdd)="onCancelAddMember()">
-</app-member-form>
-} @else {
 
 <div class="member-element-list">
 	@for (member of memberList(); track member.id) {
@@ -23,13 +41,36 @@
 		(memberRemoved)="onMemberRemoved()">
 	</app-member-element>
 	} @empty {
+	@if (!addMemberFormEnabled()) {
 	<div class="member-list-empty">
-		<div class="empty-icon">♙</div>
-		<div class="empty-title">No members yet</div>
+		<div class="empty-icon" aria-hidden="true">
+			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M16 21V19C16 17.3431 14.6569 16 13 16H7C5.34315 16 4 17.3431 4 19V21" stroke="currentColor"
+					stroke-width="1.8" stroke-linecap="round" />
+				<circle cx="10" cy="9" r="3" stroke="currentColor" stroke-width="1.8" />
+
+				<path d="M20 21V19C20 17.6716 19.1183 16.5503 18 16.126" stroke="currentColor" stroke-width="1.8"
+					stroke-linecap="round" />
+				<path d="M15 6.126C16.1183 6.5503 17 7.67157 17 9C17 10.3284 16.1183 11.4497 15 11.874"
+					stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+			</svg>
+		</div>
+
+		<div class="empty-title">
+			No members yet
+		</div>
+
 		<div class="empty-text">
-			Add members to this project.
+			Add members to collaborate on this project.
 		</div>
 	</div>
 	}
+	}
+
+	@if (addMemberFormEnabled()) {
+	<app-member-form [projectId]="projectId()" [memberList]="memberList()" (memberAdded)="onMemberAdded()"
+		(canceledMemberAdd)="onCancelAddMember()">
+	</app-member-form>
+	}
+
 </div>
-}

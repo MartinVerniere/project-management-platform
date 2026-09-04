@@ -1,15 +1,27 @@
 @if (member(); as member) {
 <div class="member-info">
-	<div class="member-name">
-		{{ member.user.username }}
+	<div class="member-avatar">
+		@if (member.user.avatarUrl) {
+		<img [src]="member.user.avatarUrl" [alt]="member.user.username" />
+		} @else {
+		<span>
+			{{ member.user.username.charAt(0).toUpperCase() }}
+		</span>
+		}
 	</div>
 
-	<div class="member-role">
-		{{ member.role }}
+	<div class="member-details">
+		<span class="member-name">
+			{{ member.user.username }}
+		</span>
+
+		<span class="member-role" [class.admin]="member.role === 'ADMIN'">
+			{{ member.role }}
+		</span>
 	</div>
 </div>
 
-@if(hasAdminPermissions()){
+@if (hasAdminPermissions()) {
 <button class="danger" type="button" (click)="onRemoveMember(member.user.id)">
 	Remove
 </button>
