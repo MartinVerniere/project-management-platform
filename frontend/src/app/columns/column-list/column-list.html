@@ -1,35 +1,53 @@
-@if (columnList(); as columnList){
-<div class="task-filters">
-	<div class="filter">
-		<label class="filter-label" for="search">Search</label>
-		<input class="filter-element" id="search" type="text" placeholder="Search tasks..." [value]="searchTerm()"
-			(input)="onSearchChange($event)">
+@if (columnList(); as columnList) {
+<div class="task-toolbar">
+	<div class="task-toolbar-title">
+		<span class="toolbar-icon" aria-hidden="true">⌕</span>
+
+		<div>
+			<div class="toolbar-title">Tasks</div>
+			<div class="toolbar-subtitle">
+				Filter and organize tasks across this board.
+			</div>
+		</div>
 	</div>
 
-	<div class="filter">
-		<label class="filter-label" for="assignee">Assignee</label>
-		<select class="filter-element" id="assignee" [value]="selectedAssigneeId() ?? ''"
-			(change)="onAssigneeChange($event)">
-			<option value="">All</option>
+	<div class="task-filters">
+		<div class="filter">
+			<label class="filter-label" for="search">
+				Search
+			</label>
 
-			@for (member of members(); track member.id) {
-			<option [value]="member.user.id">
-				{{ member.user.username }}
-			</option>
-			}
-		</select>
+			<input class="filter-element" id="search" type="text" placeholder="Search tasks..." [value]="searchTerm()"
+				(input)="onSearchChange($event)" />
+		</div>
+
+		<div class="filter">
+			<label class="filter-label" for="assignee">
+				Assignee
+			</label>
+
+			<select class="filter-element" id="assignee" [value]="selectedAssigneeId() ?? ''"
+				(change)="onAssigneeChange($event)">
+				<option value="">All</option>
+				@for (member of members(); track member.id) {
+				<option [value]="member.user.id">
+					{{ member.user.username }}
+				</option>
+				}
+			</select>
+		</div>
+
+		<button class="secondary clear-filters" type="button" (click)="clearFilters()">
+			Clear
+		</button>
 	</div>
-
-	<button class="secondary" type="button" (click)="clearFilters()">
-		Clear
-	</button>
 </div>
 
 <div cdkDropList [cdkDropListData]="columnList" (cdkDropListDropped)="onMoveColumn($event)"
-	[cdkDropListEnterPredicate]="onlyColumnsPredicate" cdkDropListOrientation="horizontal">
+	[cdkDropListEnterPredicate]="onlyColumnsPredicate" cdkDropListOrientation="horizontal" class="column-workspace">
 	<div class="column-element-list" cdkDropListGroup>
 		@for (column of filteredColumnList(); track column.id; let i = $index) {
-		<div cdkDrag [cdkDragData]="{ type: 'column', column: column }">
+		<div cdkDrag [cdkDragData]="{type: 'column', column: column }">
 			<app-column-element [column]="column" [projectId]="projectId()" [boardId]="boardId()" [isFirst]="i === 0"
 				[isLast]="i === columnList.length - 1" [memberList]="members()" [filtersActive]="filtersActive()"
 				[hasAdminPermissions]="hasAdminPermissions()" (columnElementEdited)="columnListEdited.emit()"
@@ -38,8 +56,17 @@
 		</div>
 		} @empty {
 		<div class="column-list-empty">
-			<div class="empty-icon">📋</div>
-			<div class="empty-title">No columns yet!</div>
+			<div class="empty-icon" aria-hidden="true">
+				▦
+			</div>
+
+			<div class="empty-title">
+				No columns yet
+			</div>
+
+			<div class="empty-text">
+				Create a column to start organizing tasks on this board.
+			</div>
 		</div>
 		}
 	</div>

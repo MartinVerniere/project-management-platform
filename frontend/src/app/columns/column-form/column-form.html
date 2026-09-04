@@ -1,26 +1,43 @@
 <div class="column-form-card">
-	<div class="column-form-header">
-		<div class="header-icon">✓</div>
-		<div>
-			<h1 class="header">Create column</h1>
-			<p class="subtext">Add a new column to organize your tasks.</p>
+	<div class="column-form-intro">
+		<div class="column-mark" aria-hidden="true">
+			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="4" y="4" width="6" height="16" rx="1.5" stroke="currentColor" stroke-width="1.8" />
+				<rect x="14" y="4" width="6" height="16" rx="1.5" stroke="currentColor" stroke-width="1.8" />
+			</svg>
+		</div>
+
+		<div class="intro-content">
+			<span class="eyebrow">
+				New column
+			</span>
+
+			<h1 class="header">
+				Create column
+			</h1>
+
+			<p class="subtext">
+				Add a column to organize your tasks.
+			</p>
 		</div>
 	</div>
-	<div class="divider"></div>
-	<form class="column-form" (submit)="(onSubmit($event))">
+
+	<form class="column-form" (submit)="onSubmit($event)">
 		<div class="form-grid">
 			<div class="form-group">
 				<label class="form-label" for="name">
-					Name
-					<div class="required">*</div>
+					<span>Name</span>
+					<span class="required">*</span>
 				</label>
-				<input id="name"  type="text" placeholder="e.g. Backlog"
-					[formField]="columnForm.name" />
 
-				@if(columnForm.name().invalid() && columnForm.name().touched()){
+				<input id="name" type="text" placeholder="e.g. Backlog" [formField]="columnForm.name" />
+
+				@if (columnForm.name().invalid() && columnForm.name().touched()) {
 				<div class="field-error">
-					@for (error of columnForm.name().errors(); track error.kind){
-					<div> {{error.message}}</div>
+					@for (error of columnForm.name().errors(); track error.kind) {
+					<div>
+						{{ error.message }}
+					</div>
 					}
 				</div>
 				}
@@ -28,7 +45,10 @@
 
 			@if (error()) {
 			<div class="server-error">
-				<div class="server-error-icon">!</div>
+				<div class="server-error-icon">
+					!
+				</div>
+
 				<div>
 					{{ error() }}
 				</div>
@@ -36,14 +56,16 @@
 			}
 
 			<div class="form-actions">
-				<button class="secondary" type="button"
-					[routerLink]="['/projects', projectId, 'boards', boardId]">
+
+				<button class="secondary" type="button" [routerLink]="['/projects', projectId, 'boards', boardId]">
 					Cancel
 				</button>
+
 				<button class="primary" type="submit" [disabled]="columnForm().invalid()">
-					Create column
-					<div class="btn-arrow">→</div>
+					<span>Create column</span>
+					<span class="btn-arrow" aria-hidden="true">→</span>
 				</button>
+
 			</div>
 		</div>
 	</form>
