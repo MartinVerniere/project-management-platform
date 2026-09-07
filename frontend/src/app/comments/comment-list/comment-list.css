@@ -1,9 +1,6 @@
 :host {
 	display: flex;
 	flex-direction: column;
-
-	min-width: 0;
-
 	gap: 10px;
 }
 
@@ -11,31 +8,25 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-
 	gap: 12px;
 }
 
 .comment-heading {
 	display: flex;
 	align-items: center;
-
 	gap: 8px;
 }
 
 .comment-icon {
 	width: 18px;
 	height: 18px;
-
 	flex-shrink: 0;
-
 	color: var(--color-primary);
 }
 
 .comment-title {
 	margin: 0;
-
 	color: var(--color-text);
-
 	font-size: var(--font-sm);
 	font-weight: var(--font-bold);
 }
@@ -43,20 +34,14 @@
 .add-comment-button {
 	display: flex;
 	align-items: center;
-
 	gap: 6px;
-
-	padding: 5px 8px;
-
-	font-size: 0.7rem;
+	padding: 6px;
+	font-size: var(--font-sm);
 }
 
 .comment-element-list {
 	display: flex;
 	flex-direction: column;
-
-	min-width: 0;
-
 	gap: 8px;
 }
 
@@ -64,29 +49,18 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-
 	gap: 8px;
-
 	min-height: 64px;
 	padding: 14px;
-
 	background: var(--color-surface);
-
 	border: 1px dashed var(--color-border);
 	border-radius: 8px;
-
 	color: var(--color-text-muted);
-
 	font-size: var(--font-sm);
 }
 
 .empty-icon {
 	width: 18px;
 	height: 18px;
-
 	flex-shrink: 0;
-}
-
-app-comment-form {
-	display: block;
 }

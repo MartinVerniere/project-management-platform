@@ -10,81 +10,35 @@
 	padding: 24px;
 
 	background:
-		radial-gradient(circle at 15% 20%,
-			rgba(67, 67, 233, 0.14),
-			transparent 35%),
-		radial-gradient(circle at 85% 80%,
-			rgba(37, 99, 235, 0.12),
-			transparent 35%),
-		linear-gradient(135deg,
-			#f7f8ff 0%,
-			#eef0ff 50%,
-			#f8faff 100%);
-}
-
-:host::before,
-:host::after {
-	content: '';
-	position: absolute;
-
-	border-radius: 50%;
-	pointer-events: none;
-}
-
-:host::before {
-	width: 320px;
-	height: 320px;
-	top: -120px;
-	right: -90px;
-
-	background: rgba(67, 67, 233, 0.08);
-	filter: blur(2px);
-}
-
-:host::after {
-	width: 240px;
-	height: 240px;
-	bottom: -90px;
-	left: -70px;
-
-	background: rgba(37, 99, 235, 0.08);
-	filter: blur(2px);
+		radial-gradient(280px 280px at calc(100%) -30px, var(--color-details) 50%, transparent 50%),
+		radial-gradient(220px 220px at -60px calc(100%), var(--color-details) 50%, transparent 50%),
+		radial-gradient(circle at 15% 20%, var(--color-details-alt), transparent 35%),
+		radial-gradient(circle at 85% 80%, var(--color-details), transparent 35%),
+		linear-gradient(135deg, var(--color-details-alt) 0%, var(--color-details-alt) 50%, var(--color-details-alt) 100%);
 }
 
 .register-card {
 	position: relative;
 	z-index: 1;
-
 	width: 400px;
 	padding: 32px;
-
-	background: rgba(255, 255, 255, 0.92);
-
-	border: 1px solid rgba(67, 67, 233, 0.10);
+	background: var(--color-background);
+	border: 1px solid var(--color-border);
 	border-radius: 14px;
-
 	box-shadow:
-		0 24px 60px rgba(30, 35, 90, 0.10),
-		0 4px 12px rgba(0, 0, 0, 0.04);
-
-	backdrop-filter: blur(10px);
+		0 24px 60px var(--color-details),
+		0 4px 12px var(--color-details-alt);
 }
 
 .register-card::before {
 	content: '';
-
 	position: absolute;
 	top: 0;
 	left: 32px;
 	right: 32px;
-
 	height: 3px;
-
-	background: linear-gradient(90deg,
-			var(--color-primary),
-			var(--color-info));
-
-	border-radius: 0 0 4px 4px;
+	background: linear-gradient(90deg, var(--color-primary), var(--color-info));
+	border-radius: 4px;
 }
 
 .register-header {
@@ -93,11 +47,9 @@
 
 .header {
 	margin: 0;
-
 	color: var(--color-text);
-	font-size: 28px;
+	font-size: var(--font-xl);
 	font-weight: var(--font-bold);
-	letter-spacing: -0.5px;
 }
 
 .register-form {
@@ -117,25 +69,14 @@
 	gap: 7px;
 }
 
-.form-label {
-	display: flex;
-	align-items: center;
-	gap: 5px;
+	.form-label {
+		display: flex;
+		align-items: center;
+		gap: 5px;
 
 	color: var(--color-text);
 	font-size: var(--font-sm);
 	font-weight: var(--font-medium);
-}
-
-.form-group input {
-	width: 100%;
-	box-sizing: border-box;
-
-	background: var(--color-background);
-}
-
-.form-group input:focus {
-	background: #fff;
 }
 
 .required {
@@ -177,20 +118,16 @@
 .avatar-preview {
 	width: 72px;
 	height: 72px;
-
 	object-fit: cover;
-
-	border: 2px solid rgba(67, 67, 233, 0.15);
+	border: 2px solid var(--color-border);
 	border-radius: 50%;
-
 	cursor: pointer;
-
 	transition:
 		transform 0.15s ease,
 		border-color 0.15s ease;
 }
 
 .avatar-preview:hover {
-	transform: scale(1.04);
+	transform: scale(1.05);
 	border-color: var(--color-primary);
 }

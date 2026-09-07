@@ -1,15 +1,15 @@
 <div class="project-page">
 	<div class="project-list-header">
 		<div class="project-heading">
-			<span class="project-eyebrow">Workspace</span>
+			<div class="project-header">Workspace</div>
 			<h1 class="project-list-title">Projects</h1>
 			<p class="project-list-subtitle">
 				Manage your projects and boards.
 			</p>
 		</div>
 		<button class="primary create-project-button" type="button" routerLink="/projects/create">
-			<span>Create project</span>
-			<span class="create-project-icon" aria-hidden="true">+</span>
+			<div>Add project</div>
+			<div class="create-project-icon">+</div>
 		</button>
 	</div>
 	@if (projectList.isLoading()) {

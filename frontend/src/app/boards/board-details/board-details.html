@@ -10,51 +10,50 @@
 @if (board.value(); as board) {
 @if (members.value(); as members) {
 <div class="board-page">
-	<header class="board-header">
+	<div class="board-header">
 		<div class="board-header-content">
 			<div class="board-topline">
 				<a class="back-link" [routerLink]="['/projects', projectId]">
-					<span aria-hidden="true">←</span>
-					<span>Project</span>
+					<div>←</div>
+					<div>Project</div>
 				</a>
 
-				<span class="board-label">
+				<div class="board-label">
 					Board
-				</span>
+				</div>
 			</div>
 
 			<div class="board-identity">
-				<div class="board-icon" aria-hidden="true">
+				<div class="board-icon">
 					▦
 				</div>
 
 				<div>
-					<h1 class="board-name">
-						{{ board.name }}
-					</h1>
+					<h1 class="board-name"> {{ board.name }} </h1>
 
-					<p class="board-subtitle">
+					<div class="board-subtitle">
 						Organize and manage your tasks.
-					</p>
+					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="board-actions">
 			@if (hasAdminPermissions()) {
-			<button class="primary" type="button" [routerLink]="['/projects', projectId, 'boards', boardId, 'columns', 'create']">
-				<span>Add column</span>
-				<span aria-hidden="true">+</span>
+			<button class="primary" type="button"
+				[routerLink]="['/projects', projectId, 'boards', boardId, 'columns', 'create']">
+				<div>Add column</div>
+				<div>+</div>
 			</button>
 			}
 		</div>
-	</header>
+	</div>
 
-	<main class="board-content">
+	<div class="board-content">
 		<app-column-list [columnList]="board.columns" [projectId]="projectId" [boardId]="boardId" [members]="members"
 			[hasAdminPermissions]="hasAdminPermissions()" (columnListEdited)="onColumnListEdited()">
 		</app-column-list>
-	</main>
+	</div>
 </div>
 }
 }

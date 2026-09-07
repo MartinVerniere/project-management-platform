@@ -3,15 +3,11 @@
 		<div class="project-mark">+</div>
 
 		<div class="intro-content">
-			<span class="eyebrow">New project</span>
-
-			<h1 class="header">
-				Create project
-			</h1>
-
-			<p class="subtext">
+			<div class="header"> New project </div>
+			<h1 class="title"> Create project </h1>
+			<div class="subtext">
 				Organize your boards and tasks in one place.
-			</p>
+			</div>
 		</div>
 	</div>
 
@@ -19,8 +15,8 @@
 		<div class="form-grid">
 			<div class="form-group">
 				<label class="form-label" for="name">
-					<span>Name</span>
-					<span class="required">*</span>
+					<div>Name</div>
+					<div class="required">*</div>
 				</label>
 
 				<input id="name" type="text" placeholder="e.g. Website redesign" [formField]="projectForm.name" />
@@ -36,8 +32,8 @@
 
 			<div class="form-group">
 				<label class="form-label" for="key">
-					<span>Key</span>
-					<span class="required">*</span>
+					<div>Key</div>
+					<div class="required">*</div>
 				</label>
 
 				<input id="key" type="text" placeholder="e.g. WEB" [formField]="projectForm.key" />
@@ -86,8 +82,8 @@
 				</button>
 
 				<button class="primary" type="submit" [disabled]="projectForm().invalid()">
-					<span>Create project</span>
-					<span aria-hidden="true">→</span>
+					<div>Create project</div>
+					<div>→</div>
 				</button>
 			</div>
 		</div>

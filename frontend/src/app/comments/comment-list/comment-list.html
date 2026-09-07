@@ -1,6 +1,6 @@
 <div class="comment-header">
 	<div class="comment-heading">
-		<svg class="comment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		<svg class="comment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
 				d="M5 5.5C5 4.67157 5.67157 4 6.5 4H17.5C18.3284 4 19 4.67157 19 5.5V14.5C19 15.3284 18.3284 16 17.5 16H10L6 19V16.5C5.44772 16.5 5 16.0523 5 15.5V5.5Z"
 				stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
@@ -14,9 +14,9 @@
 	</div>
 
 	@if (!addCommentFormEnabled()) {
-	<button class="secondary add-comment-button" type="button" (click)="onEnableAddComment()">
-		<span>Add comment</span>
-		<span aria-hidden="true">+</span>
+	<button class="primary add-comment-button" type="button" (click)="onEnableAddComment()">
+		<div>Add comment</div>
+		<div>+</div>
 	</button>
 	}
 </div>
@@ -29,7 +29,7 @@
 	} @empty {
 	@if (!addCommentFormEnabled()) {
 	<div class="comment-list-empty">
-		<svg class="empty-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		<svg class="empty-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
 				d="M5 5.5C5 4.67157 5.67157 4 6.5 4H17.5C18.3284 4 19 4.67157 19 5.5V14.5C19 15.3284 18.3284 16 17.5 16H10L6 19V16.5C5.44772 16.5 5 16.0523 5 15.5V5.5Z"
 				stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
@@ -37,9 +37,9 @@
 			<path d="M8 11H13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
 		</svg>
 
-		<span>
+		<div>
 			No comments yet
-		</span>
+		</div>
 	</div>
 	}
 	}

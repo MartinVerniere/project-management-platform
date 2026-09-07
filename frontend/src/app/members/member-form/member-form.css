@@ -1,16 +1,12 @@
 :host {
 	display: block;
-
-	background:
-		linear-gradient(90deg,
-			rgba(67, 67, 233, 0.06),
-			rgba(67, 67, 233, 0.025));
-
-	border-top: 1px solid rgba(67, 67, 233, 0.14);
+	flex: 1;
+	background: linear-gradient(90deg, var(--color-details), var(--color-details));
+	border-top: 1px solid var(--color-details);
 }
 
 .member-form {
-	padding: 14px 16px;
+	padding: 12px;
 }
 
 .form-grid {
@@ -21,22 +17,16 @@
 .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 7px;
+	gap: 8px;
 }
 
 .form-label {
 	display: flex;
 	align-items: center;
-	gap: 5px;
-
+	gap: 6px;
 	color: var(--color-text);
-
 	font-size: var(--font-sm);
 	font-weight: var(--font-medium);
-}
-
-.required {
-	color: var(--color-danger);
 }
 
 .form-input-and-actions {
@@ -47,15 +37,13 @@
 
 .form-input-and-actions select {
 	flex: 1;
-	min-width: 0;
+	min-width: 50;
 }
 
 .form-actions {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-
-	flex-shrink: 0;
 }
 
 .form-actions button {
@@ -63,8 +51,6 @@
 }
 
 .field-error {
-	margin-top: 2px;
-
 	color: var(--color-error);
 	font-size: var(--font-sm);
 }
@@ -73,34 +59,24 @@
 	display: flex;
 	align-items: center;
 	gap: 8px;
-
 	margin-top: 10px;
-	padding: 9px 10px;
-
-	background: rgba(220, 38, 38, 0.05);
-
-	border: 1px solid rgba(220, 38, 38, 0.18);
+	padding: 12px;
+	background: var(--color-error-alt);
+	border: 1px solid var(--color-error);
 	border-radius: 6px;
-
 	color: var(--color-error);
 	font-size: var(--font-sm);
 }
 
 .server-error-icon {
 	display: flex;
-
 	width: 18px;
 	height: 18px;
-
 	align-items: center;
 	justify-content: center;
-	flex-shrink: 0;
-
 	background: var(--color-error);
 	color: var(--color-text-alt);
-
 	border-radius: 50%;
-
-	font-size: 11px;
+	font-size: var(--font-sm);
 	font-weight: var(--font-bold);
 }

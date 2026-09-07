@@ -1,15 +1,12 @@
 :host {
 	display: flex;
 	flex-direction: column;
-
-	min-width: 0;
 }
 
 .member-list-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-
 	gap: 16px;
 	margin-bottom: 18px;
 }
@@ -22,18 +19,13 @@
 
 .section-icon {
 	display: flex;
-
 	width: 38px;
 	height: 38px;
-
 	align-items: center;
 	justify-content: center;
-	flex-shrink: 0;
-
-	background: rgba(67, 67, 233, 0.08);
+	background: var(--color-details);
 	color: var(--color-primary);
-
-	border-radius: 9px;
+	border-radius: 8px;
 }
 
 .section-icon svg {
@@ -43,16 +35,13 @@
 
 .member-list-title {
 	margin: 0;
-
 	color: var(--color-text);
-
 	font-size: var(--font-lg);
 	font-weight: var(--font-bold);
 }
 
 .member-list-subtitle {
 	margin: 3px 0 0;
-
 	color: var(--color-text-secondary);
 	font-size: var(--font-sm);
 }
@@ -60,23 +49,14 @@
 .member-list-header button {
 	display: flex;
 	align-items: center;
-	gap: 7px;
-}
-
-.btn-arrow {
-	font-size: 17px;
-	line-height: 1;
+	gap: 8px;
 }
 
 .member-element-list {
 	display: flex;
 	flex-direction: column;
-
-	min-width: 0;
-
 	border: 1px solid var(--color-border);
 	border-radius: 8px;
-
 	overflow: hidden;
 }
 
@@ -85,29 +65,21 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-
 	min-height: 170px;
 	padding: 28px;
-
 	background: var(--color-surface);
-
 	text-align: center;
 }
 
 .empty-icon {
 	display: flex;
-
 	width: 44px;
 	height: 44px;
-
 	align-items: center;
 	justify-content: center;
-
 	margin-bottom: 10px;
-
-	background: rgba(67, 67, 233, 0.08);
+	background: var(--color-details);
 	color: var(--color-primary);
-
 	border-radius: 9px;
 }
 
@@ -118,18 +90,14 @@
 
 .empty-title {
 	color: var(--color-text);
-
 	font-size: var(--font-md);
 	font-weight: var(--font-bold);
 }
 
 .empty-text {
 	max-width: 250px;
-
 	margin-top: 5px;
-
 	color: var(--color-text-secondary);
-
 	font-size: var(--font-sm);
 	line-height: 1.45;
 }

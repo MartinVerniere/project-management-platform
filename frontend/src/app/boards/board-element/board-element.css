@@ -1,84 +1,55 @@
 :host {
-	display: block;
-	min-width: 0;
-
-	padding: 14px 16px;
-
-	background:
-		linear-gradient(90deg,
-			rgba(67, 67, 233, 0.025),
-			transparent 45%);
-
+	display: flex;
+	padding: 12px;
+	background: linear-gradient(90deg, var(--color-details), transparent 45%);
 	border: 1px solid var(--color-border);
-	border-radius: 9px;
-
-	transition:
-		border-color 0.15s ease,
-		background 0.15s ease,
-		box-shadow 0.15s ease;
+	border-radius: 8px;
+	transition: 0.15s ease, ;
 }
 
 :host:hover {
 	background: var(--color-background);
-
-	border-color: rgba(67, 67, 233, 0.22);
-
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.045);
+	border-color: var(--color-details);
+	box-shadow: 12px var(--color-details);
+	padding-left: 15px;
 }
 
 .board-content {
 	display: flex;
+	flex: 1;
 	align-items: center;
 	justify-content: space-between;
-
 	gap: 20px;
-
-	min-width: 0;
 }
 
 .board-identity {
 	display: flex;
 	align-items: center;
-
-	min-width: 0;
 }
 
 .board-icon {
 	display: flex;
-
 	width: 38px;
 	height: 38px;
-
-	flex-shrink: 0;
-
 	align-items: center;
 	justify-content: center;
-
 	margin-right: 12px;
-
-	background: rgba(67, 67, 233, 0.08);
+	background: var(--color-details);
 	color: var(--color-primary);
-
 	border-radius: 8px;
-
-	font-size: 18px;
+	font-size: var(--font-md);
 }
 
 .board-details {
 	display: flex;
 	flex-direction: column;
-
-	min-width: 0;
 }
 
 .board-name {
 	margin: 0;
-
 	color: var(--color-text);
-
 	font-size: var(--font-md);
 	font-weight: var(--font-bold);
-
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -86,18 +57,14 @@
 
 .board-label {
 	margin-top: 3px;
-
 	color: var(--color-text-muted);
-
 	font-size: var(--font-sm);
 }
 
 .board-actions {
 	display: flex;
 	align-items: center;
-	gap: 7px;
-
-	flex-shrink: 0;
+	gap: 8px;
 }
 
 .board-actions button {
@@ -106,7 +73,6 @@
 
 .error {
 	margin-top: 10px;
-
 	color: var(--color-error);
 	font-size: var(--font-sm);
 }

@@ -18,7 +18,7 @@
 <div class="project-actions">
 	<button class="primary open-button" type="button" [routerLink]="['/projects', project.id]">
 		Open project
-		<span aria-hidden="true">→</span>
+		<div>→</div>
 	</button>
 
 	@if (hasDeletePermission()) {

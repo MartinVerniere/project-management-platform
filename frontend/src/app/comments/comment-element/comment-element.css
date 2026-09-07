@@ -1,13 +1,8 @@
 :host {
 	position: relative;
-
 	display: flex;
 	flex-direction: column;
-
-	min-width: 0;
-
-	padding: 12px 0 14px;
-
+	padding: 12px;
 	border-bottom: 1px solid var(--color-border);
 }
 
@@ -16,57 +11,44 @@
 }
 
 :host:hover {
-	background: rgba(67, 67, 233, 0.02);
+	margin-left: 4px;
+	background: var(--color-details);
 }
 
 .comment-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-
-	min-width: 0;
 	gap: 12px;
 }
 
 .user-info {
 	display: flex;
 	align-items: center;
-
-	min-width: 0;
 	gap: 9px;
 }
 
 .avatar {
 	width: 32px;
 	height: 32px;
-
 	flex-shrink: 0;
-
 	overflow: hidden;
-
 	background: var(--color-surface);
-
 	border: 1px solid var(--color-border);
 	border-radius: 50%;
 }
 
 .avatar-image {
-	display: block;
-
+	display: flex;
 	width: 100%;
 	height: 100%;
-
 	object-fit: cover;
 }
 
 .username {
-	min-width: 0;
-
 	color: var(--color-text);
-
 	font-size: var(--font-sm);
 	font-weight: var(--font-bold);
-
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -74,13 +56,10 @@
 
 .comment-content {
 	margin-top: 8px;
-	padding-left: 41px;
-
+	padding-left: 40px;
 	color: var(--color-text);
-
 	font-size: var(--font-sm);
-	line-height: 1.55;
-
+	line-height: 1.5;
 	white-space: pre-wrap;
 	overflow-wrap: anywhere;
 }
@@ -88,34 +67,20 @@
 .comment-actions {
 	display: flex;
 	align-items: center;
-
 	gap: 3px;
-
-	flex-shrink: 0;
 }
 
 .comment-action {
 	display: flex;
-
 	width: 28px;
 	height: 28px;
-
 	align-items: center;
 	justify-content: center;
-
-	padding: 0;
-
-	border: 0;
 	border-radius: 6px;
-
 	background: transparent;
 	color: var(--color-text-muted);
-
 	cursor: pointer;
-
-	transition:
-		background 0.15s ease,
-		color 0.15s ease;
+	transition: 0.15s ease;
 }
 
 .comment-action svg {
@@ -124,20 +89,18 @@
 }
 
 .edit-action:hover {
-	background: rgba(67, 67, 233, 0.08);
+	background: var(--color-details);
 	color: var(--color-primary);
 }
 
 .delete-action:hover {
-	background: rgba(220, 38, 38, 0.08);
+	background: var(--color-error-alt);
 	color: var(--color-danger);
 }
 
 .error {
 	margin-top: 8px;
-	padding-left: 41px;
-
+	padding-left: 40px;
 	color: var(--color-error);
-
 	font-size: var(--font-sm);
 }

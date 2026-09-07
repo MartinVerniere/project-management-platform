@@ -1,85 +1,47 @@
 :host {
-	display: block;
-	min-width: 0;
-
+	display: flex;
+	flex-direction: column;
 	margin-top: 10px;
-	padding-left: 41px;
+	padding-left: 20px;
 }
 
 .comment-update-form {
 	display: flex;
 	flex-direction: column;
-
 	gap: 12px;
 }
 
 .form-group {
 	display: flex;
 	flex-direction: column;
-
 	gap: 6px;
 }
 
 .form-label {
 	color: var(--color-text-secondary);
-
 	font-size: var(--font-sm);
 	font-weight: var(--font-medium);
 }
 
 textarea {
-	width: 100%;
-	min-height: 82px;
-
-	box-sizing: border-box;
-	resize: vertical;
-
-	padding: 10px 12px;
-
-	font-family: inherit;
-	font-size: var(--font-sm);
-	line-height: 1.5;
-
-	color: var(--color-text);
-
-	background: var(--color-background);
-
-	border: 1px solid var(--color-border);
-	border-radius: 8px;
-
-	outline: none;
-
-	transition:
-		border-color 0.15s ease,
-		box-shadow 0.15s ease;
-}
-
-textarea:focus {
-	border-color: var(--color-primary);
-
-	box-shadow: 0 0 0 3px rgba(67, 67, 233, 0.08);
-}
-
-textarea::placeholder {
-	color: var(--color-text-muted);
+	min-height: 60px;
 }
 
 .form-error {
-	padding: 8px 10px;
-
+	padding: 8px;
 	color: var(--color-error);
-
 	font-size: var(--font-sm);
-
-	background: rgba(220, 38, 38, 0.06);
-
-	border: 1px solid rgba(220, 38, 38, 0.14);
+	background: var(--color-error-alt);
+	border: 1px solid var(--color-error-alt);
 	border-radius: 6px;
 }
 
 .form-actions {
 	display: flex;
 	align-items: center;
-
 	gap: 8px;
+}
+
+.form-actions button {
+	flex: 1;
 }

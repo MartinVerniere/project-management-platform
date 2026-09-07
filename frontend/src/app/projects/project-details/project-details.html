@@ -8,43 +8,41 @@
 </div>
 } @else {
 @if (project.value(); as project) {
-<div class="project-page">
-	<header class="project-header">
-		<div class="project-header-top">
-			<a class="back-button" routerLink="/projects">
-				<span aria-hidden="true">←</span>
-				<span>Projects</span>
-			</a>
+<div class="project-header">
+	<div class="project-header-top">
+		<a class="back-button" routerLink="/projects">
+			<div>←</div>
+			<div>Projects</div>
+		</a>
 
-			<span class="project-key">
-				{{ project.key }}
-			</span>
+		<div class="project-key">
+			{{ project.key }}
 		</div>
+	</div>
 
-		<h1 class="project-name">
-			{{ project.name }}
-		</h1>
+	<h1 class="project-name">
+		{{ project.name }}
+	</h1>
 
-		@if (project.description) {
-		<p class="project-description">
-			{{ project.description }}
-		</p>
-		}
-	</header>
+	@if (project.description) {
+	<p class="project-description">
+		{{ project.description }}
+	</p>
+	}
+</div>
 
-	<main class="project-content">
-		<section class="boards-section">
-			<app-board-list [projectId]="project.id" [hasAdminPermissions]="hasAdminPermissions()">
-			</app-board-list>
-		</section>
+<div class="project-content">
+	<div class="boards-section">
+		<app-board-list [projectId]="project.id" [hasAdminPermissions]="hasAdminPermissions()">
+		</app-board-list>
+	</div>
 
-		<section class="members-section">
-			<app-member-list [projectId]="project.id" [memberList]="project.members"
-				[hasAdminPermissions]="hasAdminPermissions()" (memberAdded)="onMemberAdded()"
-				(memberRemoved)="onMemberRemoved()">
-			</app-member-list>
-		</section>
-	</main>
+	<div class="members-section">
+		<app-member-list [projectId]="project.id" [memberList]="project.members"
+			[hasAdminPermissions]="hasAdminPermissions()" (memberAdded)="onMemberAdded()"
+			(memberRemoved)="onMemberRemoved()">
+		</app-member-list>
+	</div>
 </div>
 }
 }

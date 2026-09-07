@@ -1,6 +1,6 @@
 <div class="task-update-form-card">
 	<div class="task-update-form-header">
-		<div class="task-mark" aria-hidden="true">
+		<div class="task-icon">
 			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.8" />
 				<path d="M8 9H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
@@ -9,15 +9,11 @@
 		</div>
 
 		<div>
-			<span class="eyebrow">Edit task</span>
-
-			<h1 class="header">
-				Update task
-			</h1>
-
-			<p class="subtext">
+			<div class="header"> Edit task </div>
+			<h1 class="title"> Update task </h1>
+			<div class="subtext">
 				Update the details of this task.
-			</p>
+			</div>
 		</div>
 	</div>
 
@@ -25,8 +21,8 @@
 		<div class="form-grid">
 			<div class="form-group">
 				<label class="form-label" for="title">
-					<span>Title</span>
-					<span class="required">*</span>
+					<div>Title</div>
+					<div class="required">*</div>
 				</label>
 
 				<input id="title" type="text" placeholder="e.g. Implement authentication"
@@ -45,8 +41,8 @@
 
 			<div class="form-group">
 				<label class="form-label" for="description">
-					<span>Description</span>
-					<span class="optional">Optional</span>
+					<div>Description</div>
+					<div class="optional">Optional</div>
 				</label>
 
 				<textarea id="description" placeholder="Describe what needs to be done..."
@@ -59,9 +55,7 @@
 			</div>
 
 			@if (error()) {
-
 			<div class="server-error">
-
 				<div class="server-error-icon">
 					!
 				</div>
@@ -70,7 +64,6 @@
 					{{ error() }}
 				</div>
 			</div>
-
 			}
 
 			<div class="form-actions">
@@ -79,8 +72,8 @@
 				</button>
 
 				<button class="primary" type="submit" [disabled]="taskForm().invalid()">
-					<span>Save changes</span>
-					<span class="btn-arrow" aria-hidden="true">→</span>
+					<div>Save changes</div>
+					<div class="btn-arrow">→</div>
 				</button>
 			</div>
 		</div>

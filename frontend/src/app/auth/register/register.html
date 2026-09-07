@@ -11,8 +11,7 @@
 					<div class="required">*</div>
 				</label>
 
-				<input id="username" type="text" placeholder="Enter a username"
-					[formField]="registerForm.username" />
+				<input id="username" type="text" placeholder="Enter a username" [formField]="registerForm.username" />
 
 				<label class="form-label" for="avatar">
 					Avatar
@@ -42,8 +41,7 @@
 					<div class="required">*</div>
 				</label>
 
-				<input id="email"  type="email" placeholder="Enter an email"
-					[formField]="registerForm.email" />
+				<input id="email" type="email" placeholder="Enter an email" [formField]="registerForm.email" />
 
 				@if (registerForm.email().invalid() && registerForm.email().touched()) {
 				<div class="error">
@@ -60,7 +58,7 @@
 					<div class="required">*</div>
 				</label>
 
-				<input id="password"  type="password" placeholder="Enter a password"
+				<input id="password" type="password" placeholder="Enter a password"
 					[formField]="registerForm.password" />
 
 				@if (registerForm.password().invalid() && registerForm.password().touched()) {

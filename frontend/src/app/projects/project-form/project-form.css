@@ -4,87 +4,64 @@
 	align-items: center;
 	justify-content: center;
 	padding: 32px;
-	background: linear-gradient(135deg, #f7f8ff 0%, #eef0ff 100%);
+	background: linear-gradient(135deg, var(--color-details-alt) 0%, var(--color-details-alt) 50%, var(--color-details-alt) 100%);
 }
 
 .project-form-card {
-	display: grid;
-	grid-template-columns: 220px minmax(0, 1fr);
+	display: flex;
 	width: 700px;
-	overflow: hidden;
 	background: var(--color-background);
 	border: 1px solid var(--color-border);
-	border-radius: 14px;
-	box-shadow: 0 18px 45px rgba(30, 35, 90, 0.08), 0 3px 8px rgba(0, 0, 0, 0.04);
+	border-radius: 12px;
+	box-shadow: 0 18px 45px var(--color-details), 0 3px 8px var(--color-details-alt);
 }
 
 .project-form-intro {
-	position: relative;
 	display: flex;
+	width: 200px;
 	flex-direction: column;
 	justify-content: space-between;
 	padding: 28px;
 	overflow: hidden;
-	background: var(--color-primary);
+	background:
+		radial-gradient(circle 95px at 100% 100%, transparent 94px, rgba(255, 255, 255, 0.16) 95px, transparent 96px),
+		radial-gradient(circle 55px at calc(100% - 90px) calc(100% - 83px), transparent 54px, rgba(255, 255, 255, 0.10) 55px, transparent 56px),
+		var(--color-primary);
 	color: var(--color-text-alt);
-}
-
-.project-form-intro::after {
-	content: '';
-	position: absolute;
-	width: 190px;
-	height: 190px;
-	right: -95px;
-	bottom: -95px;
-	border: 1px solid rgba(255, 255, 255, 0.16);
-	border-radius: 50%;
-}
-
-.project-form-intro::before {
-	content: '';
-	position: absolute;
-	width: 110px;
-	height: 110px;
-	right: 35px;
-	bottom: 28px;
-	border: 1px solid rgba(255, 255, 255, 0.10);
-	border-radius: 50%;
 }
 
 .project-mark {
 	position: relative;
-	z-index: 1;
 	display: flex;
 	width: 46px;
 	height: 46px;
 	align-items: center;
 	justify-content: center;
-	background: rgba(255, 255, 255, 0.14);
-	border: 1px solid rgba(255, 255, 255, 0.18);
+	background: var(--color-form-details);
+	border: 1px solid var(--color-form-details-alt);
 	border-radius: 10px;
-	font-size: 24px;
+	font-size: var(--font-xl);
 	font-weight: var(--font-medium);
 }
 
 .intro-content {
 	position: relative;
-	z-index: 1;
 }
 
-.eyebrow {
+.header {
 	display: block;
 	margin-bottom: 8px;
-	color: rgba(255, 255, 255, 0.70);
+	color: var(--color-form-details-alt-2);
 	font-size: var(--font-sm);
 	font-weight: var(--font-bold);
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
 }
 
-.header {
+.title {
 	margin: 0;
 	color: var(--color-text-alt);
-	font-size: 26px;
+	font-size: var(--font-xl);
 	font-weight: var(--font-bold);
 	line-height: 1.15;
 	letter-spacing: -0.4px;
@@ -92,26 +69,28 @@
 
 .subtext {
 	margin: 9px 0 0;
-	color: rgba(255, 255, 255, 0.74);
+	color: var(--color-form-details-alt-2);
 	font-size: var(--font-sm);
 	line-height: 1.5;
 }
 
 .project-form {
-	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
 	padding: 32px;
 }
 
 .form-grid {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 24px;
 }
 
 .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 7px;
+	gap: 8px;
 }
 
 .form-label {
@@ -121,10 +100,6 @@
 	color: var(--color-text);
 	font-size: var(--font-sm);
 	font-weight: var(--font-medium);
-}
-
-.required {
-	color: var(--color-danger);
 }
 
 .field-hint {
@@ -141,20 +116,14 @@
 	font-size: var(--font-sm);
 }
 
-textarea {
-	min-height: 120px;
-	padding: 12px;
-	resize: vertical;
-}
-
 .server-error {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	padding: 12px;
-	background: rgba(220, 38, 38, 0.05);
-	border: 1px solid rgba(220, 38, 38, 0.20);
-	border-radius: 7px;
+	background: var(--color-error-alt);
+	border: 1px solid var(--color-error);
+	border-radius: 6px;
 	color: var(--color-error);
 	font-size: var(--font-sm);
 }
@@ -169,7 +138,7 @@ textarea {
 	background: var(--color-error);
 	color: var(--color-text-alt);
 	border-radius: 50%;
-	font-size: 12px;
+	font-size: var(--font-sm);
 	font-weight: var(--font-bold);
 }
 
@@ -177,10 +146,6 @@ textarea {
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	gap: 10px;
+	gap: 12px;
 	padding-top: 8px;
-}
-
-.form-actions .primary {
-	gap: 8px;
 }

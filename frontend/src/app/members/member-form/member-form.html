@@ -2,14 +2,12 @@
 	<div class="form-grid">
 		<div class="form-group">
 			<label class="form-label" for="user">
-				<span>Add member</span>
-				<span class="required">*</span>
+				<div>Add member</div>
+				<div class="required">*</div>
 			</label>
 
 			<div class="form-input-and-actions">
-
 				<select id="user" [formField]="memberForm.userId">
-
 					<option value="">Select a user</option>
 
 					@for (user of possibleUsers(); track user.id) {
@@ -17,22 +15,18 @@
 						{{ user.username }}
 					</option>
 					}
-
 				</select>
 
 				<div class="form-actions">
-
 					<button class="danger" type="button" (click)="onCancel()">
 						Cancel
 					</button>
 
 					<button class="primary" type="submit" [disabled]="memberForm().invalid()">
-						<span>Add member</span>
-						<span class="btn-arrow" aria-hidden="true">→</span>
+						<div>Add member</div>
+						<div class="btn-arrow">→</div>
 					</button>
-
 				</div>
-
 			</div>
 
 			@if (memberForm.userId().invalid() && memberForm.userId().touched()) {

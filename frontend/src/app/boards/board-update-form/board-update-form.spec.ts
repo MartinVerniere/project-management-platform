@@ -92,7 +92,7 @@ describe('BoardUpdateForm', () => {
 
 		const updateButton = Array
 			.from(harness.routeNativeElement!.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Update board'));
+			.find(button => button.textContent?.includes('Save changes'));
 
 		expect(updateButton).toBeTruthy();
 
@@ -116,7 +116,7 @@ describe('BoardUpdateForm', () => {
 
 		const updateButton = Array
 			.from(harness.routeNativeElement!.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Update board'));
+			.find(button => button.textContent?.includes('Save changes'));
 
 		expect(updateButton).toBeTruthy();
 		expect(updateButton!.disabled).toBe(true); 
@@ -148,7 +148,7 @@ describe('BoardUpdateForm', () => {
 
 		const updateButton = Array
 			.from(harness.routeNativeElement!.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Update board'));
+			.find(button => button.textContent?.includes('Save changes'));
 
 		expect(updateButton).toBeTruthy(); 
 

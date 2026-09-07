@@ -1,29 +1,22 @@
 <div class="board-form-card">
 	<div class="board-form-intro">
-		<div class="board-mark" aria-hidden="true">▦</div>
+		<div class="board-icon">▦</div>
 
-		<div>
-			<span class="eyebrow">New board</span>
-			<h1 class="header">
-				Create board
-			</h1>
-
-			<p class="subtext">
+		<div class="intro-content">
+			<div class="header"> New board </div>
+			<h1 class="title"> Create board </h1>
+			<div class="subtext">
 				Create a new board for this project.
-			</p>
+			</div>
 		</div>
-
 	</div>
 
 	<form class="board-form" (submit)="onSubmit($event)">
-
 		<div class="form-grid">
-
 			<div class="form-group">
-
 				<label class="form-label" for="name">
-					<span>Name</span>
-					<span class="required">*</span>
+					<div>Name</div>
+					<div class="required">*</div>
 				</label>
 
 				<input id="name" type="text" placeholder="e.g. Sprint Board" [formField]="boardForm.name" />
@@ -35,7 +28,6 @@
 					}
 				</div>
 				}
-
 			</div>
 
 			@if (error()) {
@@ -51,14 +43,10 @@
 				</button>
 
 				<button class="primary" type="submit" [disabled]="boardForm().invalid()">
-					<span>Create board</span>
-					<span class="btn-arrow" aria-hidden="true">→</span>
+					<div>Create board</div>
+					<div class="btn-arrow">→</div>
 				</button>
-
 			</div>
-
 		</div>
-
 	</form>
-
 </div>

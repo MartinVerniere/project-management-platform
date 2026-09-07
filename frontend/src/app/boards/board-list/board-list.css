@@ -1,15 +1,12 @@
 :host {
 	display: flex;
 	flex-direction: column;
-
-	min-width: 0;
 }
 
 .board-list-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-
 	gap: 16px;
 	margin-bottom: 18px;
 }
@@ -22,27 +19,18 @@
 
 .section-icon {
 	display: flex;
-
 	width: 38px;
 	height: 38px;
-
-	flex-shrink: 0;
 	align-items: center;
 	justify-content: center;
-
-	background: rgba(67, 67, 233, 0.08);
+	background: var(--color-details);
 	color: var(--color-primary);
-
-	border-radius: 9px;
-
-	font-size: 19px;
+	border-radius: 8px;
 }
 
 .board-list-title {
 	margin: 0;
-
 	color: var(--color-text);
-
 	font-size: var(--font-lg);
 	font-weight: var(--font-bold);
 	letter-spacing: -0.2px;
@@ -50,20 +38,17 @@
 
 .board-list-subtitle {
 	margin: 3px 0 0;
-
 	color: var(--color-text-secondary);
-
 	font-size: var(--font-sm);
 }
 
 .board-list-header button {
 	display: flex;
 	align-items: center;
-	gap: 7px;
+	gap: 8px;
 }
 
 .btn-arrow {
-	font-size: 17px;
 	line-height: 1;
 }
 
@@ -71,8 +56,6 @@
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
-
-	min-width: 0;
 }
 
 .board-list-empty {
@@ -80,51 +63,37 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-
 	min-height: 200px;
 	padding: 28px;
-
 	background: var(--color-surface);
-
 	border: 1px dashed var(--color-border);
 	border-radius: 10px;
-
 	text-align: center;
 }
 
 .empty-icon {
 	display: flex;
-
 	width: 44px;
 	height: 44px;
-
 	align-items: center;
 	justify-content: center;
-
 	margin-bottom: 11px;
-
-	background: rgba(67, 67, 233, 0.08);
+	background: var(--color-details);
 	color: var(--color-primary);
-
-	border-radius: 9px;
-
-	font-size: 21px;
+	border-radius: 8px;
+	font-size: var(--font-md);
 }
 
 .empty-title {
 	color: var(--color-text);
-
 	font-size: var(--font-md);
 	font-weight: var(--font-bold);
 }
 
 .empty-text {
 	max-width: 340px;
-
 	margin: 5px 0 16px;
-
 	color: var(--color-text-secondary);
-
 	font-size: var(--font-sm);
 	line-height: 1.45;
 }
@@ -132,13 +101,10 @@
 .loading {
 	display: flex;
 	min-height: 180px;
-
 	align-items: center;
 	justify-content: center;
-
 	color: var(--color-text-secondary);
 	font-size: var(--font-sm);
-
 	animation: loading 1.4s ease-in-out infinite;
 }
 
@@ -159,10 +125,8 @@
 .error {
 	display: flex;
 	min-height: 180px;
-
 	align-items: center;
 	justify-content: center;
-
 	color: var(--color-error);
 	font-size: var(--font-sm);
 }

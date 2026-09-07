@@ -1,24 +1,19 @@
 <div class="column-form-card">
 	<div class="column-form-intro">
-		<div class="column-mark" aria-hidden="true">
+		<div class="column-icon">
 			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<rect x="4" y="4" width="6" height="16" rx="1.5" stroke="currentColor" stroke-width="1.8" />
-				<rect x="14" y="4" width="6" height="16" rx="1.5" stroke="currentColor" stroke-width="1.8" />
+				<rect x="7" y="7" width="2.5" height="10" rx="1" fill="currentColor" />
+				<rect x="10.75" y="5" width="2.5" height="14" rx="1" fill="currentColor" />
+				<rect x="14.5" y="7" width="2.5" height="10" rx="1" fill="currentColor" />
 			</svg>
 		</div>
 
 		<div class="intro-content">
-			<span class="eyebrow">
-				New column
-			</span>
-
-			<h1 class="header">
-				Create column
-			</h1>
-
-			<p class="subtext">
+			<div class="header"> New column </div>
+			<h1 class="title"> Create column </h1>
+			<div class="subtext">
 				Add a column to organize your tasks.
-			</p>
+			</div>
 		</div>
 	</div>
 
@@ -26,8 +21,8 @@
 		<div class="form-grid">
 			<div class="form-group">
 				<label class="form-label" for="name">
-					<span>Name</span>
-					<span class="required">*</span>
+					<div>Name</div>
+					<div class="required">*</div>
 				</label>
 
 				<input id="name" type="text" placeholder="e.g. Backlog" [formField]="columnForm.name" />
@@ -56,16 +51,14 @@
 			}
 
 			<div class="form-actions">
-
-				<button class="secondary" type="button" [routerLink]="['/projects', projectId, 'boards', boardId]">
+				<button class="danger" type="button" [routerLink]="['/projects', projectId, 'boards', boardId]">
 					Cancel
 				</button>
 
 				<button class="primary" type="submit" [disabled]="columnForm().invalid()">
-					<span>Create column</span>
-					<span class="btn-arrow" aria-hidden="true">→</span>
+					<div>Create column</div>
+					<div class="btn-arrow">→</div>
 				</button>
-
 			</div>
 		</div>
 	</form>

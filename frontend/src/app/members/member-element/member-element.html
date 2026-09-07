@@ -4,20 +4,20 @@
 		@if (member.user.avatarUrl) {
 		<img [src]="member.user.avatarUrl" [alt]="member.user.username" />
 		} @else {
-		<span>
+		<div>
 			{{ member.user.username.charAt(0).toUpperCase() }}
-		</span>
+		</div>
 		}
 	</div>
 
 	<div class="member-details">
-		<span class="member-name">
+		<div class="member-name">
 			{{ member.user.username }}
-		</span>
+		</div>
 
-		<span class="member-role" [class.admin]="member.role === 'ADMIN'">
+		<div class="member-role" [class.admin]="member.role === 'ADMIN'">
 			{{ member.role }}
-		</span>
+		</div>
 	</div>
 </div>
 

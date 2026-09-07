@@ -1,27 +1,22 @@
 <div class="board-update-form-card">
 	<div class="board-update-form-intro">
-		<div class="board-mark" aria-hidden="true">▦</div>
+		<div class="board-icon">▦</div>
 
 		<div class="intro-content">
-			<span class="eyebrow">Edit board</span>
-
-			<h1 class="header">
-				Update board
-			</h1>
-
-			<p class="subtext">
+			<div class="header"> Edit board </div>
+			<h1 class="title"> Update board </h1>
+			<div class="subtext">
 				Change the name of this board.
-			</p>
+			</div>
 		</div>
 	</div>
 
 	<form class="board-update-form" (submit)="onSubmit($event)">
 		<div class="form-grid">
 			<div class="form-group">
-
 				<label class="form-label" for="name">
-					<span>Name</span>
-					<span class="required">*</span>
+					<div>Name</div>
+					<div class="required">*</div>
 				</label>
 
 				<input id="name" type="text" placeholder="e.g. Sprint Board" [formField]="boardForm.name" />
@@ -33,7 +28,6 @@
 					}
 				</div>
 				}
-
 			</div>
 
 			@if (error()) {
@@ -49,10 +43,9 @@
 				</button>
 
 				<button class="primary" type="submit" [disabled]="boardForm().invalid()">
-					<span>Update board</span>
-					<span class="btn-arrow" aria-hidden="true">→</span>
+					<div>Save changes</div>
+					<div class="btn-arrow">→</div>
 				</button>
-
 			</div>
 		</div>
 	</form>
