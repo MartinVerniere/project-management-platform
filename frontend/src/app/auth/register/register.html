@@ -29,7 +29,7 @@
 				@if (registerForm.username().invalid() && registerForm.username().touched()) {
 				<div class="error">
 					@for (error of registerForm.username().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -46,7 +46,7 @@
 				@if (registerForm.email().invalid() && registerForm.email().touched()) {
 				<div class="error">
 					@for (error of registerForm.email().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -64,7 +64,7 @@
 				@if (registerForm.password().invalid() && registerForm.password().touched()) {
 				<div class="error">
 					@for (error of registerForm.password().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -73,7 +73,7 @@
 			<div class="form-error">
 				@if (error()) {
 				<div class="error">
-					<div>{{ error() }}</div>
+					{{ error() }}
 				</div>
 				}
 			</div>

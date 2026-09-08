@@ -13,7 +13,7 @@
 				@if (loginForm.username().invalid() && loginForm.username().touched()) {
 				<div class="error">
 					@for (error of loginForm.username().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -26,7 +26,7 @@
 				@if (loginForm.password().invalid() && loginForm.password().touched()) {
 				<div class="error">
 					@for (error of loginForm.password().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -35,7 +35,7 @@
 			@if (error()) {
 			<div class="form-error">
 				<div class="error">
-					<div>{{ error() }}</div>
+					{{ error() }}
 				</div>
 			</div>
 			}
