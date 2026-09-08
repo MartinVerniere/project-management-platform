@@ -119,7 +119,7 @@ describe('TaskList', () => {
 	});
 
 	it('should render empty message when no task exists', async () => {
-		await createComponent();
+		await createComponent(true, false, []);
 
 		expect(html.textContent).toContain('No tasks yet!');
 	});

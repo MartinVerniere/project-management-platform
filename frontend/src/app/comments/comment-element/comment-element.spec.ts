@@ -92,13 +92,8 @@ describe('CommentElement', () => {
 
 		await createComponent(true, false);
 
-		const editButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Edit'));
-
-		const deleteButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Delete'));
+		const editButton = html.querySelector('button[title="Edit comment"]') ?? undefined;
+		const deleteButton = html.querySelector('button[title="Delete comment"]') ?? undefined;
 
 		expect(editButton).toBeUndefined();
 		expect(deleteButton).toBeUndefined();
@@ -128,9 +123,7 @@ describe('CommentElement', () => {
 
 		const emitSpy = vi.spyOn(component.commentDeleted, 'emit');
 
-		const deleteButton = Array
-			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Delete'));
+		const deleteButton = html.querySelector('button[title="Delete comment"]') as HTMLButtonElement;
 
 		expect(deleteButton).toBeTruthy();
 

@@ -148,7 +148,7 @@ describe('ColumnList', () => {
 	it('should render empty message when no column exists', async () => {
 		await createComponent(true, []);
 
-		expect(html.textContent).toContain('No columns yet!');
+		expect(html.textContent).toContain('No columns yet.');
 	});
 
 	it('should update searchTerm when search input changes', async () => {

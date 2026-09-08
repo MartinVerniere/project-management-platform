@@ -76,7 +76,7 @@ describe('ProjectList', () => {
 
 		await createComponent(false);
 
-		expect(html.textContent).toContain('Loading...');
+		expect(html.textContent).toContain('Loading projects...');
 	});
 
 	it('should render projects', async () => {
