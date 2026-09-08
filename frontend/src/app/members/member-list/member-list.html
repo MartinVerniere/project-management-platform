@@ -15,17 +15,16 @@
 		<div>
 			<h2 class="member-list-title">Members</h2>
 
-			<p class="member-list-subtitle">
+			<div class="member-list-subtitle">
 				People working on this project.
-			</p>
+			</div>
 		</div>
 
 	</div>
 
 	@if (hasAdminPermissions() && !addMemberFormEnabled()) {
 	<button class="primary" type="button" (click)="onEnableAddMember()">
-		<div>Add member</div>
-		<div class="btn-arrow">+</div>
+		Add member +
 	</button>
 	}
 </div>

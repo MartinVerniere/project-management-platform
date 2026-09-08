@@ -14,8 +14,7 @@
 		<div class="board-header-content">
 			<div class="board-topline">
 				<a class="back-link" [routerLink]="['/projects', projectId]">
-					<div>←</div>
-					<div>Project</div>
+					← Project
 				</a>
 
 				<div class="board-label">
@@ -42,8 +41,7 @@
 			@if (hasAdminPermissions()) {
 			<button class="primary" type="button"
 				[routerLink]="['/projects', projectId, 'boards', boardId, 'columns', 'create']">
-				<div>Add column</div>
-				<div>+</div>
+				Add column +
 			</button>
 			}
 		</div>

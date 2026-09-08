@@ -24,7 +24,7 @@
 	padding: 32px;
 	background: var(--color-background);
 	border: 1px solid var(--color-border);
-	border-radius: 14px;
+	border-radius: 12px;
 	box-shadow:
 		0 24px 60px var(--color-details),
 		0 4px 12px var(--color-details-alt);
@@ -69,18 +69,14 @@
 	gap: 7px;
 }
 
-	.form-label {
-		display: flex;
-		align-items: center;
-		gap: 5px;
+.form-label {
+	display: flex;
+	align-items: center;
+	gap: 5px;
 
 	color: var(--color-text);
 	font-size: var(--font-sm);
 	font-weight: var(--font-medium);
-}
-
-.required {
-	color: var(--color-danger);
 }
 
 .error {

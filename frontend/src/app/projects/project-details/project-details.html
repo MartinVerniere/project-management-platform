@@ -11,8 +11,7 @@
 <div class="project-header">
 	<div class="project-header-top">
 		<a class="back-button" routerLink="/projects">
-			<div>←</div>
-			<div>Projects</div>
+			← Projects
 		</a>
 
 		<div class="project-key">
@@ -25,9 +24,9 @@
 	</h1>
 
 	@if (project.description) {
-	<p class="project-description">
+	<div class="project-description">
 		{{ project.description }}
-	</p>
+	</div>
 	}
 </div>
 

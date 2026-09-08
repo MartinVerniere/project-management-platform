@@ -14,16 +14,15 @@
 
 		<div>
 			<h2 class="board-list-title">Boards</h2>
-			<p class="board-list-subtitle">
+			<div class="board-list-subtitle">
 				Boards for this project.
-			</p>
+			</div>
 		</div>
 	</div>
 
 	@if (hasAdminPermissions()) {
 	<button class="primary" type="button" [routerLink]="['/projects', projectId(), 'boards', 'create']">
-		<div>Add board</div>
-		<div class="btn-arrow">+</div>
+		Add board +
 	</button>
 	}
 </div>

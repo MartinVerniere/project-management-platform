@@ -80,7 +80,7 @@
 	margin-bottom: 10px;
 	background: var(--color-details);
 	color: var(--color-primary);
-	border-radius: 9px;
+	border-radius: 8px;
 }
 
 .empty-icon svg {

@@ -60,11 +60,6 @@
 	padding: 12px;
 }
 
-.create-project-icon {
-	font-size: 18px;
-	line-height: 1;
-}
-
 .project-element-list {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(200px, 1fr));
@@ -87,7 +82,7 @@
 	background: var(--color-surface);
 
 	border: 1px dashed var(--color-border);
-	border-radius: 14px;
+	border-radius: 12px;
 }
 
 .empty-icon {
@@ -100,7 +95,7 @@
 
 	margin-bottom: 16px;
 
-	background: rgba(67, 67, 233, 0.10);
+	background: var(--color-details);
 	color: var(--color-primary);
 
 	border-radius: 12px;

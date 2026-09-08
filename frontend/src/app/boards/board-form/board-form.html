@@ -24,7 +24,7 @@
 				@if (boardForm.name().invalid() && boardForm.name().touched()) {
 				<div class="field-error">
 					@for (error of boardForm.name().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -33,7 +33,7 @@
 			@if (error()) {
 			<div class="server-error">
 				<div class="server-error-icon">!</div>
-				<div>{{ error() }}</div>
+				{{ error() }}
 			</div>
 			}
 
@@ -43,8 +43,7 @@
 				</button>
 
 				<button class="primary" type="submit" [disabled]="boardForm().invalid()">
-					<div>Create board</div>
-					<div class="btn-arrow">→</div>
+					Create board →
 				</button>
 			</div>
 		</div>

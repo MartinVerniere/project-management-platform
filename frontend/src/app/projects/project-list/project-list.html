@@ -3,13 +3,12 @@
 		<div class="project-heading">
 			<div class="project-header">Workspace</div>
 			<h1 class="project-list-title">Projects</h1>
-			<p class="project-list-subtitle">
+			<div class="project-list-subtitle">
 				Manage your projects and boards.
-			</p>
+			</div>
 		</div>
 		<button class="primary create-project-button" type="button" routerLink="/projects/create">
-			<div>Add project</div>
-			<div class="create-project-icon">+</div>
+			Add project +
 		</button>
 	</div>
 	@if (projectList.isLoading()) {

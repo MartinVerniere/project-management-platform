@@ -9,16 +9,15 @@
 	</h3>
 
 	@if (project.description) {
-	<p class="project-description">
+	<div class="project-description">
 		{{ project.description }}
-	</p>
+	</div>
 	}
 </div>
 
 <div class="project-actions">
 	<button class="primary open-button" type="button" [routerLink]="['/projects', project.id]">
-		Open project
-		<div>→</div>
+		Open project →
 	</button>
 
 	@if (hasDeletePermission()) {

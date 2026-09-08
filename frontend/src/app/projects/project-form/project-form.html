@@ -15,7 +15,7 @@
 		<div class="form-grid">
 			<div class="form-group">
 				<label class="form-label" for="name">
-					<div>Name</div>
+					Name
 					<div class="required">*</div>
 				</label>
 
@@ -24,7 +24,7 @@
 				@if (projectForm.name().invalid() && projectForm.name().touched()) {
 				<div class="field-error">
 					@for (error of projectForm.name().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -32,7 +32,7 @@
 
 			<div class="form-group">
 				<label class="form-label" for="key">
-					<div>Key</div>
+					Key
 					<div class="required">*</div>
 				</label>
 
@@ -45,7 +45,7 @@
 				@if (projectForm.key().invalid() && projectForm.key().touched()) {
 				<div class="field-error">
 					@for (error of projectForm.key().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -63,7 +63,7 @@
 				@if (projectForm.description().invalid() && projectForm.description().touched()) {
 				<div class="field-error">
 					@for (error of projectForm.description().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -72,7 +72,7 @@
 			@if (error()) {
 			<div class="server-error">
 				<div class="server-error-icon">!</div>
-				<div>{{ error() }}</div>
+				{{ error() }}
 			</div>
 			}
 
@@ -82,8 +82,7 @@
 				</button>
 
 				<button class="primary" type="submit" [disabled]="projectForm().invalid()">
-					<div>Create project</div>
-					<div>→</div>
+					Create project →
 				</button>
 			</div>
 		</div>

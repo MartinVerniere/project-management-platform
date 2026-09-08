@@ -21,7 +21,7 @@
 		<div class="form-grid">
 			<div class="form-group">
 				<label class="form-label" for="title">
-					<div>Title</div>
+					Title
 					<div class="required">*</div>
 				</label>
 
@@ -31,9 +31,7 @@
 				@if (taskForm.title().invalid() && taskForm.title().touched()) {
 				<div class="field-error">
 					@for (error of taskForm.title().errors(); track error.kind) {
-					<div>
-						{{ error.message }}
-					</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -41,7 +39,7 @@
 
 			<div class="form-group">
 				<label class="form-label" for="description">
-					<div>Description</div>
+					Description
 					<div class="optional">Optional</div>
 				</label>
 
@@ -57,10 +55,7 @@
 			@if (error()) {
 			<div class="server-error">
 				<div class="server-error-icon">!</div>
-
-				<div>
-					{{ error() }}
-				</div>
+				{{ error() }}
 			</div>
 			}
 
@@ -70,8 +65,7 @@
 				</button>
 
 				<button class="primary" type="submit" [disabled]="taskForm().invalid()">
-					<div>Create task</div>
-					<div class="btn-arrow">→</div>
+					Create task →
 				</button>
 			</div>
 		</div>

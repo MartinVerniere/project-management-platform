@@ -41,7 +41,7 @@
 	justify-content: center;
 	background: var(--color-surface);
 	color: var(--color-text-muted);
-	border-radius: 6px;
+	border-radius: 4px;
 	cursor: grab;
 	transition: 0.15s ease;
 }

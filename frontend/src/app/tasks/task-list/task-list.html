@@ -4,7 +4,8 @@
 	<div class="task-element-list">
 		@for (task of taskList; track task.id) {
 		<div cdkDrag [cdkDragData]="{type: 'task', task: task}">
-			<div class="task-custom-placeholder" *cdkDragPlaceholder> </div>
+			<div class="task-custom-placeholder" *cdkDragPlaceholder>
+			</div>
 
 			<app-task-element [task]="task" [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()"
 				[memberList]="memberList()" [hasAdminPermissions]="hasAdminPermissions()"

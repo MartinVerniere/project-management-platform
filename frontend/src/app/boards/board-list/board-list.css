@@ -48,10 +48,6 @@
 	gap: 8px;
 }
 
-.btn-arrow {
-	line-height: 1;
-}
-
 .board-element-list {
 	display: flex;
 	flex-direction: column;
@@ -67,7 +63,7 @@
 	padding: 28px;
 	background: var(--color-surface);
 	border: 1px dashed var(--color-border);
-	border-radius: 10px;
+	border-radius: 8px;
 	text-align: center;
 }
 
