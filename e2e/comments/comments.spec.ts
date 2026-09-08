@@ -43,7 +43,7 @@ test.describe('Comments', () => {
 
 		const task = page.locator('app-task-element');
 		const commentList = task.locator('app-comment-list');
-		const addButton = commentList.getByRole('button', { name: 'Add comment' });
+		const addButton = commentList.getByRole('button', { name: 'Add comment +' });
 
 		await addButton.click();
 
@@ -60,7 +60,7 @@ test.describe('Comments', () => {
 
 		const task = page.locator('app-task-element');
 		const commentList = task.locator('app-comment-list');
-		const addButton = commentList.getByRole('button', { name: 'Add comment' });
+		const addButton = commentList.getByRole('button', { name: 'Add comment +' });
 
 		await addButton.click();
 
@@ -95,7 +95,7 @@ test.describe('Comments', () => {
 		await cancelButton.click();
 
 		await expect(commentForm).not.toBeVisible();
-		await expect(commentList.getByRole('button', { name: 'Add comment' })).toBeVisible();
+		await expect(commentList.getByRole('button', { name: 'Add comment +' })).toBeVisible();
 	});
 
 	test.describe('no comments exist', () => {
@@ -105,7 +105,7 @@ test.describe('Comments', () => {
 			const task = page.locator('app-task-element');
 			const commentList = task.locator('app-comment-list');
 
-			await expect(commentList.getByText('No comments yet!')).toBeVisible();
+			await expect(commentList.getByText('No comments yet.')).toBeVisible();
 		});
 	});
 
@@ -159,7 +159,7 @@ test.describe('Comments', () => {
 				await editButton.click();
 
 				await expect(firstComment.getByText('Comment A')).toBeVisible();
-				await expect(firstComment.getByRole('button', { name: 'Edit comment' })).toBeVisible();
+				await expect(firstComment.getByRole('button', { name: 'Save changes' })).toBeVisible();
 				await expect(firstComment.getByRole('button', { name: 'Cancel' })).toBeVisible();
 			});
 
@@ -177,7 +177,7 @@ test.describe('Comments', () => {
 
 				const commentUpdateForm = firstComment.locator('app-comment-update-form');
 				const contentInput = commentUpdateForm.getByLabel('Comment');
-				const updateButton = commentUpdateForm.getByRole('button', { name: 'Edit comment' });
+				const updateButton = commentUpdateForm.getByRole('button', { name: 'Save changes' });
 
 				await expect(commentUpdateForm).toBeVisible();
 				await expect(contentInput).toHaveValue('Comment A');

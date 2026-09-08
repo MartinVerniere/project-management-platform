@@ -27,7 +27,7 @@ test.describe('Column update form', () => {
 		const columnUpdateForm = page.locator('app-column-update-form');
 		await expect(columnUpdateForm.getByLabel('Name')).toBeVisible();
 
-		await expect(columnUpdateForm.getByRole('button', { name: 'Save changes' })).toBeVisible();
+		await expect(columnUpdateForm.getByRole('button', { name: 'Save changes →' })).toBeVisible();
 		await expect(columnUpdateForm.getByRole('button', { name: 'Cancel' })).toBeVisible();
 	});
 
@@ -56,7 +56,7 @@ test.describe('Column update form', () => {
 
 		await nameInput.fill('Updated Column A');
 
-		const submitButton = columnUpdateForm.getByRole('button', { name: 'Save changes' });
+		const submitButton = columnUpdateForm.getByRole('button', { name: 'Save changes →' });
 		await submitButton.click();
 
 		await expect(page).toHaveURL(`/projects/${projectId}/boards/${boardId}`);
@@ -74,7 +74,7 @@ test.describe('Column update form', () => {
 
 		await nameInput.fill('');
 
-		const submitButton = columnUpdateForm.getByRole('button', { name: 'Save changes' });
+		const submitButton = columnUpdateForm.getByRole('button', { name: 'Save changes →' });
 		await expect(submitButton).toBeDisabled();
 	});
 });

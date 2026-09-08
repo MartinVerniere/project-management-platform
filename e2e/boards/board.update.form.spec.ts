@@ -27,7 +27,7 @@ test.describe('Board update form', () => {
 		await expect(nameInput).toBeVisible();
 		await expect(nameInput).toHaveValue('Board A');
 
-		await expect(boardUpdateForm.getByRole('button', { name: 'Update board' })).toBeVisible();
+		await expect(boardUpdateForm.getByRole('button', { name: 'Save changes →' })).toBeVisible();
 		await expect(boardUpdateForm.getByRole('button', { name: 'Cancel' })).toBeVisible();
 	});
 
@@ -56,7 +56,7 @@ test.describe('Board update form', () => {
 
 		await nameInput.fill('Updated Board A');
 
-		const submitButton = boardUpdateForm.getByRole('button', { name: 'Update Board' });
+		const submitButton = boardUpdateForm.getByRole('button', { name: 'Save changes →' });
 		submitButton.click();
 
 		await expect(page).toHaveURL(`/projects/${projectId}`);
@@ -73,7 +73,7 @@ test.describe('Board update form', () => {
 
 		await nameInput.fill(''); // Clear old name
 
-		const submitButton = boardUpdateForm.getByRole('button', { name: 'Update Board' });
+		const submitButton = boardUpdateForm.getByRole('button', { name: 'Save changes →' });
 		await expect(submitButton).toBeDisabled();
 	});
 });

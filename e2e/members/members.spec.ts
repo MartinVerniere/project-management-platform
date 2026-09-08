@@ -35,7 +35,7 @@ test.describe('Members', () => {
 			const memberList = projectElement.locator('app-member-list');
 
 			await expect(memberList.getByRole('heading', { name: 'Members' })).toBeVisible();
-			await expect(memberList.getByRole('button', { name: 'Add member' })).toBeVisible();
+			await expect(memberList.getByRole('button', { name: 'Add member +' })).toBeVisible();
 		});
 
 		test('should display each member with all actions', async ({ page }) => {
@@ -57,14 +57,14 @@ test.describe('Members', () => {
 			await page.goto(`/projects/${projectId}`);
 
 			const memberList = page.locator('app-member-list');
-			await memberList.getByRole('button', { name: 'Add member' }).click();
+			await memberList.getByRole('button', { name: 'Add member +' }).click();
 
 			const memberForm = memberList.locator('app-member-form');
 
 			await expect(memberForm).toBeVisible();
-			await expect(memberForm.getByLabel('User')).toBeVisible();
+			await expect(memberForm.getByLabel('Add member')).toBeVisible();
 			await expect(memberForm.getByRole('button', { name: 'Cancel' })).toBeVisible();
-			await expect(memberForm.getByRole('button', { name: 'Add member' })).toBeVisible();
+			await expect(memberForm.getByRole('button', { name: 'Add member →' })).toBeVisible();
 		});
 
 		test('should only show non-members as selectable users', async ({ page }) => {
@@ -72,10 +72,10 @@ test.describe('Members', () => {
 
 			const memberList = page.locator('app-member-list');
 
-			await memberList.getByRole('button', { name: 'Add member' }).click();
+			await memberList.getByRole('button', { name: 'Add member +' }).click();
 
 			const memberForm = memberList.locator('app-member-form');
-			const userSelect = memberForm.getByLabel('User');
+			const userSelect = memberForm.getByLabel('Add member');
 
 			await expect(userSelect.locator('option')).toHaveCount(3);
 
@@ -91,7 +91,7 @@ test.describe('Members', () => {
 			await page.goto(`/projects/${projectId}`);
 
 			const memberList = page.locator('app-member-list');
-			await memberList.getByRole('button', { name: 'Add member' }).click();
+			await memberList.getByRole('button', { name: 'Add member +' }).click();
 
 			const memberForm = memberList.locator('app-member-form');
 
@@ -100,7 +100,7 @@ test.describe('Members', () => {
 			await memberForm.getByRole('button', { name: 'Cancel' }).click();
 
 			await expect(memberForm).not.toBeVisible();
-			await expect(memberList.getByRole('button', { name: 'Add member' })).toBeVisible();
+			await expect(memberList.getByRole('button', { name: 'Add member +' })).toBeVisible();
 		});
 
 		test('should add member successfully', async ({ page }) => {
@@ -108,11 +108,10 @@ test.describe('Members', () => {
 
 			const memberList = page.locator('app-member-list');
 
-			await memberList.getByRole('button', { name: 'Add member' }).click();
+			await memberList.getByRole('button', { name: 'Add member +' }).click();
 
 			const memberForm = memberList.locator('app-member-form');
-			const userSelect = memberForm.getByLabel('User');
-
+			const userSelect = memberForm.getByLabel('Add member');
 			await userSelect.selectOption({ label: 'martin' });
 
 			await memberForm.getByRole('button', { name: 'Add member' }).click();
@@ -168,7 +167,7 @@ test.describe('Members', () => {
 			const memberList = projectElement.locator('app-member-list');
 
 			await expect(memberList.getByRole('heading', { name: 'Members' })).toBeVisible();
-			await expect(memberList.getByRole('button', { name: 'Add member' })).not.toBeVisible();
+			await expect(memberList.getByRole('button', { name: 'Add member +' })).not.toBeVisible();
 		});
 
 		test('should display each member with NO actions', async ({ page }) => {

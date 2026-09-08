@@ -30,7 +30,7 @@ test.describe('Task update form', () => {
 		await expect(taskUpdateForm.getByLabel('Title')).toBeVisible();
 		await expect(taskUpdateForm.getByLabel('Description')).toBeVisible();
 
-		await expect(taskUpdateForm.getByRole('button', { name: 'Update task' })).toBeVisible();
+		await expect(taskUpdateForm.getByRole('button', { name: 'Save changes →' })).toBeVisible();
 		await expect(taskUpdateForm.getByRole('button', { name: 'Cancel' })).toBeVisible();
 	});
 
@@ -69,7 +69,7 @@ test.describe('Task update form', () => {
 
 		await titleInput.fill('Updated Task A');
 
-		const submitButton = taskUpdateForm.getByRole('button', { name: 'Update task' });
+		const submitButton = taskUpdateForm.getByRole('button', { name: 'Save changes →' });
 		await submitButton.click();
 
 		await expect(page).toHaveURL(`/projects/${projectId}/boards/${boardId}`);
@@ -92,7 +92,7 @@ test.describe('Task update form', () => {
 
 		await titleInput.fill('');
 
-		const submitButton = taskUpdateForm.getByRole('button', { name: 'Update task' });
+		const submitButton = taskUpdateForm.getByRole('button', { name: 'Save changes →' });
 		await expect(submitButton).toBeDisabled();
 	});
 });
