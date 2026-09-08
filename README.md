@@ -37,6 +37,7 @@ The goal of this project was to learn full-stack development utilizing Angular f
 ### Collaboration
 
 * Authentication
-* Comments
-* User assignments
-* Email notifications
+* Add/remove users to projects
+* Create tasks, and assign tasks to yourself or other users
+* Comment on tasks
+* Email notifications of events (assigned to task, added to project, etc.)
