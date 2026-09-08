@@ -2,51 +2,108 @@
 	display: flex;
 	flex: 1;
 	flex-direction: column;
-	gap: 16px;
+}
+
+.task-drop-zone {
+	display: flex;
+	flex: 1;
+	padding: 12px;
 }
 
 .task-element-list {
 	display: flex;
+	flex: 1;
 	flex-direction: column;
-	gap: 12px;
+	gap: 10px;
+	overflow-y: auto;
+}
+
+.task-element-list>[cdkDrag] {
+	flex-shrink: 0;
+}
+
+/*
+ * Empty state is normally hidden.
+ * It becomes visible when the list has no draggable tasks.
+ */
+.task-list-empty {
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 150px;
+	padding: 24px;
+	border: 1px dashed var(--color-border);
+	border-radius: 8px;
+	background: var(--color-form-details-alt-2);
+	text-align: center;
+	pointer-events: none;
+}
+
+/*
+ * Show empty state when the column contains no tasks.
+ */
+.task-element-list:not(:has([cdkDrag])) .task-list-empty {
+	display: flex;
+}
+
+/*
+ * Show empty state when the last task is being dragged
+ * out of its original column.
+ */
+.task-element-list:has(.task-custom-placeholder):not(:has(app-task-element)) .task-list-empty {
+	display: flex;
+}
+
+/*
+ * Hide the empty state while this drop list is actively
+ * handling a drag operation.
+ */
+.cdk-drop-list-dragging .task-element-list>.task-list-empty {
+	display: none !important;
+}
+
+.empty-icon {
+	display: flex;
+	width: 36px;
+	height: 36px;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 8px;
+	background: var(--color-details);
+	color: var(--color-primary);
+	border-radius: 8px;
+	font-size: var(--font-lg);
+	font-weight: var(--font-medium);
+}
+
+.empty-title {
+	color: var(--color-text);
+	font-size: var(--font-sm);
+	font-weight: var(--font-bold);
+}
+
+.empty-text {
+	max-width: 220px;
+	margin-top: 4px;
+	color: var(--color-text-muted);
+	font-size: var(--font-sm);
+	line-height: 1.4;
+}
+
+.task-custom-placeholder {
+	min-height: 50px;
+	border: 1px dashed var(--color-primary);
+	border-radius: 8px;
+	background: var(--color-details);
 }
 
 .cdk-drag-placeholder {
 	opacity: 0.35;
 }
 
-.task-list-empty {
-	display: none;
-	padding: 32px;
-	text-align: center;
-	border: 2px dashed var(--color-border);
-	border-radius: 10px;
-	color: var(--color-text-secondary);
-	pointer-events: none;
-}
-
-/* Show empty list message if the list is completely empty (no cdkDrag items exist at all) */
-.task-element-list:not(:has([cdkDrag])) .task-list-empty {
-	display: block;
-}
-
-/* Show empty list message if a drag placeholder exists, but NO stable task components are present */
-/* This targets the exact moment the last element is lifted out of its original list and dragged away */
-.task-element-list:has(.task-custom-placeholder):not(:has(app-task-element)) .task-list-empty {
-	display: block;
-}
-
-/* Hide empty list message if the list is actively hosting a destination preview */
-.cdk-drop-list-dragging .task-element-list>.task-list-empty {
-	display: none !important;
-}
-
-.empty-icon {
-	font-size: 24px;
-	margin-bottom: 8px;
-}
-
-.empty-title {
-	font-weight: 600;
-	margin-bottom: 4px;
+.error {
+	margin: 12px;
+	color: var(--color-error);
+	font-size: var(--font-sm);
 }

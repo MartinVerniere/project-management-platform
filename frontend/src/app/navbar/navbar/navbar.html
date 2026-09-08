@@ -1,6 +1,11 @@
 <div class="navigation-section">
-	<a class="nav-link" routerLink="/">Home</a>
-	<a class="nav-link" routerLink="/projects">Projects</a>
+	<a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+		Home
+	</a>
+
+	<a class="nav-link" routerLink="/projects" routerLinkActive="active">
+		Projects
+	</a>
 </div>
 
 <div class="user-section">

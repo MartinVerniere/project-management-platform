@@ -1,72 +1,109 @@
 :host {
 	display: flex;
 	flex-direction: column;
+	width: 350px;
 	min-width: 350px;
-	background: var(--color-background);
+	background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface) 100%);
 	border: 1px solid var(--color-border);
 	border-radius: 12px;
-	padding: 16px;
-	gap: 16px;
+	overflow: hidden;
+	box-shadow: 0 3px 10px var(--color-details);
+	transition: 0.15s ease;
+}
+
+:host:hover {
+	margin-top: 4px;
+	border-color: var(--color-details);
+	box-shadow: 0 6px 16px var(--color-details);
 }
 
 .column-header {
 	display: flex;
-	justify-content: space-between;
 	align-items: flex-start;
+	justify-content: space-between;
 	gap: 12px;
+	padding: 12px;
+	background: var(--color-background);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .column-title {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-}
-
-.column-info {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-
-.header {
-	margin: 0;
-	font-size: 16px;
-	font-weight: 600;
-}
-
-.subtext {
-	font-size: 12px;
-	color: var(--color-text-secondary);
-}
-
-.column-actions {
-	display: flex;
-	gap: 6px;
+	gap: 8px;
 }
 
 .column-handle {
 	display: flex;
+	width: 22px;
+	height: 28px;
 	align-items: center;
 	justify-content: center;
-	padding: 2px;
-	border: none;
-	background: transparent;
+	background: var(--color-surface);
 	color: var(--color-text-muted);
+	border-radius: 4px;
 	cursor: grab;
-	border-radius: 2px;
-	transition: .15s ease;
+	transition: 0.15s ease;
 }
 
 .column-handle:hover {
-	background: var(--color-surface);
-	color: var(--color-text-secondary);
+	background: var(--color-details);
+	color: var(--color-primary);
 }
 
 .column-handle:active {
 	cursor: grabbing;
 }
 
+.column-name-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.header {
+	margin: 0;
+	color: var(--color-text);
+	font-size: var(--font-md);
+	font-weight: var(--font-bold);
+	line-height: 1.25;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.task-count {
+	display: flex;
+	min-width: 22px;
+	height: 22px;
+	padding: 4px;
+	align-items: center;
+	justify-content: center;
+	background: var(--color-details);
+	border-radius: 8px;
+	color: var(--color-primary);
+	font-size: var(--font-sm);
+	font-weight: var(--font-bold);
+}
+
+.column-actions {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.column-actions button {
+	padding: 8px;
+	font-size: var(--font-sm);
+}
+
+app-task-list {
+	display: flex;
+	flex: 1;
+}
+
 .error {
+	margin: 8px;
 	color: var(--color-error);
-	font-size: 12px;
+	font-size: var(--font-sm);
 }

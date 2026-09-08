@@ -1,71 +1,82 @@
+:host {
+	display: block;
+	flex: 1;
+	background: linear-gradient(90deg, var(--color-details), var(--color-details));
+	border-top: 1px solid var(--color-details);
+}
+
 .member-form {
+	padding: 12px;
+}
+
+.form-grid {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
-	padding: 16px;
-	border: 1px solid var(--color-border);
-	border-radius: 6px;
-	background: var(--color-background);
 }
 
 .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
-	margin-bottom: 20px;
+	gap: 8px;
 }
 
 .form-label {
-	font-size: 12px;
-	font-weight: 600;
-	color: var(--color-text-secondary);
-}
-
-.required {
-	color: var(--color-error);
-}
-
-.form-input-and-actions{
 	display: flex;
+	align-items: center;
+	gap: 6px;
+	color: var(--color-text);
+	font-size: var(--font-sm);
+	font-weight: var(--font-medium);
+}
+
+.form-input-and-actions {
+	display: flex;
+	align-items: center;
 	gap: 10px;
 }
 
+.form-input-and-actions select {
+	flex: 1;
+	min-width: 50;
+}
+
+.form-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.form-actions button {
+	white-space: nowrap;
+}
+
 .field-error {
-	font-size: 12px;
 	color: var(--color-error);
+	font-size: var(--font-sm);
 }
 
 .server-error {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	padding: 8px;
+	margin-top: 10px;
+	padding: 12px;
+	background: var(--color-error-alt);
 	border: 1px solid var(--color-error);
 	border-radius: 4px;
-	background: var(--color-background);
 	color: var(--color-error);
-	font-size: 12px;
+	font-size: var(--font-sm);
 }
 
 .server-error-icon {
 	display: flex;
-	align-items: center;
-	justify-content: center;
 	width: 18px;
 	height: 18px;
-	border-radius: 50%;
+	align-items: center;
+	justify-content: center;
 	background: var(--color-error);
 	color: var(--color-text-alt);
-	font-size: 12px;
-	font-weight: 700;
-}
-
-.form-actions {
-	display: flex;
-	justify-content: flex-end;
-	gap: 8px;
-}
-
-.btn-arrow {
-	font-size: 12px;
+	border-radius: 50%;
+	font-size: var(--font-sm);
+	font-weight: var(--font-bold);
 }

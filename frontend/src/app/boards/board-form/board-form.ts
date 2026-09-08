@@ -29,7 +29,7 @@ export class BoardForm {
 	error = signal<string | null>(null);
 
 	boardForm = form(this.boardModel, (fieldPath) => {
-		required(fieldPath.name, { message: 'name is required' });
+		required(fieldPath.name, { message: 'Name is required' });
 	});
 
 	async onSubmit(event: Event) {

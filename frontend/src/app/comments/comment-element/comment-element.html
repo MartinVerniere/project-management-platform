@@ -2,13 +2,40 @@
 <div class="comment-header">
 	<div class="user-info">
 		<div class="avatar">
-			<img class="avatar-image" [src]="comment.author.avatarUrl ?? avatarPreview()" />
+			<img class="avatar-image" [src]="comment.author.avatarUrl ?? avatarPreview()"
+				[alt]="comment.author.username" />
 		</div>
+
 		<div class="username">
 			{{ comment.author.username }}
 		</div>
 	</div>
+
+	@if (!editCommentFormEnabled() && hasCommentEditorPermissions()) {
+	<div class="comment-actions">
+		<button class="comment-action edit-action" type="button" title="Edit comment" (click)="onEnableEditComment()">
+			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M12 20H21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+				<path
+					d="M16.5 3.5C17.3284 2.67157 18.6716 2.67157 19.5 3.5C20.3284 4.32843 20.3284 5.67157 19.5 6.5L8 18L3 19L4 14L16.5 3.5Z"
+					stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</button>
+
+		<button class="comment-action delete-action" type="button" title="Delete comment"
+			(click)="onCommentDeleted(comment.id)">
+			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M4 7H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+				<path d="M10 11V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+				<path d="M14 11V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+				<path d="M6 7L7 20H17L18 7" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+				<path d="M9 7V4H15V7" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+			</svg>
+		</button>
+	</div>
+	}
 </div>
+
 @if (editCommentFormEnabled()) {
 <app-comment-update-form [comment]="comment" (commentEdited)="onCommentEdited()"
 	(canceledCommentEdit)="onCancelEditComment()">
@@ -17,20 +44,11 @@
 <div class="comment-content">
 	{{ comment.content }}
 </div>
-<div class="comment-actions">
-	@if(hasCommentEditorPermissions()){
-	<button type="button" class="secondary" (click)="onEnableEditComment()">
-		Edit
-	</button>
-
-	<button type="button" class="danger" (click)="onCommentDeleted(comment.id)">
-		Delete
-	</button>
-	}
-</div>
 }
 
 @if (error(); as error) {
-<div class="error">{{ error }}</div>
+<div class="error">
+	{{ error }}
+</div>
 }
 }

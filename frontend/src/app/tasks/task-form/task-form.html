@@ -1,12 +1,22 @@
 <div class="task-form-card">
 	<div class="task-form-header">
-		<div class="header-icon">✓</div>
+		<div class="task-icon">
+			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.8" />
+				<path d="M8 9H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+				<path d="M8 13H13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+			</svg>
+		</div>
+
 		<div>
-			<h1 class="header">Create task</h1>
-			<p class="subtext">Add a new task to your board.</p>
+			<div class="header"> New task </div>
+			<h1 class="title"> Create task </h1>
+			<div class="subtext">
+				Add a task to your board.
+			</div>
 		</div>
 	</div>
-	<div class="divider"></div>
+
 	<form class="task-form" (submit)="onSubmit($event)">
 		<div class="form-grid">
 			<div class="form-group">
@@ -14,50 +24,48 @@
 					Title
 					<div class="required">*</div>
 				</label>
-				<input id="title"  type="text" placeholder="e.g. Implement authentication"
+
+				<input id="title" type="text" placeholder="e.g. Implement authentication"
 					[formField]="taskForm.title" />
 
 				@if (taskForm.title().invalid() && taskForm.title().touched()) {
 				<div class="field-error">
 					@for (error of taskForm.title().errors(); track error.kind) {
-					<div>
-						{{ error.message }}
-					</div>
+					{{ error.message }}
 					}
 				</div>
 				}
 			</div>
+
 			<div class="form-group">
 				<label class="form-label" for="description">
 					Description
-					<div class="optional">
-						Optional
-					</div>
+					<div class="optional">Optional</div>
 				</label>
-				<textarea id="description"
-					placeholder="Describe what needs to be done..." [formField]="taskForm.description">
-				</textarea>
+
+				<textarea id="description" placeholder="Describe what needs to be done..."
+					[formField]="taskForm.description">
+                </textarea>
+
 				<div class="field-hint">
-					Add any details that will help explain the task.
+					Add details that will help explain the task.
 				</div>
 			</div>
 
 			@if (error()) {
 			<div class="server-error">
 				<div class="server-error-icon">!</div>
-				<div>
-					{{ error() }}
-				</div>
+				{{ error() }}
 			</div>
 			}
 
 			<div class="form-actions">
-				<button class="secondary" type="button" (click)="onCancel()">
+				<button class="danger" type="button" (click)="onCancel()">
 					Cancel
 				</button>
+
 				<button class="primary" type="submit" [disabled]="taskForm().invalid()">
-					<div>Create task</div>
-					<div class="btn-arrow">→</div>
+					Create task →
 				</button>
 			</div>
 		</div>

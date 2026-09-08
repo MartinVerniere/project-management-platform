@@ -1,10 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../services/auth/auth-service';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
 	selector: 'app-navbar',
-	imports: [RouterLink],
+	imports: [RouterLink, RouterLinkActive],
 	templateUrl: './navbar.html',
 	styleUrl: './navbar.css',
 })

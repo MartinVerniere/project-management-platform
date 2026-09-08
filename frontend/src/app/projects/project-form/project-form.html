@@ -1,12 +1,17 @@
 <div class="project-form-card">
-	<div class="project-form-header">
-		<h1 class="header">Create project</h1>
-		<p class="subtext">Create a project to organize your boards and tasks.</p>
+	<div class="project-form-intro">
+		<div class="project-mark">+</div>
+
+		<div class="intro-content">
+			<div class="header"> New project </div>
+			<h1 class="title"> Create project </h1>
+			<div class="subtext">
+				Organize your boards and tasks in one place.
+			</div>
+		</div>
 	</div>
 
-	<div class="divider"></div>
-
-	<form class="project-form" (submit)="(onSubmit($event))">
+	<form class="project-form" (submit)="onSubmit($event)">
 		<div class="form-grid">
 			<div class="form-group">
 				<label class="form-label" for="name">
@@ -19,11 +24,12 @@
 				@if (projectForm.name().invalid() && projectForm.name().touched()) {
 				<div class="field-error">
 					@for (error of projectForm.name().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
 			</div>
+
 			<div class="form-group">
 				<label class="form-label" for="key">
 					Key
@@ -39,7 +45,7 @@
 				@if (projectForm.key().invalid() && projectForm.key().touched()) {
 				<div class="field-error">
 					@for (error of projectForm.key().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -50,14 +56,14 @@
 					Description
 				</label>
 
-				<textarea id="description"
-					placeholder="Describe what this project is about..."
-					[formField]="projectForm.description"></textarea>
+				<textarea id="description" placeholder="Describe what this project is about..."
+					[formField]="projectForm.description">
+                </textarea>
 
 				@if (projectForm.description().invalid() && projectForm.description().touched()) {
 				<div class="field-error">
 					@for (error of projectForm.description().errors(); track error.kind) {
-					<div>{{ error.message }}</div>
+					{{ error.message }}
 					}
 				</div>
 				}
@@ -66,18 +72,17 @@
 			@if (error()) {
 			<div class="server-error">
 				<div class="server-error-icon">!</div>
-				<div>{{ error() }}</div>
+				{{ error() }}
 			</div>
 			}
 
 			<div class="form-actions">
-				<button class="secondary" type="button" routerLink="/projects">
+				<button class="danger" type="button" routerLink="/projects">
 					Cancel
 				</button>
 
 				<button class="primary" type="submit" [disabled]="projectForm().invalid()">
-					Create project
-					<div class="btn-arrow">→</div>
+					Create project →
 				</button>
 			</div>
 		</div>

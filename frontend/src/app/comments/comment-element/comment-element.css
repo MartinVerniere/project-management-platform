@@ -1,63 +1,106 @@
 :host {
+	position: relative;
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
 	padding: 12px;
-	border: 1px solid var(--color-border);
-	border-radius: 8px;
-	background: var(--color-background);
+	border-bottom: 1px solid var(--color-border);
 }
 
-.comment-element:hover {
-	border: 1px solid var(--color-border);
-	background: var(--color-surface);
+:host:last-child {
+	border-bottom: none;
+}
+
+:host:hover {
+	margin-left: 4px;
+	background: var(--color-details);
 }
 
 .comment-header {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
 }
 
 .user-info {
 	display: flex;
 	align-items: center;
-	gap: 6px;
+	gap: 9px;
+}
+
+.avatar {
+	width: 32px;
+	height: 32px;
+	flex-shrink: 0;
+	overflow: hidden;
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 50%;
+}
+
+.avatar-image {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .username {
 	color: var(--color-text);
-	font-size: 14px;
-	font-weight: 600;
-}
-
-.avatar {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+	font-size: var(--font-sm);
+	font-weight: var(--font-bold);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .comment-content {
-	font-size: 0.95rem;
-	line-height: 1.5;
+	margin-top: 8px;
+	padding-left: 40px;
 	color: var(--color-text);
+	font-size: var(--font-sm);
+	line-height: 1.5;
 	white-space: pre-wrap;
+	overflow-wrap: anywhere;
 }
 
 .comment-actions {
 	display: flex;
-	gap: 8px;
-	margin-top: 2px;
+	align-items: center;
+	gap: 3px;
+}
+
+.comment-action {
+	display: flex;
+	width: 28px;
+	height: 28px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--color-text-muted);
+	cursor: pointer;
+	transition: 0.15s ease;
+}
+
+.comment-action svg {
+	width: 15px;
+	height: 15px;
+}
+
+.edit-action:hover {
+	background: var(--color-details);
+	color: var(--color-primary);
+}
+
+.delete-action:hover {
+	background: var(--color-error-alt);
+	color: var(--color-danger);
 }
 
 .error {
+	margin-top: 8px;
+	padding-left: 40px;
 	color: var(--color-error);
-	font-size: 0.85rem;
+	font-size: var(--font-sm);
 }

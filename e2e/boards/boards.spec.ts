@@ -27,7 +27,7 @@ test.describe('Boards', () => {
 		const boardList = projectElement.locator('app-board-list');
 
 		await expect(boardList.getByRole('heading', { name: 'Boards' })).toBeVisible();
-		await expect(boardList.getByRole('button', { name: 'Add board' })).toBeVisible();
+		await expect(boardList.getByRole('button', { name: 'Add board +' })).toBeVisible();
 	});
 
 	test('should redirect to board form on "Add board"', async ({ page }) => {
@@ -36,7 +36,7 @@ test.describe('Boards', () => {
 		const projectElement = page.locator('app-project-details');
 		const boardList = projectElement.locator('app-board-list');
 
-		const createBoardButton = boardList.getByRole('button', { name: 'Add Board' });
+		const createBoardButton = boardList.getByRole('button', { name: 'Add board +' });
 		await createBoardButton.click();
 
 		await expect(page).toHaveURL(`/projects/${projectId}/boards/create`);

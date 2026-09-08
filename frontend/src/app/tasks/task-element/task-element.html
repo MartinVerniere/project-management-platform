@@ -1,8 +1,10 @@
 @if (task(); as task) {
 <div class="task-header">
-	<h3 class="task-title">{{ task.title }}</h3>
+	<h3 class="task-title">
+		{{ task.title }}
+	</h3>
 
-	<div class="task-handle" cdkDragHandle>
+	<div class="task-handle" cdkDragHandle title="Drag task">
 		<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 			<circle cx="5" cy="3" r="1.25" />
 			<circle cx="11" cy="3" r="1.25" />
@@ -22,20 +24,21 @@
 
 <div class="task-assignee">
 	<div class="task-section-header">
-		<div class="form-label">Assigned to:</div>
+		<div class="section-label">
+			Assignee
+		</div>
 
-		@if (hasAdminPermissions()){
+		@if (hasAdminPermissions()) {
 		@if (!assigneeFormEnabled()) {
-		<button type="button" class="secondary" (click)="onEnableSetAssignee()">
+		<button class="secondary change-button" type="button" (click)="onEnableSetAssignee()">
 			Change
 		</button>
 		} @else {
 		<div class="assignee-actions">
-			<button type="button" class="secondary" (click)="onSetAssignee()">
+			<button class="secondary" type="button" (click)="onSetAssignee()">
 				Set
 			</button>
-
-			<button type="button" class="danger" (click)="onCancelSetAssignee()">
+			<button class="danger" type="button" (click)="onCancelSetAssignee()">
 				Cancel
 			</button>
 		</div>
@@ -45,8 +48,9 @@
 
 	@if (assigneeFormEnabled()) {
 	<div class="assignee-form">
-		<select id="assignee"  (change)="onAssigneeChanged($event)">
+		<select id="assignee" (change)="onAssigneeChanged($event)">
 			<option value="null">None</option>
+
 			@for (member of memberList(); track member.user.id) {
 			<option [value]="member.user.id">
 				{{ member.user.username }}
@@ -59,22 +63,27 @@
 		@if (task.assignee) {
 		<div class="user-info">
 			<div class="avatar">
-				<img class="avatar-image" [src]="task.assignee.avatarUrl ?? avatarPreview()" />
+				<img class="avatar-image" [src]="task.assignee.avatarUrl ?? avatarPreview()"
+					[alt]="task.assignee.username" />
 			</div>
 			<div class="username">
 				{{ task.assignee.username }}
 			</div>
 		</div>
 		} @else {
-		<div>None</div>
+		<div class="unassigned">
+			Unassigned
+		</div>
 		}
 	</div>
 	}
 </div>
 
-<app-comment-list [taskId]="task.id" [commentList]="task.comments" [hasAdminPermissions]="hasAdminPermissions()"
-	(commentListEdited)="taskCommentsEdited.emit()">
-</app-comment-list>
+<div class="task-comments">
+	<app-comment-list [taskId]="task.id" [commentList]="task.comments" [hasAdminPermissions]="hasAdminPermissions()"
+		(commentListEdited)="taskCommentsEdited.emit()">
+	</app-comment-list>
+</div>
 
 @if (error()) {
 <div class="error">
@@ -83,13 +92,15 @@
 }
 
 <div class="task-actions">
-	<button type="button" class="secondary"
-		[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
-		Edit
-	</button>
+	<div class="task-buttons">
+		<button type="button" class="secondary"
+			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', columnId(), 'tasks', task.id, 'edit']">
+			Edit
+		</button>
 
-	<button type="button" class="danger" (click)="onTaskDeleted(task.id)">
-		Delete
-	</button>
+		<button type="button" class="danger" (click)="onTaskDeleted(task.id)">
+			Delete
+		</button>
+	</div>
 </div>
 }

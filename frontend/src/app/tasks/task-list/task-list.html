@@ -1,10 +1,12 @@
-@if (taskList(); as taskList){
-<div cdkDropList [cdkDropListData]="taskList" (cdkDropListDropped)="onMoveTask($event)"
-	[cdkDropListEnterPredicate]="enabledDragAndDropPredicate" [cdkDropListSortingDisabled]="filtersActive()">
+@if (taskList(); as taskList) {
+<div cdkDropList [cdkDropListData]="taskList" [cdkDropListEnterPredicate]="enabledDragAndDropPredicate"
+	[cdkDropListSortingDisabled]="filtersActive()" (cdkDropListDropped)="onMoveTask($event)" class="task-drop-zone">
 	<div class="task-element-list">
-		@for (task of taskList; track task.id; let i = $index) {
-		<div cdkDrag [cdkDragData]="{ type: 'task', task: task }">
-			<div class="task-custom-placeholder" *cdkDragPlaceholder></div>
+		@for (task of taskList; track task.id) {
+		<div cdkDrag [cdkDragData]="{type: 'task', task: task}">
+			<div class="task-custom-placeholder" *cdkDragPlaceholder>
+			</div>
+
 			<app-task-element [task]="task" [projectId]="projectId()" [boardId]="boardId()" [columnId]="columnId()"
 				[memberList]="memberList()" [hasAdminPermissions]="hasAdminPermissions()"
 				(taskDeleted)="taskListEdited.emit()" (taskCommentsEdited)="taskListEdited.emit()"
@@ -12,13 +14,25 @@
 			</app-task-element>
 		</div>
 		}
-		
+
+		@if (taskList.length === 0) {
 		<div class="task-list-empty">
-			<div class="empty-icon">📋</div>
-			<div class="empty-title">No tasks yet!</div>
+			<div class="empty-icon">
+				+
+			</div>
+
+			<div class="empty-title">
+				No tasks yet!
+			</div>
+
+			<div class="empty-text">
+				Add a task to this column to get started.
+			</div>
 		</div>
+		}
 	</div>
 </div>
+
 }
 
 @if (error()) {

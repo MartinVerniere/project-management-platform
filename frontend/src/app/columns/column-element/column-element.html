@@ -1,7 +1,7 @@
 @if (column(); as column) {
 <div class="column-header">
 	<div class="column-title">
-		<div class="column-handle" cdkDragHandle>
+		<div class="column-handle" cdkDragHandle title="Drag column">
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 				<circle cx="5" cy="3" r="1.25" />
 				<circle cx="11" cy="3" r="1.25" />
@@ -13,18 +13,25 @@
 		</div>
 
 		<div class="column-info">
-			<h2 class="header">{{ column.name }}</h2>
-			<div class="subtext">{{ column.tasks.length }} tasks</div>
+			<div class="column-name-row">
+				<h2 class="header">
+					{{ column.name }}
+				</h2>
+
+				<div class="task-count">
+					{{ column.tasks.length }}
+				</div>
+			</div>
 		</div>
 	</div>
 
 	<div class="column-actions">
-		<button class="primary"
+		<button class="primary" type="button"
 			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'tasks', 'create']">
-			Add task
+			+ Task
 		</button>
 
-		@if(hasAdminPermissions()){
+		@if (hasAdminPermissions()) {
 		<button type="button" class="secondary"
 			[routerLink]="['/projects', projectId(), 'boards', boardId(), 'columns', column.id, 'edit']">
 			Edit
@@ -38,8 +45,9 @@
 </div>
 
 <app-task-list [taskList]="column.tasks" [projectId]="projectId()" [boardId]="boardId()" [columnId]="column.id"
-	[memberList]="memberList()" [filtersActive]="filtersActive()" [hasAdminPermissions]="hasAdminPermissions()" (taskListEdited)="columnElementEdited.emit()"
-	(moveTaskToColumn)="moveTaskToColumn.emit({ taskId: $event, destinationColumnId: column.id })">
+	[memberList]="memberList()" [filtersActive]="filtersActive()" [hasAdminPermissions]="hasAdminPermissions()"
+	(taskListEdited)="columnElementEdited.emit()"
+	(moveTaskToColumn)="moveTaskToColumn.emit({taskId: $event, destinationColumnId: column.id})">
 </app-task-list>
 
 @if (error()) {

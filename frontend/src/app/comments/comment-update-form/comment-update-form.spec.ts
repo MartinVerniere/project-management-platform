@@ -74,7 +74,7 @@ describe('CommentUpdateForm', () => {
 
 		const updateButton = Array
 			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Edit comment'));
+			.find(button => button.textContent?.includes('Save changes'));
 
 		expect(updateButton).toBeTruthy();
 
@@ -106,7 +106,7 @@ describe('CommentUpdateForm', () => {
 
 		const updateButton = Array
 			.from(html.querySelectorAll('button'))
-			.find(button => button.textContent?.includes('Edit comment'));
+			.find(button => button.textContent?.includes('Save changes'));
 
 		expect(updateButton).toBeTruthy();
 

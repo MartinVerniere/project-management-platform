@@ -1,8 +1,16 @@
 :root {
 	--color-background: #ffffff;
-	--color-background-alternative: #dddddd;
+	--color-background-alt: #dddddd;
 	--color-surface: #f5f5f7;
 	--color-border: #dddddd;
+
+	--color-details: #4343e914;
+	--color-details-alt: #e5e8ff;
+
+	--color-form-details: #ffffff24;
+	--color-form-details-alt: #ffffff2e;
+	--color-form-details-alt-2: #ffffffb3;
+	--color-form-details-alt-3: #ffffff41;
 
 	--color-primary: #4343e9;
 	--color-primary-hover: #ffffff;
@@ -10,8 +18,8 @@
 	--color-secondary: #444444;
 	--color-secondary-hover: #ffffff;
 
-	--color-navbar: #ddeeff;
-	
+	--color-navbar: #9eceff;
+
 	--color-danger: #dc2626;
 	--color-danger-hover: #ffffff;
 
@@ -22,6 +30,7 @@
 
 	--color-success: #16a34a;
 	--color-error: #dc2626;
+	--color-error-alt: #dc262633;
 	--color-info: #2563eb;
 
 	/* Text */
@@ -31,6 +40,7 @@
 	--font-md: 1rem;
 	--font-lg: 1.25rem;
 	--font-xl: 1.5rem;
+	--font-2xl: 3rem;
 
 	--font-normal: 400;
 	--font-medium: 500;
@@ -46,6 +56,7 @@ body {
 app-root {
 	display: flex;
 	height: 100%;
+	font-family: var(--font-family);
 }
 
 /* Buttons */
@@ -56,7 +67,7 @@ button {
 
 	padding: 8px;
 	border: 1px solid transparent;
-	border-radius: 6px;
+	border-radius: 4px;
 
 	font-family: var(--font-family);
 	font-size: var(--font-sm);
@@ -109,12 +120,23 @@ button:disabled {
 input {
 	padding: 12px;
 	border: 1px solid var(--color-border);
-	border-radius: 6px;
+	border-radius: 4px;
 	background: var(--color-background);
 	color: var(--color-text);
-	font: inherit;
 	font-size: var(--font-sm);
 	outline: none;
+}
+
+textarea {
+	min-height: 120px;
+	padding: 12px;
+	resize: vertical;
+	font-size: var(--font-sm);
+	border: 1px solid var(--color-border);
+	border-radius: 8px;
+	color: var(--color-text);
+	outline: none;
+	transition: 0.15s ease;
 }
 
 input::placeholder,
@@ -126,7 +148,7 @@ input:focus,
 textarea:focus,
 select:focus {
 	border-color: var(--color-primary);
-	box-shadow: 0 0 0 2px rgba(67, 67, 233, 0.12);
+	box-shadow: 0 0 0 2px var(--color-details);
 }
 
 input:disabled,

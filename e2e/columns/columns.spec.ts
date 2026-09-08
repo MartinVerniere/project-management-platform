@@ -40,7 +40,7 @@ test.describe('Columns', () => {
 			const board = page.locator('app-board-details');
 			const columnList = board.locator('app-column-list');
 
-			await expect(columnList.getByText('No columns yet!')).toBeVisible();
+			await expect(columnList.getByText('No columns yet.')).toBeVisible();
 		});
 	});
 
@@ -71,7 +71,7 @@ test.describe('Columns', () => {
 
 				for (const column of await columns.all()) {
 					await expect(column).toBeVisible();
-					const addTaskButton = column.getByRole('button', { name: 'Add task' });
+					const addTaskButton = column.getByRole('button', { name: '+ Task' });
 					const editButton = column.getByRole('button', { name: 'Edit' });
 					const deleteButton = column.getByRole('button', { name: 'Delete' });
 					await expect(addTaskButton).toBeVisible();
@@ -130,7 +130,7 @@ test.describe('Columns', () => {
 
 				for (const column of await columns.all()) {
 					await expect(column).toBeVisible();
-					const addTaskButton = column.getByRole('button', { name: 'Add task' });
+					const addTaskButton = column.getByRole('button', { name: '+ Task' });
 					const editButton = column.getByRole('button', { name: 'Edit' });
 					const deleteButton = column.getByRole('button', { name: 'Delete' });
 					await expect(addTaskButton).toBeVisible();

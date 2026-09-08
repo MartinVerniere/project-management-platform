@@ -22,11 +22,11 @@ test.describe('Board', () => {
 		await page.evaluate((authToken) => { localStorage.setItem('authToken', authToken); }, authToken);
 	});
 
-	test('should return to /projects/:projectId on "Back to project" button click', async ({ page }) => {
+	test('should return to /projects/:projectId on "← Project" button click', async ({ page }) => {
 		await page.goto(`/projects/${projectId}/boards/${boardId}`);
 
 		const boardElement = page.locator('app-board-details');
-		const goBackButton = boardElement.getByRole('button', { name: 'Back to project' });
+		const goBackButton = boardElement.getByRole('link', { name: '← Project' });
 
 		await goBackButton.click();
 
@@ -48,7 +48,7 @@ test.describe('Board', () => {
 
 			await expect(boardElement.getByText('Board A')).toBeVisible();
 			await expect(boardElement.getByRole('button', { name: 'Add column' })).toBeVisible();
-			await expect(boardElement.getByRole('button', { name: 'Back to project' })).toBeVisible();
+			await expect(boardElement.getByRole('link', { name: '← Project' })).toBeVisible();
 
 			const columnList = boardElement.locator('app-column-list');
 			await expect(columnList).toBeVisible();
@@ -58,7 +58,7 @@ test.describe('Board', () => {
 			await page.goto(`/projects/${projectId}/boards/${boardId}`);
 
 			const boardElement = page.locator('app-board-details');
-			const addColumnButton = boardElement.getByRole('button', { name: 'Add column' });
+			const addColumnButton = boardElement.getByRole('button', { name: 'Add column +' });
 
 			await addColumnButton.click();
 
@@ -81,7 +81,7 @@ test.describe('Board', () => {
 
 			await expect(boardElement.getByText('Board A')).toBeVisible();
 			await expect(boardElement.getByRole('button', { name: 'Add column' })).not.toBeVisible();
-			await expect(boardElement.getByRole('button', { name: 'Back to project' })).toBeVisible();
+			await expect(boardElement.getByRole('link', { name: '← Project' })).toBeVisible();
 
 			const columnList = boardElement.locator('app-column-list');
 			await expect(columnList).toBeVisible();

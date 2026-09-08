@@ -28,7 +28,7 @@ export class ColumnUpdateForm {
 	columnModel = signal<ColumnModel>({ name: '' });
 
 	columnForm = form(this.columnModel, (fieldPath) => {
-		required(fieldPath.name, { message: 'name is required' });
+		required(fieldPath.name, { message: 'Name is required' });
 	});
 
 	error = signal<string | null>(null);

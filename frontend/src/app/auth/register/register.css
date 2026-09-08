@@ -1,19 +1,44 @@
 :host {
+	position: relative;
+
 	display: flex;
 	flex: 1;
 	align-items: center;
 	justify-content: center;
+
+	overflow: hidden;
 	padding: 24px;
-	background: var(--color-background);
+
+	background:
+		radial-gradient(280px 280px at calc(100%) -30px, var(--color-details) 50%, transparent 50%),
+		radial-gradient(220px 220px at -60px calc(100%), var(--color-details) 50%, transparent 50%),
+		radial-gradient(circle at 15% 20%, var(--color-details-alt), transparent 35%),
+		radial-gradient(circle at 85% 80%, var(--color-details), transparent 35%),
+		linear-gradient(135deg, var(--color-details-alt) 0%, var(--color-details-alt) 50%, var(--color-details-alt) 100%);
 }
 
 .register-card {
-	background: var(--color-surface);
+	position: relative;
+	z-index: 1;
 	width: 400px;
-	border: 1px solid var(--color-border);
-	border-radius: 10px;
 	padding: 32px;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+	background: var(--color-background);
+	border: 1px solid var(--color-border);
+	border-radius: 12px;
+	box-shadow:
+		0 24px 60px var(--color-details),
+		0 4px 12px var(--color-details-alt);
+}
+
+.register-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 32px;
+	right: 32px;
+	height: 3px;
+	background: linear-gradient(90deg, var(--color-primary), var(--color-info));
+	border-radius: 4px;
 }
 
 .register-header {
@@ -23,43 +48,44 @@
 .header {
 	margin: 0;
 	color: var(--color-text);
-	font-size: 24px;
-	font-weight: 650;
+	font-size: var(--font-xl);
+	font-weight: var(--font-bold);
 }
 
 .register-form {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
 }
 
 .form-grid {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 18px;
 }
 
 .form-group {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 7px;
 }
 
 .form-label {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	font-size: 12px;
-	font-weight: 600;
-	color: var(--color-text-secondary);
+	gap: 5px;
+
+	color: var(--color-text);
+	font-size: var(--font-sm);
+	font-weight: var(--font-medium);
 }
 
 .error {
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
+
 	color: var(--color-error);
-	font-size: 12px;
+	font-size: var(--font-sm);
 }
 
 .form-error {
@@ -68,19 +94,36 @@
 
 .form-actions {
 	display: flex;
-	flex: 1;
-	justify-content: space-between;
 	gap: 10px;
+	margin-top: 4px;
+}
+
+.form-actions button {
+	flex: 1;
 }
 
 .form-image {
 	display: none;
 }
 
+.avatar-upload {
+	display: flex;
+	align-items: center;
+}
+
 .avatar-preview {
-	width: 60px;
-	height: 60px;
+	width: 72px;
+	height: 72px;
 	object-fit: cover;
+	border: 2px solid var(--color-border);
 	border-radius: 50%;
 	cursor: pointer;
+	transition:
+		transform 0.15s ease,
+		border-color 0.15s ease;
+}
+
+.avatar-preview:hover {
+	transform: scale(1.05);
+	border-color: var(--color-primary);
 }

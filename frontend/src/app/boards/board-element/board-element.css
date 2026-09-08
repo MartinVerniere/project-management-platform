@@ -1,32 +1,78 @@
 :host {
-	padding: 16px;
+	display: flex;
+	padding: 12px;
+	background: linear-gradient(90deg, var(--color-details), transparent 45%);
 	border: 1px solid var(--color-border);
 	border-radius: 8px;
+	transition: 0.15s ease, ;
+}
+
+:host:hover {
 	background: var(--color-background);
+	border-color: var(--color-details);
+	box-shadow: 12px var(--color-details);
+	padding-left: 15px;
 }
 
 .board-content {
 	display: flex;
+	flex: 1;
 	align-items: center;
 	justify-content: space-between;
-	gap: 16px;
+	gap: 20px;
+}
+
+.board-identity {
+	display: flex;
+	align-items: center;
+}
+
+.board-icon {
+	display: flex;
+	width: 38px;
+	height: 38px;
+	align-items: center;
+	justify-content: center;
+	margin-right: 12px;
+	background: var(--color-details);
+	color: var(--color-primary);
+	border-radius: 8px;
+	font-size: var(--font-md);
+}
+
+.board-details {
+	display: flex;
+	flex-direction: column;
 }
 
 .board-name {
 	margin: 0;
-
-	font-size: 16px;
-	font-weight: 600;
 	color: var(--color-text);
+	font-size: var(--font-md);
+	font-weight: var(--font-bold);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.board-label {
+	margin-top: 3px;
+	color: var(--color-text-muted);
+	font-size: var(--font-sm);
 }
 
 .board-actions {
 	display: flex;
+	align-items: center;
 	gap: 8px;
+}
+
+.board-actions button {
+	min-width: 64px;
 }
 
 .error {
 	margin-top: 10px;
-	font-size: 13px;
 	color: var(--color-error);
+	font-size: var(--font-sm);
 }

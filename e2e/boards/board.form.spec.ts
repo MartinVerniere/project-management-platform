@@ -23,7 +23,7 @@ test.describe('Board form', () => {
 		const boardForm = page.locator('app-board-form');
 		await expect(boardForm.getByLabel('Name')).toBeVisible();
 
-		await expect(boardForm.getByRole('button', { name: 'Create board' })).toBeVisible();
+		await expect(boardForm.getByRole('button', { name: 'Create board →' })).toBeVisible();
 		await expect(boardForm.getByRole('button', { name: 'Cancel' })).toBeVisible();
 	});
 
@@ -46,7 +46,7 @@ test.describe('Board form', () => {
 
 		await nameInput.fill('Board A');
 
-		const submitButton = boardForm.getByRole('button', { name: 'Create Board' });
+		const submitButton = boardForm.getByRole('button', { name: 'Create board →' });
 		submitButton.click();
 
 		await expect(page).toHaveURL(`/projects/${projectId}`);

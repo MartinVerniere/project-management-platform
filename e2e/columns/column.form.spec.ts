@@ -25,7 +25,7 @@ test.describe('Column form', () => {
 		const columnForm = page.locator('app-column-form');
 		await expect(columnForm.getByLabel('Name')).toBeVisible();
 
-		await expect(columnForm.getByRole('button', { name: 'Create column' })).toBeVisible();
+		await expect(columnForm.getByRole('button', { name: 'Create column →' })).toBeVisible();
 		await expect(columnForm.getByRole('button', { name: 'Cancel' })).toBeVisible();
 	});
 
@@ -48,7 +48,7 @@ test.describe('Column form', () => {
 
 		await nameInput.fill('Column A');
 
-		const submitButton = columnForm.getByRole('button', { name: 'Create column' });
+		const submitButton = columnForm.getByRole('button', { name: 'Create column →' });
 		await submitButton.click();
 
 		await expect(page).toHaveURL(`/projects/${projectId}/boards/${boardId}`);
@@ -64,7 +64,7 @@ test.describe('Column form', () => {
 
 		// await nameInput.fill('Column A');
 
-		const submitButton = columnForm.getByRole('button', { name: 'Create column' });
+		const submitButton = columnForm.getByRole('button', { name: 'Create column →' });
 		await expect(submitButton).toBeDisabled();
 	});
 });

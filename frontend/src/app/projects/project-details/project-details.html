@@ -1,33 +1,47 @@
 @if (project.isLoading()) {
-<div class="loading">Loading...</div>
+<div class="loading">
+	Loading...
+</div>
 } @else if (project.error()) {
-<div class="error">Error loading project info</div>
+<div class="error">
+	Error loading project info
+</div>
 } @else {
 @if (project.value(); as project) {
 <div class="project-header">
-	<div>
-		<div class="project-key">{{ project.key }}</div>
-		<h1 class="project-name">{{ project.name }}</h1>
+	<div class="project-header-top">
+		<a class="back-button" routerLink="/projects">
+			← Projects
+		</a>
 
-		@if (project.description) {
-		<p class="project-description">
-			{{ project.description }}
-		</p>
-		}
+		<div class="project-key">
+			{{ project.key }}
+		</div>
 	</div>
 
-	<a class="back-button" routerLink="/projects">
-		← Projects
-	</a>
+	<h1 class="project-name">
+		{{ project.name }}
+	</h1>
+
+	@if (project.description) {
+	<div class="project-description">
+		{{ project.description }}
+	</div>
+	}
 </div>
 
 <div class="project-content">
-	<app-board-list [projectId]="project.id" [hasAdminPermissions]="hasAdminPermissions()">
-	</app-board-list>
+	<div class="boards-section">
+		<app-board-list [projectId]="project.id" [hasAdminPermissions]="hasAdminPermissions()">
+		</app-board-list>
+	</div>
 
-	<app-member-list [projectId]="project.id" [memberList]="project.members" [hasAdminPermissions]="hasAdminPermissions()"
-		(memberAdded)="onMemberAdded()" (memberRemoved)="onMemberRemoved()">
-	</app-member-list>
+	<div class="members-section">
+		<app-member-list [projectId]="project.id" [memberList]="project.members"
+			[hasAdminPermissions]="hasAdminPermissions()" (memberAdded)="onMemberAdded()"
+			(memberRemoved)="onMemberRemoved()">
+		</app-member-list>
+	</div>
 </div>
 }
 }
