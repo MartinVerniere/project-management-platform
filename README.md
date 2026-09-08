@@ -4,7 +4,7 @@ A full-stack Agile project management application inspired by Jira's issue track
 
 ## Purpose
 
-The goal of this project is to learn full-stack development by building a production-style application incrementally, implementing features from backend APIs to frontend interfaces.
+The goal of this project was to learn full-stack development utilizing Angular for the frontend, by building a production-style application incrementally, implementing features from backend APIs to frontend interfaces.
 
 ## Tech Stack
 
@@ -12,12 +12,17 @@ The goal of this project is to learn full-stack development by building a produc
 
 * Angular
 * TypeScript
+* Vitest (for testing)
 
 ### Backend
 
 * Node.js
 * Express
 * TypeScript
+* Vitest (for testing)
+
+### End-to-End testing
+* Playwright
 
 ## Features
 
