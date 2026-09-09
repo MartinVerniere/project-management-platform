@@ -5,8 +5,9 @@ import { UpdateTaskRequest } from '../../models/task';
 import { AddCommentRequest } from '../../models/comment';
 import { TaskDetailsDto, TaskDto } from '@shared/models/task';
 import type { CommentDto } from '@shared/models/comment';
+import { environment } from '../../../environments/environment';
 
-const API_URL = 'http://localhost:3000/api/tasks';
+const API_URL = `${environment.apiUrl}/tasks`; 
 
 @Service()
 export class TaskService {

@@ -5,8 +5,9 @@ import { ColumnOrderRequest, UpdateBoardRequest } from "../../models/board";
 import { AddColumnRequest } from "../../models/column";
 import type { BoardDetailsDto } from "@shared/models/board";
 import type { ColumnDto } from "@shared/models/column";
+import { environment } from "../../../environments/environment";
 
-const API_URL = 'http://localhost:3000/api/boards';
+const API_URL = `${environment.apiUrl}/boards`; 
 
 @Service()
 export class BoardService {

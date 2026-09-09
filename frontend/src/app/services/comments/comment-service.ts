@@ -3,8 +3,9 @@ import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UpdateCommentRequest } from '../../models/comment';
 import type { CommentDto } from '@shared/models/comment';
+import { environment } from '../../../environments/environment';
 
-const API_URL = 'http://localhost:3000/api/comments';
+const API_URL = `${environment.apiUrl}/comments`; 
 
 @Service()
 export class CommentService {
