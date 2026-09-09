@@ -13,7 +13,9 @@ import { clearDatabase } from './helpers/database.js';
 
 export const app = express();
 
-app.use(cors());
+const allowedOrigins = ['http://localhost:4200', process.env.FRONTEND_URL!];
+
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 app.use(loggerMiddleware);
 
