@@ -7,7 +7,7 @@ import { ColumnDetailsDto, ColumnDto } from '@shared/models/column';
 import type { TaskDto } from '@shared/models/task';
 import { environment } from '../../../environments/environment';
 
-const API_URL = `${environment.apiUrl}/columns`; 
+const API_URL = `${environment.apiUrl}/api/columns`; 
 
 @Service()
 export class ColumnService {

@@ -5,7 +5,7 @@ import { UpdateCommentRequest } from '../../models/comment';
 import type { CommentDto } from '@shared/models/comment';
 import { environment } from '../../../environments/environment';
 
-const API_URL = `${environment.apiUrl}/comments`; 
+const API_URL = `${environment.apiUrl}/api/comments`; 
 
 @Service()
 export class CommentService {
