@@ -5,8 +5,9 @@ import { Observable, tap } from 'rxjs';
 import { LoginRequest } from '../../models/auth';
 import type { UserDto } from '@shared/models/user';
 import type { LoginDto } from '@shared/models/auth';
+import { environment } from '../../../environments/environment';
 
-const API_URL = 'http://localhost:3000/api/auth';
+const API_URL = `${environment.apiUrl}/auth`; 
 
 @Service()
 export class AuthService {

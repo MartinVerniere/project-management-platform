@@ -5,8 +5,9 @@ import { CreateProjectRequest, UpdateProjectRequest } from '../../models/project
 import { CreateBoardRequest } from '../../models/board';
 import { ProjectDetailsDto, ProjectDto, ProjectMemberDto } from '@shared/models/project';
 import type { BoardDto } from '@shared/models/board';
+import { environment } from '../../../environments/environment';
 
-const API_URL = 'http://localhost:3000/api/projects';
+const API_URL = `${environment.apiUrl}/projects`; 
 
 @Service()
 export class ProjectService {

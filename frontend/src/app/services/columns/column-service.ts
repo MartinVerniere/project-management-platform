@@ -5,8 +5,9 @@ import { TaskOrderRequest, UpdateColumnRequest } from '../../models/column';
 import { AddTaskRequest } from '../../models/task';
 import { ColumnDetailsDto, ColumnDto } from '@shared/models/column';
 import type { TaskDto } from '@shared/models/task';
+import { environment } from '../../../environments/environment';
 
-const API_URL = 'http://localhost:3000/api/columns';
+const API_URL = `${environment.apiUrl}/columns`; 
 
 @Service()
 export class ColumnService {
