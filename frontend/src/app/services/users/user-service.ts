@@ -4,7 +4,7 @@ import type { UserDto } from '@shared/models/user';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-const API_URL = `${environment.apiUrl}/users`; 
+const API_URL = `${environment.apiUrl}/api/users`; 
 
 @Service()
 export class UserService {

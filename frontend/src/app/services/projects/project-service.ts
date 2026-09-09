@@ -7,7 +7,7 @@ import { ProjectDetailsDto, ProjectDto, ProjectMemberDto } from '@shared/models/
 import type { BoardDto } from '@shared/models/board';
 import { environment } from '../../../environments/environment';
 
-const API_URL = `${environment.apiUrl}/projects`; 
+const API_URL = `${environment.apiUrl}/api/projects`; 
 
 @Service()
 export class ProjectService {

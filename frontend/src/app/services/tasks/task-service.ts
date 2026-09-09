@@ -7,7 +7,7 @@ import { TaskDetailsDto, TaskDto } from '@shared/models/task';
 import type { CommentDto } from '@shared/models/comment';
 import { environment } from '../../../environments/environment';
 
-const API_URL = `${environment.apiUrl}/tasks`; 
+const API_URL = `${environment.apiUrl}/api/tasks`; 
 
 @Service()
 export class TaskService {
